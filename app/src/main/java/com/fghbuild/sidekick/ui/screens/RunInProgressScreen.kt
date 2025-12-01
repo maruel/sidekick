@@ -19,12 +19,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.fghbuild.sidekick.data.HeartRateData
 import com.fghbuild.sidekick.data.RunData
 
 @Composable
 fun runInProgressScreen(
     modifier: Modifier = Modifier,
     runData: RunData = RunData(),
+    heartRateData: HeartRateData = HeartRateData(),
     onResume: () -> Unit = {},
     onStop: () -> Unit = {},
 ) {
@@ -56,7 +58,10 @@ fun runInProgressScreen(
                 fontSize = 20.sp,
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Heart Rate: -- bpm", fontSize = 20.sp)
+            Text(
+                "Heart Rate: ${heartRateData.currentBpm} bpm",
+                fontSize = 20.sp,
+            )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 "Duration: ${formatDuration(runData.durationMillis)}",
