@@ -1,0 +1,10 @@
+/.gradle/
+/.idea/assetWizardSettings.xml
+/.idea/caches/
+/.idea/libraries
+/.idea/modules.xml
+/.idea/navEditor.xml
+/.idea/shelf/
+/.idea/workspace.xml
+/app/build/
+/local.properties
