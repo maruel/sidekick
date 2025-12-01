@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -14,7 +16,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun homeScreen(modifier: Modifier = Modifier) {
+fun homeScreen(
+    modifier: Modifier = Modifier,
+    isRunning: Boolean = false,
+    onStartRun: () -> Unit = {},
+    onStopRun: () -> Unit = {},
+) {
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -25,10 +32,24 @@ fun homeScreen(modifier: Modifier = Modifier) {
             fontSize = 32.sp,
         )
         Spacer(modifier = Modifier.height(24.dp))
-        Text("Ready to run!")
+        Text(
+            text = if (isRunning) "Run in progress..." else "Ready to run!",
+        )
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { }) {
-            Text("Start Run")
+        if (isRunning) {
+            Button(
+                onClick = onStopRun,
+                colors =
+                    ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                    ),
+            ) {
+                Text("Stop Run")
+            }
+        } else {
+            Button(onClick = onStartRun) {
+                Text("Start Run")
+            }
         }
     }
 }
