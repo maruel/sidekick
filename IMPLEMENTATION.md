@@ -1,56 +1,70 @@
-# Implementation Strategy for Sidekick Android App
+# Implementation Status
 
 ## Overview
-Sidekick is an Android application designed to assist during running training sessions. See AGENTS.md for the technology stack and build commands.
+
+Sidekick is an Android running companion app. See [AGENTS.md](AGENTS.md) for build commands and technology stack.
 
 ## Architecture
-- **MVVM Pattern**: Model-View-ViewModel for clean architecture
-- **Services**: Foreground services for continuous monitoring during runs
-- **Permissions**: Location, Bluetooth, Microphone, Notifications
-- **Data Storage**: Local database for run history and settings
 
-## Implementation Phases
+- **MVVM Pattern** with Jetpack Compose UI
+- **Room Database** for run persistence
+- **StateFlow** for reactive state management
+- **Foreground Service** for background tracking
 
-### Phase 1: Core Setup and UI Foundation
-1. Set up Android project with Kotlin and Jetpack Compose
-2. Implement main activity and navigation structure
-3. Create basic UI screens (Home, Run in Progress, History)
-4. Set up Gradle build configuration for CLI compilation
+## Completed Phases
 
-### Phase 2: GPS and Location Tracking
-1. Implement location permissions and GPS tracking
-2. Calculate distance and pace in real-time
-3. Store route data (latitude/longitude points)
-4. Display current pace and distance on screen
+### Phase 1: Core Setup ✓
+- Android project with Kotlin and Jetpack Compose
+- Navigation with `NavigationSuiteScaffold` (Home, Run, History tabs)
+- Material 3 theming
 
-### Phase 3: Heart Rate Monitoring
-1. Implement BLE device scanning and connection
-2. Parse heart rate data from HRM devices
-3. Remember last connected device
-4. Display current and average heart rate
+### Phase 2: GPS Tracking ✓
+- `LocationTracker` - GPS updates via LocationManager
+- `RunManager` - Distance calculation (Haversine formula), pace tracking
+- `RoutePoint` data model for storing coordinates
 
-### Phase 4: Voice Commands and Audio Feedback
-1. Implement speech recognition for "pause" and "resume"
-2. Add text-to-speech for pace/distance announcements (every 1km)
-3. Add heart rate announcements (every minute)
-4. Handle microphone permissions
+### Phase 3: Heart Rate Monitoring ✓
+- `BleManager` - BLE scanning, connection, HR data parsing
+- Standard HRM service UUID support
+- `DevicePreferences` - Remembers last connected device
 
-### Phase 5: Visual Features
-1. Implement heart rate graph using charting library
-2. Implement pace graph
-3. Add zoomable map display for route
-4. Create notification with live pace/distance and lock screen display
+### Phase 4: Voice & Audio ✓
+- `VoiceCommandListener` - Speech recognition for "pause"/"resume"
+- `AnnouncementManager` - Text-to-speech feedback
+- `RunStateManager` - Coordinates announcements (1km distance, 1min HR)
 
-### Phase 6: Run Management
-1. Implement run start/pause/resume/stop logic
-2. Add automatic home detection to stop run
-3. Store completed runs in database
-4. Calculate and display improvements over time
+### Phase 5: Visual Features ✓
+- `HeartRateChart` - HR graph over time
+- `PaceChart` - Pace history visualization
+- `RouteMap` - Canvas-based route display
+- `RunNotificationManager` - Live notifications
 
-### Phase 7: Testing and Refinement
-1. Unit tests for calculations and data processing
-2. Integration tests for BLE and GPS
-3. UI testing with Compose testing framework
-4. Performance optimization for battery usage
+### Phase 6: Persistence ✓
+- Room database with `RunEntity` and `RoutePointEntity`
+- `RunRepository` - Save/load/delete runs
+- History screen with run cards and stats
 
+### Phase 7: Testing ✓
+- Unit tests for utilities (GeoUtils, PaceUtils, HeartRateUtils)
+- Unit tests for RunManager and data models
+- Compose UI tests for all screens
 
+## Project Structure
+
+```
+app/src/main/java/com/fghbuild/sidekick/
+├── audio/           # Voice commands, TTS
+├── ble/             # Bluetooth HRM
+├── data/            # Data models
+├── database/        # Room entities, DAOs
+├── location/        # GPS tracking
+├── notifications/   # Run notifications
+├── preferences/     # Device preferences
+├── repository/      # Data repository
+├── run/             # Run state management
+├── ui/
+│   ├── components/  # Charts, map
+│   ├── screens/     # Home, Run, History
+│   └── theme/       # Material theme
+└── util/            # Calculation utilities
+```

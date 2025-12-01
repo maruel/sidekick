@@ -1,19 +1,52 @@
 # Sidekick
 
-Android application to use during a running training run.
+An Android running companion app that tracks your runs with GPS, heart rate monitoring, and voice feedback.
 
 ## Features
 
-- Monitors heart rate.
-- Shows heart rate as a graph over the whole run.
-- Calculate distance via GPS.
-- Shows the route as a zoomable map.
-- Calculates the pace.
-- Shows the pace as a graph over the whole run.
-- Listens for keywords via the microphone. When "pause" is spoken, pauses the run. "resume" resumes it.
-- Automatically detects when the user returns home and stops the run.
-- Connects to a HRM BLE device to monitor heart rate. Remembers the last used device.
-- Displays the current pace and distance as a live notification. Shows it as a live notification on the lock screen with graphics and colors as appropriate.
-- Stores past runs and calculates the improvement.
-- Speaks the current pace and distance at every 1km.
-- Speaks the current average heart rate at every minute.
+- **GPS Tracking** - Real-time distance and pace calculation with route mapping
+- **Heart Rate Monitoring** - Connect to BLE heart rate monitors, view live and average HR
+- **Voice Commands** - Say "pause" or "resume" to control your run hands-free
+- **Audio Feedback** - Announces pace/distance every 1km, heart rate every minute
+- **Run History** - Stores completed runs with stats and route data
+- **Live Notifications** - Shows current pace and distance on lock screen
+
+## Screenshots
+
+*Coming soon*
+
+## Requirements
+
+- Android 14+ (SDK 34)
+- GPS-enabled device
+- Bluetooth LE for heart rate monitoring (optional)
+
+## Build
+
+```bash
+# Debug build
+./gradlew assembleDebug
+
+# Release build
+./gradlew assembleRelease
+
+# Run tests
+./gradlew test
+
+# Format code
+./gradlew ktlintFormat
+```
+
+## Architecture
+
+The app uses MVVM architecture with Jetpack Compose for UI:
+
+- `ui/screens/` - Compose screens (Home, Run, History)
+- `ui/components/` - Reusable UI components (charts, map)
+- `run/` - Run state management
+- `ble/` - Bluetooth heart rate monitor integration
+- `location/` - GPS tracking
+- `audio/` - Voice commands and text-to-speech
+- `database/` - Room persistence for run history
+- `repository/` - Data layer
+- `util/` - Calculation utilities
