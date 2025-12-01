@@ -3,13 +3,11 @@ package com.fghbuild.sidekick.run
 import android.location.Location
 import com.fghbuild.sidekick.data.RoutePoint
 import com.fghbuild.sidekick.data.RunData
+import com.fghbuild.sidekick.util.GeoUtils
+import com.fghbuild.sidekick.util.PaceUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlin.math.atan2
-import kotlin.math.cos
-import kotlin.math.sin
-import kotlin.math.sqrt
 
 class RunManager {
     private val _runData = MutableStateFlow(RunData())
@@ -42,7 +40,7 @@ class RunManager {
 
         lastLocation?.let {
             distanceMeters +=
-                calculateDistance(
+                GeoUtils.calculateDistanceMeters(
                     it.latitude,
                     it.longitude,
                     location.latitude,
@@ -51,12 +49,7 @@ class RunManager {
         }
 
         val durationMillis = System.currentTimeMillis() - startTimeMillis
-        val paceMinPerKm =
-            if (distanceMeters > 0) {
-                (durationMillis / 1000.0 / 60.0) / (distanceMeters / 1000.0)
-            } else {
-                0.0
-            }
+        val paceMinPerKm = PaceUtils.calculatePaceMinPerKm(durationMillis, distanceMeters)
 
         lastLocation = location
 
@@ -74,22 +67,5 @@ class RunManager {
 
     fun updateRoutePoints(points: List<RoutePoint>) {
         _runData.value = _runData.value.copy(routePoints = points)
-    }
-
-    private fun calculateDistance(
-        lat1: Double,
-        lon1: Double,
-        lat2: Double,
-        lon2: Double,
-    ): Double {
-        val earthRadiusKm = 6371.0
-        val dLat = Math.toRadians(lat2 - lat1)
-        val dLon = Math.toRadians(lon2 - lon1)
-        val a =
-            sin(dLat / 2) * sin(dLat / 2) +
-                cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) *
-                sin(dLon / 2) * sin(dLon / 2)
-        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
-        return earthRadiusKm * c * 1000 // Convert to meters
     }
 }
