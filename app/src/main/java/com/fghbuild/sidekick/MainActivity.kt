@@ -23,15 +23,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
-import com.fghbuild.sidekick.ui.theme.SidekickTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            SidekickTheme {
-                SidekickApp()
+            sidekickTheme {
+                sidekickApp()
             }
         }
     }
@@ -39,7 +38,7 @@ class MainActivity : ComponentActivity() {
 
 @PreviewScreenSizes
 @Composable
-fun SidekickApp() {
+fun sidekickApp() {
     var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.HOME) }
 
     NavigationSuiteScaffold(
@@ -49,20 +48,20 @@ fun SidekickApp() {
                     icon = {
                         Icon(
                             it.icon,
-                            contentDescription = it.label
+                            contentDescription = it.label,
                         )
                     },
                     label = { Text(it.label) },
                     selected = it == currentDestination,
-                    onClick = { currentDestination = it }
+                    onClick = { currentDestination = it },
                 )
             }
-        }
+        },
     ) {
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-            Greeting(
+            greeting(
                 name = "Android",
-                modifier = Modifier.padding(innerPadding)
+                modifier = Modifier.padding(innerPadding),
             )
         }
     }
@@ -78,17 +77,20 @@ enum class AppDestinations(
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun greeting(
+    name: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = "Hello $name!",
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
-    SidekickTheme {
-        Greeting("Android")
+fun greetingPreview() {
+    sidekickTheme {
+        greeting("Android")
     }
 }

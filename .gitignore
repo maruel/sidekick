@@ -7,4 +7,5 @@
 /.idea/shelf/
 /.idea/workspace.xml
 /app/build/
+/build/
 /local.properties
