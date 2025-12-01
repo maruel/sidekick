@@ -1,22 +1,7 @@
 # Implementation Strategy for Sidekick Android App
 
 ## Overview
-Sidekick is an Android application designed to assist during running training sessions. It will be implemented using Kotlin as the programming language, with the Android SDK and Jetpack Compose for the user interface. The build system will use Gradle for CLI compilation and deployment.
-
-## Technology Stack
-- **Language**: Kotlin
-- **Framework**: Android SDK (API level 24+ for BLE support)
-- **UI Framework**: Jetpack Compose
-- **Build Tool**: Gradle
-- **Dependencies**:
-  - BLE: Android Bluetooth API
-  - Maps: Google Maps SDK for Android
-  - Speech Recognition: Android SpeechRecognizer
-  - Text-to-Speech: Android TextToSpeech
-  - Location: Android Location API
-  - Notifications: Android Notification API
-  - Charts: MPAndroidChart library
-  - Database: Room persistence library
+Sidekick is an Android application designed to assist during running training sessions. See AGENTS.md for the technology stack and build commands.
 
 ## Architecture
 - **MVVM Pattern**: Model-View-ViewModel for clean architecture
@@ -68,19 +53,4 @@ Sidekick is an Android application designed to assist during running training se
 3. UI testing with Compose testing framework
 4. Performance optimization for battery usage
 
-## CLI Compilation
-The project will be configured to compile via command line using:
-```bash
-./gradlew build
-```
-For release builds:
-```bash
-./gradlew assembleRelease
-```
 
-## Requirements Checklist
-- [ ] Android Studio or CLI tools installed
-- [ ] JDK 11+ installed
-- [ ] Google Play Services for maps and location
-- [ ] API keys configured for Google Maps
-- [ ] Test devices with BLE capability for HRM testing

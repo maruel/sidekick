@@ -7,9 +7,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -21,8 +21,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
+import com.fghbuild.sidekick.ui.screens.historyScreen
+import com.fghbuild.sidekick.ui.screens.homeScreen
+import com.fghbuild.sidekick.ui.screens.runInProgressScreen
 import com.fghbuild.sidekick.ui.theme.sidekickTheme
 
 class MainActivity : ComponentActivity() {
@@ -60,10 +62,11 @@ fun sidekickApp() {
         },
     ) {
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-            greeting(
-                name = "Android",
-                modifier = Modifier.padding(innerPadding),
-            )
+            when (currentDestination) {
+                AppDestinations.HOME -> homeScreen(modifier = Modifier.padding(innerPadding))
+                AppDestinations.RUN -> runInProgressScreen(modifier = Modifier.padding(innerPadding))
+                AppDestinations.HISTORY -> historyScreen(modifier = Modifier.padding(innerPadding))
+            }
         }
     }
 }
@@ -73,25 +76,6 @@ enum class AppDestinations(
     val icon: ImageVector,
 ) {
     HOME("Home", Icons.Default.Home),
-    FAVORITES("Favorites", Icons.Default.Favorite),
-    PROFILE("Profile", Icons.Default.AccountBox),
-}
-
-@Composable
-fun greeting(
-    name: String,
-    modifier: Modifier = Modifier,
-) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier,
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun greetingPreview() {
-    sidekickTheme {
-        greeting("Android")
-    }
+    RUN("Run", Icons.Default.PlayArrow),
+    HISTORY("History", Icons.AutoMirrored.Filled.List),
 }

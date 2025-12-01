@@ -35,3 +35,7 @@ A file to [guide coding agents](https://agents.md/).
 - MPAndroidChart (charting)
 - Room (local database)
 - Android TextToSpeech and SpeechRecognizer APIs
+
+## Implementation Phases
+
+See IMPLEMENTATION.md for detailed implementation phases and architecture details.
