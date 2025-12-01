@@ -19,9 +19,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.fghbuild.sidekick.data.RunData
 
 @Composable
-fun runInProgressScreen(modifier: Modifier = Modifier) {
+fun runInProgressScreen(
+    modifier: Modifier = Modifier,
+    runData: RunData = RunData(),
+    onResume: () -> Unit = {},
+    onStop: () -> Unit = {},
+) {
     Column(
         modifier =
             modifier
@@ -40,13 +46,22 @@ fun runInProgressScreen(modifier: Modifier = Modifier) {
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text("Distance: 0.0 km", fontSize = 20.sp)
+            Text(
+                "Distance: ${String.format("%.2f", runData.distanceMeters / 1000.0)} km",
+                fontSize = 20.sp,
+            )
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Pace: 0:00 min/km", fontSize = 20.sp)
+            Text(
+                "Pace: ${formatPace(runData.paceMinPerKm)} min/km",
+                fontSize = 20.sp,
+            )
             Spacer(modifier = Modifier.height(8.dp))
             Text("Heart Rate: -- bpm", fontSize = 20.sp)
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Duration: 00:00:00", fontSize = 20.sp)
+            Text(
+                "Duration: ${formatDuration(runData.durationMillis)}",
+                fontSize = 20.sp,
+            )
         }
 
         Spacer(modifier = Modifier.height(48.dp))
@@ -55,12 +70,30 @@ fun runInProgressScreen(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            IconButton(onClick = { }) {
+            IconButton(onClick = onResume) {
                 Icon(Icons.Default.PlayArrow, contentDescription = "Resume")
             }
-            IconButton(onClick = { }) {
+            IconButton(onClick = onStop) {
                 Icon(Icons.Default.Close, contentDescription = "Stop")
             }
         }
     }
+}
+
+private fun formatPace(paceMinPerKm: Double): String {
+    return if (paceMinPerKm.isFinite() && paceMinPerKm > 0) {
+        val minutes = paceMinPerKm.toInt()
+        val seconds = ((paceMinPerKm - minutes) * 60).toInt()
+        String.format("%d:%02d", minutes, seconds)
+    } else {
+        "0:00"
+    }
+}
+
+private fun formatDuration(milliseconds: Long): String {
+    val totalSeconds = milliseconds / 1000
+    val hours = totalSeconds / 3600
+    val minutes = (totalSeconds % 3600) / 60
+    val seconds = totalSeconds % 60
+    return String.format("%02d:%02d:%02d", hours, minutes, seconds)
 }
