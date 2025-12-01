@@ -60,11 +60,15 @@ class RunManager {
 
         lastLocation = location
 
+        // Track pace history (keep all entries)
+        val paceHistory = currentData.paceHistory + paceMinPerKm
+
         _runData.value =
             currentData.copy(
                 distanceMeters = distanceMeters,
                 paceMinPerKm = paceMinPerKm,
                 durationMillis = durationMillis,
+                paceHistory = paceHistory,
             )
     }
 

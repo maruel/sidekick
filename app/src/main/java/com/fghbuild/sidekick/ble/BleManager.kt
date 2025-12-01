@@ -255,7 +255,7 @@ class BleManager(private val context: Context) {
 
     private fun updateHeartRateData(bpm: Int) {
         val currentData = _heartRateData.value
-        val newMeasurements = (currentData.measurements + bpm).takeLast(60)
+        val newMeasurements = currentData.measurements + bpm
         val averageBpm =
             if (newMeasurements.isNotEmpty()) {
                 newMeasurements.average().toInt()

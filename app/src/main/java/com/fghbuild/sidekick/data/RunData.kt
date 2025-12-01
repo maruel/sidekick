@@ -5,5 +5,6 @@ data class RunData(
     val paceMinPerKm: Double = 0.0,
     val durationMillis: Long = 0L,
     val routePoints: List<RoutePoint> = emptyList(),
+    val paceHistory: List<Double> = emptyList(),
     val isRunning: Boolean = false,
 )

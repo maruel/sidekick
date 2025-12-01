@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PlayArrow
@@ -21,6 +23,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fghbuild.sidekick.data.HeartRateData
 import com.fghbuild.sidekick.data.RunData
+import com.fghbuild.sidekick.ui.components.heartRateChart
+import com.fghbuild.sidekick.ui.components.paceChart
+import com.fghbuild.sidekick.ui.components.routeMap
 
 @Composable
 fun runInProgressScreen(
@@ -34,7 +39,8 @@ fun runInProgressScreen(
         modifier =
             modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -42,7 +48,7 @@ fun runInProgressScreen(
             text = "Run in Progress",
             fontSize = 28.sp,
         )
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -69,7 +75,28 @@ fun runInProgressScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(48.dp))
+        Spacer(modifier = Modifier.height(24.dp))
+
+        routeMap(
+            routePoints = runData.routePoints,
+            modifier = Modifier.fillMaxWidth(),
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        paceChart(
+            paceHistory = runData.paceHistory,
+            modifier = Modifier.fillMaxWidth(),
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        heartRateChart(
+            measurements = heartRateData.measurements,
+            modifier = Modifier.fillMaxWidth(),
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
