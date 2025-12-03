@@ -35,11 +35,13 @@ import com.fghbuild.sidekick.audio.VoiceCommandListener
 import com.fghbuild.sidekick.ble.BleManager
 import com.fghbuild.sidekick.database.SidekickDatabase
 import com.fghbuild.sidekick.location.LocationTracker
+import com.fghbuild.sidekick.preferences.DevicePreferences
 import com.fghbuild.sidekick.repository.RunRepository
 import com.fghbuild.sidekick.run.RunManager
 import com.fghbuild.sidekick.run.RunStateManager
 import com.fghbuild.sidekick.ui.screens.historyScreen
 import com.fghbuild.sidekick.ui.screens.homeScreen
+import com.fghbuild.sidekick.ui.screens.onboardingScreen
 import com.fghbuild.sidekick.ui.screens.runInProgressScreen
 import com.fghbuild.sidekick.ui.theme.sidekickTheme
 import kotlinx.coroutines.flow.filterNotNull
@@ -84,6 +86,9 @@ fun sidekickApp() {
         remember {
             RunRepository(database.runDao(), database.routePointDao())
         }
+    val devicePreferences = remember { DevicePreferences(context) }
+
+    var onboardingComplete by remember { mutableStateOf(devicePreferences.isOnboardingComplete()) }
 
     val runManager = remember { RunManager() }
     val bleManager = remember { BleManager(context) }
@@ -124,84 +129,96 @@ fun sidekickApp() {
         }
     }
 
-    NavigationSuiteScaffold(
-        navigationSuiteItems = {
-            AppDestinations.entries.forEach {
-                item(
-                    icon = {
-                        Icon(
-                            it.icon,
-                            contentDescription = it.label,
-                        )
-                    },
-                    label = { Text(it.label) },
-                    selected = it == currentDestination,
-                    onClick = { currentDestination = it },
-                )
-            }
-        },
-    ) {
+    if (!onboardingComplete) {
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-            when (currentDestination) {
-                AppDestinations.HOME ->
-                    homeScreen(
-                        modifier = Modifier.padding(innerPadding),
-                        isRunning = runData.isRunning,
-                        onStartRun = {
-                            runStartTime = System.currentTimeMillis()
-                            locationTracker.resetRoute()
-                            runStateManager.startRun()
-                            locationTracker.startTracking()
-                            currentDestination = AppDestinations.RUN
+            onboardingScreen(
+                modifier = Modifier.padding(innerPadding),
+                onBirthYearSubmit = { birthYear ->
+                    devicePreferences.saveBirthYear(birthYear)
+                    onboardingComplete = true
+                },
+            )
+        }
+    } else {
+        NavigationSuiteScaffold(
+            navigationSuiteItems = {
+                AppDestinations.entries.forEach {
+                    item(
+                        icon = {
+                            Icon(
+                                it.icon,
+                                contentDescription = it.label,
+                            )
                         },
-                        onStopRun = {
-                            val endTime = System.currentTimeMillis()
-                            runStateManager.stopRun()
-                            locationTracker.stopTracking()
-                            scope.launch {
-                                runRepository.saveRun(
-                                    runData = runData,
-                                    heartRateData = heartRateData,
-                                    startTime = runStartTime,
-                                    endTime = endTime,
-                                )
-                            }
-                            currentDestination = AppDestinations.HOME
-                        },
+                        label = { Text(it.label) },
+                        selected = it == currentDestination,
+                        onClick = { currentDestination = it },
                     )
+                }
+            },
+        ) {
+            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                when (currentDestination) {
+                    AppDestinations.HOME ->
+                        homeScreen(
+                            modifier = Modifier.padding(innerPadding),
+                            isRunning = runData.isRunning,
+                            onStartRun = {
+                                runStartTime = System.currentTimeMillis()
+                                locationTracker.resetRoute()
+                                runStateManager.startRun()
+                                locationTracker.startTracking()
+                                currentDestination = AppDestinations.RUN
+                            },
+                            onStopRun = {
+                                val endTime = System.currentTimeMillis()
+                                runStateManager.stopRun()
+                                locationTracker.stopTracking()
+                                scope.launch {
+                                    runRepository.saveRun(
+                                        runData = runData,
+                                        heartRateData = heartRateData,
+                                        startTime = runStartTime,
+                                        endTime = endTime,
+                                    )
+                                }
+                                currentDestination = AppDestinations.HOME
+                            },
+                        )
 
-                AppDestinations.RUN ->
-                    runInProgressScreen(
-                        modifier = Modifier.padding(innerPadding),
-                        runData = runData,
-                        heartRateData = heartRateData,
-                        onResume = { runStateManager.resumeRun() },
-                        onStop = {
-                            val endTime = System.currentTimeMillis()
-                            runStateManager.stopRun()
-                            locationTracker.stopTracking()
-                            scope.launch {
-                                runRepository.saveRun(
-                                    runData = runData,
-                                    heartRateData = heartRateData,
-                                    startTime = runStartTime,
-                                    endTime = endTime,
-                                )
-                            }
-                            currentDestination = AppDestinations.HOME
-                        },
-                    )
+                    AppDestinations.RUN ->
+                        runInProgressScreen(
+                            modifier = Modifier.padding(innerPadding),
+                            runData = runData,
+                            heartRateData = heartRateData,
+                            onResume = { runStateManager.resumeRun() },
+                            onStop = {
+                                val endTime = System.currentTimeMillis()
+                                runStateManager.stopRun()
+                                locationTracker.stopTracking()
+                                scope.launch {
+                                    runRepository.saveRun(
+                                        runData = runData,
+                                        heartRateData = heartRateData,
+                                        startTime = runStartTime,
+                                        endTime = endTime,
+                                    )
+                                }
+                                currentDestination = AppDestinations.HOME
+                            },
+                        )
 
-                AppDestinations.HISTORY ->
-                    historyScreen(
-                        modifier = Modifier.padding(innerPadding),
-                        runs = allRuns,
-                        onDeleteRun = { runId ->
-                            scope.launch {
-                                runRepository.deleteRun(runId)
-                            }
-                        },
-                    )
+                    AppDestinations.HISTORY ->
+                        historyScreen(
+                            modifier = Modifier.padding(innerPadding),
+                            runs = allRuns,
+                            onDeleteRun = { runId ->
+                                scope.launch {
+                                    runRepository.deleteRun(runId)
+                                }
+                            },
+                        )
+                }
             }
         }
     }

@@ -49,6 +49,12 @@ Sidekick is an Android running companion app. See [AGENTS.md](AGENTS.md) for bui
 - Unit tests for RunManager and data models
 - Compose UI tests for all screens
 
+### Phase 8: User Onboarding & Heart Rate Zones ✓
+- `OnboardingScreen` - Birth year input on first launch
+- `DevicePreferences` - Stores user profile data
+- `HeartRateUtils` - Calculates personalized heart rate zones (5 zones based on age)
+- Extensible onboarding: new questions auto-require before showing app
+
 ## Project Structure
 
 ```
