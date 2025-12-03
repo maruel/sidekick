@@ -1,8 +1,10 @@
 package com.fghbuild.sidekick.data
 
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
+@DisplayName("RoutePoint Tests")
 class RoutePointTest {
     @Test
     fun create_storesCorrectValues() {

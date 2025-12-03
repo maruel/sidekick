@@ -6,15 +6,16 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.fghbuild.sidekick.database.RunEntity
-import org.junit.Assert.assertEquals
-import org.junit.Rule
-import org.junit.Test
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
+@DisplayName("HistoryScreen Tests")
 class HistoryScreenTest {
-    @get:Rule
-    val composeTestRule = createComposeRule()
+    private val composeTestRule = createComposeRule()
 
     @Test
+    @DisplayName("displays title")
     fun historyScreen_displaysTitle() {
         composeTestRule.setContent {
             historyScreen()
@@ -23,6 +24,7 @@ class HistoryScreenTest {
     }
 
     @Test
+    @DisplayName("empty list: shows no runs message")
     fun historyScreen_emptyList_showsNoRunsMessage() {
         composeTestRule.setContent {
             historyScreen(runs = emptyList())
@@ -31,6 +33,7 @@ class HistoryScreenTest {
     }
 
     @Test
+    @DisplayName("with runs: displays distance")
     fun historyScreen_withRuns_displaysDistance() {
         val runs =
             listOf(
@@ -50,6 +53,7 @@ class HistoryScreenTest {
     }
 
     @Test
+    @DisplayName("with runs: displays duration")
     fun historyScreen_withRuns_displaysDuration() {
         val runs =
             listOf(
@@ -69,6 +73,7 @@ class HistoryScreenTest {
     }
 
     @Test
+    @DisplayName("delete button: calls onDeleteRun")
     fun historyScreen_deleteButton_callsOnDeleteRun() {
         var deletedRunId: Long? = null
         val runs =

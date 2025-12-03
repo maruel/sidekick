@@ -1,10 +1,12 @@
 package com.fghbuild.sidekick.data
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
+@DisplayName("RunData Tests")
 class RunDataTest {
     @Test
     fun defaultValues_areCorrect() {

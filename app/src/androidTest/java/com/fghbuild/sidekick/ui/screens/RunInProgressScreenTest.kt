@@ -7,15 +7,16 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.fghbuild.sidekick.data.HeartRateData
 import com.fghbuild.sidekick.data.RunData
-import org.junit.Assert.assertTrue
-import org.junit.Rule
-import org.junit.Test
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import kotlin.test.assertTrue
 
+@DisplayName("RunInProgressScreen Tests")
 class RunInProgressScreenTest {
-    @get:Rule
-    val composeTestRule = createComposeRule()
+    private val composeTestRule = createComposeRule()
 
     @Test
+    @DisplayName("displays title")
     fun runInProgressScreen_displaysTitle() {
         composeTestRule.setContent {
             runInProgressScreen()
@@ -24,6 +25,7 @@ class RunInProgressScreenTest {
     }
 
     @Test
+    @DisplayName("displays distance")
     fun runInProgressScreen_displaysDistance() {
         composeTestRule.setContent {
             runInProgressScreen(
@@ -34,6 +36,7 @@ class RunInProgressScreenTest {
     }
 
     @Test
+    @DisplayName("displays pace")
     fun runInProgressScreen_displaysPace() {
         composeTestRule.setContent {
             runInProgressScreen(
@@ -44,6 +47,7 @@ class RunInProgressScreenTest {
     }
 
     @Test
+    @DisplayName("displays heart rate")
     fun runInProgressScreen_displaysHeartRate() {
         composeTestRule.setContent {
             runInProgressScreen(
@@ -54,6 +58,7 @@ class RunInProgressScreenTest {
     }
 
     @Test
+    @DisplayName("displays duration")
     fun runInProgressScreen_displaysDuration() {
         composeTestRule.setContent {
             runInProgressScreen(
@@ -64,6 +69,7 @@ class RunInProgressScreenTest {
     }
 
     @Test
+    @DisplayName("resume button: calls onResume")
     fun runInProgressScreen_resumeButton_callsOnResume() {
         var resumeClicked = false
         composeTestRule.setContent {
@@ -76,6 +82,7 @@ class RunInProgressScreenTest {
     }
 
     @Test
+    @DisplayName("stop button: calls onStop")
     fun runInProgressScreen_stopButton_callsOnStop() {
         var stopClicked = false
         composeTestRule.setContent {

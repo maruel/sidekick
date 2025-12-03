@@ -1,10 +1,13 @@
 package com.fghbuild.sidekick.util
 
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
+@DisplayName("GeoUtils Tests")
 class GeoUtilsTest {
     @Test
+    @DisplayName("calculateDistanceMeters: same point returns zero")
     fun calculateDistanceMeters_samePoint_returnsZero() {
         val distance =
             GeoUtils.calculateDistanceMeters(
@@ -17,6 +20,7 @@ class GeoUtilsTest {
     }
 
     @Test
+    @DisplayName("calculateDistanceMeters: known distance returns correct value")
     fun calculateDistanceMeters_knownDistance_returnsCorrectValue() {
         val distance =
             GeoUtils.calculateDistanceMeters(
@@ -29,6 +33,7 @@ class GeoUtilsTest {
     }
 
     @Test
+    @DisplayName("calculateDistanceMeters: short distance returns correct value")
     fun calculateDistanceMeters_shortDistance_returnsCorrectValue() {
         val distance =
             GeoUtils.calculateDistanceMeters(
@@ -41,6 +46,7 @@ class GeoUtilsTest {
     }
 
     @Test
+    @DisplayName("calculateDistanceMeters: long distance returns correct value")
     fun calculateDistanceMeters_longDistance_returnsCorrectValue() {
         val distance =
             GeoUtils.calculateDistanceMeters(
@@ -53,6 +59,7 @@ class GeoUtilsTest {
     }
 
     @Test
+    @DisplayName("calculateDistanceMeters: crossing equator returns correct value")
     fun calculateDistanceMeters_crossingEquator_returnsCorrectValue() {
         val distance =
             GeoUtils.calculateDistanceMeters(

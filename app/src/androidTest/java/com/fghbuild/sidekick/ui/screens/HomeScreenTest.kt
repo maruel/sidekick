@@ -4,15 +4,16 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import org.junit.Assert.assertTrue
-import org.junit.Rule
-import org.junit.Test
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import kotlin.test.assertTrue
 
+@DisplayName("HomeScreen Tests")
 class HomeScreenTest {
-    @get:Rule
-    val composeTestRule = createComposeRule()
+    private val composeTestRule = createComposeRule()
 
     @Test
+    @DisplayName("displays title")
     fun homeScreen_displaysTitle() {
         composeTestRule.setContent {
             homeScreen()
@@ -21,6 +22,7 @@ class HomeScreenTest {
     }
 
     @Test
+    @DisplayName("not running: shows ready message")
     fun homeScreen_notRunning_showsReadyMessage() {
         composeTestRule.setContent {
             homeScreen(isRunning = false)
@@ -29,6 +31,7 @@ class HomeScreenTest {
     }
 
     @Test
+    @DisplayName("not running: shows start button")
     fun homeScreen_notRunning_showsStartButton() {
         composeTestRule.setContent {
             homeScreen(isRunning = false)
@@ -37,6 +40,7 @@ class HomeScreenTest {
     }
 
     @Test
+    @DisplayName("running: shows in progress message")
     fun homeScreen_running_showsInProgressMessage() {
         composeTestRule.setContent {
             homeScreen(isRunning = true)
@@ -45,6 +49,7 @@ class HomeScreenTest {
     }
 
     @Test
+    @DisplayName("running: shows stop button")
     fun homeScreen_running_showsStopButton() {
         composeTestRule.setContent {
             homeScreen(isRunning = true)
@@ -53,6 +58,7 @@ class HomeScreenTest {
     }
 
     @Test
+    @DisplayName("start button click: calls onStartRun")
     fun homeScreen_startButtonClick_callsOnStartRun() {
         var startClicked = false
         composeTestRule.setContent {
@@ -66,6 +72,7 @@ class HomeScreenTest {
     }
 
     @Test
+    @DisplayName("stop button click: calls onStopRun")
     fun homeScreen_stopButtonClick_callsOnStopRun() {
         var stopClicked = false
         composeTestRule.setContent {

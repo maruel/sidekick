@@ -1,8 +1,10 @@
 package com.fghbuild.sidekick.util
 
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
+@DisplayName("HeartRateUtils Tests")
 class HeartRateUtilsTest {
     @Test
     fun calculateAverageBpm_emptyList_returnsZero() {

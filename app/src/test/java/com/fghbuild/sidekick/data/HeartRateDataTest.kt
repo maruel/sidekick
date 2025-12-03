@@ -1,9 +1,11 @@
 package com.fghbuild.sidekick.data
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
+@DisplayName("HeartRateData Tests")
 class HeartRateDataTest {
     @Test
     fun defaultValues_areCorrect() {
