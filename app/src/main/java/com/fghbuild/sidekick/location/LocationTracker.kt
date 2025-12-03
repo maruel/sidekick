@@ -3,18 +3,21 @@ package com.fghbuild.sidekick.location
 import android.Manifest
 import android.content.Context
 import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
-import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import com.fghbuild.sidekick.data.RoutePoint
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.Priority
+import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class LocationTracker(private val context: Context) : LocationListener {
-    private val locationManager =
-        context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+class LocationTracker(private val context: Context) {
+    private val fusedLocationClient: FusedLocationProviderClient =
+        LocationServices.getFusedLocationProviderClient(context)
 
     private val _routePoints = MutableStateFlow<List<RoutePoint>>(emptyList())
     val routePoints: StateFlow<List<RoutePoint>> = _routePoints.asStateFlow()
@@ -23,6 +26,21 @@ class LocationTracker(private val context: Context) : LocationListener {
     val currentLocation: StateFlow<Location?> = _currentLocation.asStateFlow()
 
     private var isTracking = false
+
+    private val locationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            for (location in locationResult.locations) {
+                _currentLocation.value = location
+                _routePoints.value =
+                    _routePoints.value +
+                    RoutePoint(
+                        latitude = location.latitude,
+                        longitude = location.longitude,
+                        timestamp = System.currentTimeMillis(),
+                    )
+            }
+        }
+    }
 
     fun startTracking() {
         if (isTracking) return
@@ -35,11 +53,12 @@ class LocationTracker(private val context: Context) : LocationListener {
                 ) == android.content.pm.PackageManager.PERMISSION_GRANTED
             ) {
                 isTracking = true
-                locationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER,
-                    1000L,
-                    0f,
-                    this,
+                val locationRequest =
+                    LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000L).build()
+                fusedLocationClient.requestLocationUpdates(
+                    locationRequest,
+                    locationCallback,
+                    null,
                 )
             }
         } catch (e: Exception) {
@@ -50,7 +69,7 @@ class LocationTracker(private val context: Context) : LocationListener {
     fun stopTracking() {
         isTracking = false
         try {
-            locationManager.removeUpdates(this)
+            fusedLocationClient.removeLocationUpdates(locationCallback)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -58,32 +77,5 @@ class LocationTracker(private val context: Context) : LocationListener {
 
     fun resetRoute() {
         _routePoints.value = emptyList()
-    }
-
-    override fun onLocationChanged(location: Location) {
-        _currentLocation.value = location
-        _routePoints.value =
-            _routePoints.value +
-            RoutePoint(
-                latitude = location.latitude,
-                longitude = location.longitude,
-                timestamp = System.currentTimeMillis(),
-            )
-    }
-
-    override fun onProviderEnabled(provider: String) {
-        // No-op
-    }
-
-    override fun onProviderDisabled(provider: String) {
-        // No-op
-    }
-
-    override fun onStatusChanged(
-        provider: String?,
-        status: Int,
-        extras: Bundle?,
-    ) {
-        // No-op
     }
 }
