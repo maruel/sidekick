@@ -9,8 +9,8 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.Priority
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,20 +27,21 @@ class LocationTracker(private val context: Context) {
 
     private var isTracking = false
 
-    private val locationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-            for (location in locationResult.locations) {
-                _currentLocation.value = location
-                _routePoints.value =
-                    _routePoints.value +
-                    RoutePoint(
-                        latitude = location.latitude,
-                        longitude = location.longitude,
-                        timestamp = System.currentTimeMillis(),
-                    )
+    private val locationCallback =
+        object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                for (location in locationResult.locations) {
+                    _currentLocation.value = location
+                    _routePoints.value =
+                        _routePoints.value +
+                        RoutePoint(
+                            latitude = location.latitude,
+                            longitude = location.longitude,
+                            timestamp = System.currentTimeMillis(),
+                        )
+                }
             }
         }
-    }
 
     fun startTracking() {
         if (isTracking) return
