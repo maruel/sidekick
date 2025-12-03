@@ -11,7 +11,6 @@ ktlint {
         exclude("**/generated/**")
     }
     android.set(true)
-    disabledRules.set(setOf("standard:function-naming"))
 }
 
 android {
