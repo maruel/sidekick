@@ -34,17 +34,13 @@ jobs:
           java-version: "21"
           distribution: "temurin"
           cache: gradle
+      - uses: android-actions/setup-android@v3
       - name: Install Android SDK dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y xvfb libvulkan1 libpulse0
       - name: Install Android emulator and system image
-        run: |
-          echo "y" | android update sdk --no-ui --all --filter "system-images;android-36;google_apis;x86_64"
-          echo "y" | android update sdk --no-ui --all --filter "build-tools-36.0.0"
-        env:
-          ANDROID_HOME: /usr/local/android-sdk
-        continue-on-error: true
+        run: echo "y" | sdkmanager "system-images;android-36;google_apis;x86_64" "build-tools-36.0.0"
       - run: ./gradlew build -x connectedAndroidTest
       - name: Run integration tests
         run: ./run_integration_tests.sh
