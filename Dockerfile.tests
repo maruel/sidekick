@@ -1,0 +1,23 @@
+# Dockerfile for running integration tests in Docker
+# Usage:
+# docker build -f Dockerfile.tests -t sidekick-tests . && docker run --device /dev/kvm sidekick-tests
+
+# https://github.com/cirruslabs/docker-images-android
+FROM ghcr.io/cirruslabs/android-sdk:36
+
+RUN apt-get update && apt-get install -y \
+    libpulse0 \
+    libvulkan1 \
+    openjdk-17-jdk-headless \
+    xvfb \
+    && rm -rf /var/lib/apt/lists/*
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+
+COPY . /app
+WORKDIR /app
+
+# Run unit tests, then integration tests
+CMD ["/bin/bash", "-c", "\
+    ./gradlew test; \
+    ./run_integration_tests.sh \
+"]

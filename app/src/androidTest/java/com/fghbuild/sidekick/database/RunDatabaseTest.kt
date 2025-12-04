@@ -2,6 +2,7 @@ package com.fghbuild.sidekick.database
 
 import androidx.test.core.app.ApplicationProvider
 import com.fghbuild.sidekick.fixtures.TestDataFactory
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -17,7 +18,7 @@ class RunDatabaseTest {
 
     @BeforeEach
     fun setup() {
-        val context = ApplicationProvider.getApplicationContext()
+        val context = ApplicationProvider.getApplicationContext<android.app.Application>()
         database =
             androidx.room.Room.inMemoryDatabaseBuilder(
                 context,
@@ -166,7 +167,7 @@ class RunDatabaseTest {
             runDao.insertRun(run2)
             runDao.insertRun(run3)
 
-            val allRuns = runDao.getAllRuns()
+            val allRuns = runDao.getAllRuns().first()
             assertEquals(3, allRuns.size)
 
             // Verify descending order (newest first)

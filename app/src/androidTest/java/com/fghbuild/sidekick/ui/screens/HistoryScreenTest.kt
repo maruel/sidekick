@@ -40,7 +40,7 @@ class HistoryScreenTest {
             historyScreen(runs = listOf(run))
         }
         composeTestRule.onNodeWithText("Run History").assertIsDisplayed()
-        composeTestRule.onNodeWithText { it.contains("5.00") }.assertIsDisplayed() // distance
+        composeTestRule.onNodeWithText("5.00", substring = true).assertIsDisplayed() // distance
     }
 
     @Test
@@ -53,7 +53,7 @@ class HistoryScreenTest {
         composeTestRule.setContent {
             historyScreen(runs = listOf(run))
         }
-        composeTestRule.onNodeWithText { it.contains("10.50") }.assertIsDisplayed()
+        composeTestRule.onNodeWithText("10.50", substring = true).assertIsDisplayed()
     }
 
     @Test
@@ -66,7 +66,7 @@ class HistoryScreenTest {
         composeTestRule.setContent {
             historyScreen(runs = listOf(run))
         }
-        composeTestRule.onNodeWithText { it.contains("01:00:00") }.assertIsDisplayed()
+        composeTestRule.onNodeWithText("01:00:00", substring = true).assertIsDisplayed()
     }
 
     @Test
@@ -79,7 +79,7 @@ class HistoryScreenTest {
         composeTestRule.setContent {
             historyScreen(runs = listOf(run))
         }
-        composeTestRule.onNodeWithText { it.contains("/km") }.assertIsDisplayed()
+        composeTestRule.onNodeWithText("/km", substring = true).assertIsDisplayed()
     }
 
     @Test
@@ -94,9 +94,9 @@ class HistoryScreenTest {
         composeTestRule.setContent {
             historyScreen(runs = listOf(run))
         }
-        composeTestRule.onNodeWithText { it.contains("150") }.assertIsDisplayed()
-        composeTestRule.onNodeWithText { it.contains("180") }.assertIsDisplayed()
-        composeTestRule.onNodeWithText { it.contains("110") }.assertIsDisplayed()
+        composeTestRule.onNodeWithText("150", substring = true).assertIsDisplayed()
+        composeTestRule.onNodeWithText("180", substring = true).assertIsDisplayed()
+        composeTestRule.onNodeWithText("110", substring = true).assertIsDisplayed()
     }
 
     @Test
@@ -167,7 +167,7 @@ class HistoryScreenTest {
         composeTestRule.setContent {
             historyScreen(runs = listOf(run))
         }
-        composeTestRule.onNodeWithText { it.contains("42.19") }.assertIsDisplayed()
+        composeTestRule.onNodeWithText("42.19", substring = true).assertIsDisplayed()
     }
 
     @Test
@@ -201,9 +201,9 @@ class HistoryScreenTest {
 
         composeTestRule.onNodeWithText("Run History").assertIsDisplayed()
         // Multiple runs visible
-        composeTestRule.onNodeWithText { it.contains("5.00") }.assertIsDisplayed()
-        composeTestRule.onNodeWithText { it.contains("10.00") }.assertIsDisplayed()
-        composeTestRule.onNodeWithText { it.contains("3.00") }.assertIsDisplayed()
+        composeTestRule.onNodeWithText("5.00", substring = true).assertIsDisplayed()
+        composeTestRule.onNodeWithText("10.00", substring = true).assertIsDisplayed()
+        composeTestRule.onNodeWithText("3.00", substring = true).assertIsDisplayed()
     }
 
     @Test
@@ -218,6 +218,6 @@ class HistoryScreenTest {
             historyScreen(runs = listOf(run))
         }
         composeTestRule.onNodeWithText("Run History").assertIsDisplayed()
-        composeTestRule.onNodeWithText { it.contains("0.10") }.assertIsDisplayed()
+        composeTestRule.onNodeWithText("0.10", substring = true).assertIsDisplayed()
     }
 }

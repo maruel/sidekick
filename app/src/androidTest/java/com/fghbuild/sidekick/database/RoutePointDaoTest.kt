@@ -18,7 +18,7 @@ class RoutePointDaoTest {
 
     @BeforeEach
     fun setup() {
-        val context = ApplicationProvider.getApplicationContext()
+        val context = ApplicationProvider.getApplicationContext<android.app.Application>()
         database =
             androidx.room.Room.inMemoryDatabaseBuilder(
                 context,

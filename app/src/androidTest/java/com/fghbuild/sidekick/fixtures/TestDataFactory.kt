@@ -61,7 +61,7 @@ object TestDataFactory {
             if (points.size > 1) {
                 val lastPoint = points[points.size - 2]
                 val segmentDistance =
-                    GeoUtils.distanceBetweenPoints(
+                    GeoUtils.calculateDistanceMeters(
                         lastPoint.latitude,
                         lastPoint.longitude,
                         point.latitude,

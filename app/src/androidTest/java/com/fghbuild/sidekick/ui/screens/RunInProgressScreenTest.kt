@@ -50,7 +50,7 @@ class RunInProgressScreenTest {
             runInProgressScreen(runData = runData)
         }
         // Should display pace in min:sec format
-        composeTestRule.onNodeWithText { it.contains("Pace:") }.assertIsDisplayed()
+        composeTestRule.onNodeWithText("Pace:", substring = true).assertIsDisplayed()
     }
 
     @Test
@@ -60,7 +60,7 @@ class RunInProgressScreenTest {
         composeTestRule.setContent {
             runInProgressScreen(heartRateData = heartRateData)
         }
-        composeTestRule.onNodeWithText { it.contains("Heart Rate:") }.assertIsDisplayed()
+        composeTestRule.onNodeWithText("Heart Rate:", substring = true).assertIsDisplayed()
     }
 
     @Test
@@ -70,7 +70,7 @@ class RunInProgressScreenTest {
         composeTestRule.setContent {
             runInProgressScreen(runData = runData)
         }
-        composeTestRule.onNodeWithText { it.contains("Duration:") }.assertIsDisplayed()
+        composeTestRule.onNodeWithText("Duration:", substring = true).assertIsDisplayed()
     }
 
     @Test
@@ -113,10 +113,10 @@ class RunInProgressScreenTest {
         }
 
         composeTestRule.onNodeWithText("Run in Progress").assertIsDisplayed()
-        composeTestRule.onNodeWithText { it.contains("Distance:") }.assertIsDisplayed()
-        composeTestRule.onNodeWithText { it.contains("Pace:") }.assertIsDisplayed()
-        composeTestRule.onNodeWithText { it.contains("Heart Rate:") }.assertIsDisplayed()
-        composeTestRule.onNodeWithText { it.contains("Duration:") }.assertIsDisplayed()
+        composeTestRule.onNodeWithText("Distance:", substring = true).assertIsDisplayed()
+        composeTestRule.onNodeWithText("Pace:", substring = true).assertIsDisplayed()
+        composeTestRule.onNodeWithText("Heart Rate:", substring = true).assertIsDisplayed()
+        composeTestRule.onNodeWithText("Duration:", substring = true).assertIsDisplayed()
     }
 
     @Test
@@ -158,7 +158,6 @@ class RunInProgressScreenTest {
         composeTestRule.setContent {
             runInProgressScreen()
         }
-        composeTestRule.onNodeWithText { it.contains("0.00") || it.contains("0:00") }
-            .assertIsDisplayed()
+        composeTestRule.onNodeWithText("0.00", substring = true).assertIsDisplayed()
     }
 }

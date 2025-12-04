@@ -23,7 +23,7 @@ class FullRunWorkflowTest {
 
     @BeforeEach
     fun setup() {
-        val context = ApplicationProvider.getApplicationContext()
+        val context = ApplicationProvider.getApplicationContext<android.app.Application>()
         database =
             androidx.room.Room.inMemoryDatabaseBuilder(
                 context,
@@ -89,8 +89,8 @@ class FullRunWorkflowTest {
             assertEquals(true, savedRun.distanceMeters > 4900)
             assertEquals(true, savedRun.distanceMeters < 5100)
             assertEquals(heartRateData.averageBpm, savedRun.averageHeartRate)
-            assertEquals(heartRateData.maxOrNull() ?: 0, savedRun.maxHeartRate)
-            assertEquals(heartRateData.minOrNull() ?: 0, savedRun.minHeartRate)
+            assertEquals(heartRateData.measurements.maxOrNull() ?: 0, savedRun.maxHeartRate)
+            assertEquals(heartRateData.measurements.minOrNull() ?: 0, savedRun.minHeartRate)
 
             // Verify route points were saved
             val savedRoutePoints = repository.getRoutePointsForRun(savedRun.id)

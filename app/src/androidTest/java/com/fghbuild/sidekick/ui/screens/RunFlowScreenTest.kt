@@ -75,7 +75,7 @@ class RunFlowScreenTest {
             }
 
             composeTestRule.onNodeWithText("Run in Progress").assertIsDisplayed()
-            composeTestRule.onNodeWithText { it.contains("Distance:") }.assertIsDisplayed()
+            composeTestRule.onNodeWithText("Distance:", substring = true).assertIsDisplayed()
         }
 
     @Test
@@ -85,15 +85,16 @@ class RunFlowScreenTest {
             runManager.startRun()
 
             val heartRateData = TestDataFactory.createHeartRateData(count = 20)
+            val runData = runManager.runData.first()
 
             composeTestRule.setContent {
                 runInProgressScreen(
-                    runData = runManager.runData.first(),
+                    runData = runData,
                     heartRateData = heartRateData,
                 )
             }
 
-            composeTestRule.onNodeWithText { it.contains("Heart Rate:") }.assertIsDisplayed()
+            composeTestRule.onNodeWithText("Heart Rate:", substring = true).assertIsDisplayed()
         }
 
     @Test
@@ -249,7 +250,7 @@ class RunFlowScreenTest {
             }
 
             composeTestRule.onNodeWithText("Run in Progress").assertIsDisplayed()
-            composeTestRule.onNodeWithText { it.contains("Distance: 5.") }.assertIsDisplayed()
+            composeTestRule.onNodeWithText("Distance: 5.", substring = true).assertIsDisplayed()
         }
 
     @Test

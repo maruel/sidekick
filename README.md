@@ -30,11 +30,37 @@ An Android running companion app that tracks your runs with GPS, heart rate moni
 # Release build
 ./gradlew assembleRelease
 
-# Run tests
-./gradlew test
-
 # Format code
 ./gradlew ktlintFormat
+```
+
+## Testing
+
+```bash
+# Run unit tests
+./gradlew test
+
+# Run with Docker (no setup needed)
+docker build -f Dockerfile.tests -t sidekick-tests . && docker run sidekick-tests
+
+# Run specific test suite
+./gradlew androidTest --tests "*DatabaseTest*"
+./gradlew androidTest --tests "*Manager*"
+./gradlew androidTest --tests "*Screen*"
+```
+
+Integration tests:
+
+```bash
+docker build -f Dockerfile.tests -t sidekick-tests .
+
+docker run sidekick-tests
+```
+
+Bash script for running tests locally with xvfb:
+
+```bash
+./run_integration_tests.sh
 ```
 
 ## Architecture

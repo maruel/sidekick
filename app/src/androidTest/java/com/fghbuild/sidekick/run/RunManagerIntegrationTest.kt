@@ -80,7 +80,7 @@ class RunManagerIntegrationTest {
 
             val runData = runManager.runData.first()
             val expectedDistance =
-                GeoUtils.distanceBetweenPoints(
+                GeoUtils.calculateDistanceMeters(
                     sfLat,
                     sfLon,
                     nearbyLat,
