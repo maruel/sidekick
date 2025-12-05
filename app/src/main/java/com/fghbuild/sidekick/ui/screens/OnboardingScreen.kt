@@ -29,7 +29,8 @@ fun onboardingScreen(
     modifier: Modifier = Modifier,
     onBirthYearSubmit: (Int) -> Unit = {},
 ) {
-    val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+    // Memoize current year calculation to avoid repeated Calendar.getInstance() calls
+    val currentYear = remember { Calendar.getInstance().get(Calendar.YEAR) }
     var birthYearInput by remember { mutableStateOf("") }
     var isError by remember { mutableStateOf(false) }
 

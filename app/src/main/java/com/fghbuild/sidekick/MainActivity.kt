@@ -86,13 +86,44 @@ fun sidekickApp() {
         remember {
             RunRepository(database.runDao(), database.routePointDao())
         }
-    val devicePreferences = remember { DevicePreferences(context) }
+    val devicePreferences =
+        remember {
+            try {
+                DevicePreferences(context)
+            } catch (e: Exception) {
+                // Log error - this is more critical since we need preferences for onboarding
+                android.util.Log.e("DevicePreferences", "Failed to initialize preferences", e)
+                null
+            }
+        }
 
-    var onboardingComplete by remember { mutableStateOf(devicePreferences.isOnboardingComplete()) }
+    var onboardingComplete by remember {
+        mutableStateOf(
+            devicePreferences?.isOnboardingComplete() ?: false,
+        )
+    }
 
+    // Create managers but they're only used after onboarding completes
     val runManager = remember { RunManager() }
-    val bleManager = remember { BleManager(context) }
-    val locationTracker = remember { LocationTracker(context) }
+    val bleManager =
+        remember {
+            try {
+                BleManager(context)
+            } catch (e: Exception) {
+                android.util.Log.w("BleManager", "Failed to initialize BleManager", e)
+                // Still create a dummy instance to avoid nulls - just won't connect
+                BleManager(context)
+            }
+        }
+    val locationTracker =
+        remember {
+            try {
+                LocationTracker(context)
+            } catch (e: Exception) {
+                android.util.Log.w("LocationTracker", "Failed to initialize LocationTracker", e)
+                LocationTracker(context)
+            }
+        }
     val announcementManager = remember { AnnouncementManager(context) }
     val voiceCommandListener = remember { VoiceCommandListener(context) }
     val runStateManager =
@@ -134,8 +165,14 @@ fun sidekickApp() {
             onboardingScreen(
                 modifier = Modifier.padding(innerPadding),
                 onBirthYearSubmit = { birthYear ->
-                    devicePreferences.saveBirthYear(birthYear)
-                    onboardingComplete = true
+                    try {
+                        devicePreferences?.saveBirthYear(birthYear)
+                        onboardingComplete = true
+                    } catch (e: Exception) {
+                        // Log error but allow user to proceed
+                        android.util.Log.e("Onboarding", "Failed to save birth year", e)
+                        onboardingComplete = true
+                    }
                 },
             )
         }
