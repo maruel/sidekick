@@ -105,11 +105,19 @@ else
     echo "System image already installed"
 fi
 
+# Ensure .android directory exists for avdmanager
+mkdir -p "${HOME}/.android"
+
 # Check if emulator AVD exists, if not create it
 echo "Checking for emulator AVD: $EMULATOR_NAME"
 if ! emulator -list-avds | grep -q "^${EMULATOR_NAME}$"; then
     echo "AVD not found. Creating $EMULATOR_NAME..."
-    echo "no" | avdmanager create avd -n ${EMULATOR_NAME} -k "$SYSTEM_IMAGE" --force || { echo "Error: Failed to create AVD"; exit 1; }
+    if echo "no" | avdmanager create avd -n ${EMULATOR_NAME} -k "$SYSTEM_IMAGE" --force 2>&1; then
+        echo "AVD creation command completed"
+    else
+        echo "Error: avdmanager create avd command failed"
+        exit 1
+    fi
 else
     echo "AVD already exists"
 fi
@@ -119,6 +127,10 @@ echo "Validating AVD configuration..."
 AVD_CONFIG="${HOME}/.android/avd/${EMULATOR_NAME}.avd/config.ini"
 if [ ! -f "$AVD_CONFIG" ]; then
     echo "Error: AVD config not found at $AVD_CONFIG"
+    echo "Available AVDs:"
+    emulator -list-avds || echo "Failed to list AVDs"
+    echo "Contents of ~/.android/avd/:"
+    ls -la "${HOME}/.android/avd/" 2>/dev/null || echo "Directory does not exist"
     exit 1
 fi
 echo "AVD config found"
