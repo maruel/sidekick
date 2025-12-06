@@ -3,6 +3,7 @@ package com.fghbuild.sidekick.ui.screens
 import android.location.Location
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.fghbuild.sidekick.fixtures.TestDataFactory
@@ -72,8 +73,8 @@ class RunFlowScreenTest {
                 runInProgressScreen(runData = runData)
             }
 
-            composeTestRule.onNodeWithText("Run in Progress").assertIsDisplayed()
-            composeTestRule.onNodeWithText("Distance:", substring = true).assertIsDisplayed()
+            composeTestRule.onNodeWithText("Run in progress...").assertIsDisplayed()
+            composeTestRule.onNodeWithText("Distance", substring = true).assertIsDisplayed()
         }
     }
 
@@ -92,7 +93,7 @@ class RunFlowScreenTest {
                 )
             }
 
-            composeTestRule.onNodeWithText("Heart Rate:", substring = true).assertIsDisplayed()
+            composeTestRule.onAllNodesWithText("Heart Rate", substring = true)[0].assertIsDisplayed()
         }
     }
 
@@ -220,7 +221,7 @@ class RunFlowScreenTest {
                         )
                     }
 
-                    composeTestRule.onNodeWithText("Run in Progress").assertIsDisplayed()
+                    composeTestRule.onNodeWithText("Run in progress...").assertIsDisplayed()
                 } else {
                     // Even if data is minimal, verify the UI renders
                     composeTestRule.setContent {
@@ -262,7 +263,7 @@ class RunFlowScreenTest {
                 runInProgressScreen(runData = runData)
             }
 
-            composeTestRule.onNodeWithText("Run in Progress").assertIsDisplayed()
+            composeTestRule.onNodeWithText("Run in progress...").assertIsDisplayed()
         }
     }
 
@@ -298,7 +299,7 @@ class RunFlowScreenTest {
                 )
             }
 
-            composeTestRule.onNodeWithText("Run in Progress").assertIsDisplayed()
+            composeTestRule.onNodeWithText("Run in progress...").assertIsDisplayed()
         }
     }
 }

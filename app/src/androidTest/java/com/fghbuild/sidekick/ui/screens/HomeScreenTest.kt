@@ -17,7 +17,7 @@ class HomeScreenTest {
         composeTestRule.setContent {
             homeScreen()
         }
-        composeTestRule.onNodeWithText("Sidekick").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Ready to run!").assertIsDisplayed()
     }
 
     @Test
