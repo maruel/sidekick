@@ -3,7 +3,9 @@
 set -eu
 
 export ANDROID_HOME="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-$HOME/Android/Sdk}}"
+export ANDROID_AVD_HOME="${ANDROID_AVD_HOME:-$HOME/.android/avd}"
 echo "Using ANDROID_HOME=$ANDROID_HOME"
+echo "Using ANDROID_AVD_HOME=$ANDROID_AVD_HOME"
 
 # Configuration
 RESOLUTION="1024x768x24"
@@ -108,8 +110,8 @@ else
     echo "System image already installed"
 fi
 
-# Ensure .android directory exists for avdmanager
-mkdir -p "${HOME}/.android"
+# Ensure AVD directory exists for avdmanager
+mkdir -p "$ANDROID_AVD_HOME"
 
 # Check if emulator AVD exists, if not create it
 echo "Checking for emulator AVD: $EMULATOR_NAME"
@@ -127,13 +129,13 @@ fi
 
 # Validate AVD config
 echo "Validating AVD configuration..."
-AVD_CONFIG="${HOME}/.android/avd/${EMULATOR_NAME}.avd/config.ini"
+AVD_CONFIG="${ANDROID_AVD_HOME}/${EMULATOR_NAME}.avd/config.ini"
 if [ ! -f "$AVD_CONFIG" ]; then
     echo "Error: AVD config not found at $AVD_CONFIG"
     echo "Available AVDs:"
     emulator -list-avds || echo "Failed to list AVDs"
-    echo "Contents of ~/.android/avd/:"
-    ls -la "${HOME}/.android/avd/" 2>/dev/null || echo "Directory does not exist"
+    echo "Contents of $ANDROID_AVD_HOME:"
+    ls -la "$ANDROID_AVD_HOME" 2>/dev/null || echo "Directory does not exist"
     exit 1
 fi
 echo "AVD config found"
