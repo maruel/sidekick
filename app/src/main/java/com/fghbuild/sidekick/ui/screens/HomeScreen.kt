@@ -2,7 +2,6 @@ package com.fghbuild.sidekick.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,7 +20,7 @@ import com.fghbuild.sidekick.data.HeartRateData
 import com.fghbuild.sidekick.data.HrmDevice
 import com.fghbuild.sidekick.data.RunData
 import com.fghbuild.sidekick.ui.components.heartRateChart
-import com.fghbuild.sidekick.ui.components.MetricsPanel
+import com.fghbuild.sidekick.ui.components.metricsPanel
 
 @Composable
 fun homeScreen(
@@ -50,7 +49,7 @@ fun homeScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         // Metric cards grid
-        MetricsPanel(
+        metricsPanel(
             runData = runData,
             heartRateData = heartRateData,
             isRunning = isRunning,

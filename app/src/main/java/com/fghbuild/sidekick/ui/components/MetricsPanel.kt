@@ -12,7 +12,7 @@ import com.fghbuild.sidekick.data.HeartRateData
 import com.fghbuild.sidekick.data.RunData
 
 @Composable
-fun MetricsPanel(
+fun metricsPanel(
     runData: RunData,
     heartRateData: HeartRateData,
     isRunning: Boolean,
@@ -21,14 +21,14 @@ fun MetricsPanel(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        MetricCard(
+        metricCard(
             label = "Heart Rate",
             value = if (heartRateData.currentBpm > 0) "${heartRateData.currentBpm} bpm" else "--",
             averageValue = if (heartRateData.averageBpm > 0) "${heartRateData.averageBpm} bpm" else null,
             maxValue = if (heartRateData.measurements.isNotEmpty()) "${heartRateData.measurements.maxOrNull() ?: 0} bpm" else null,
             modifier = Modifier.weight(1f),
         )
-        MetricCard(
+        metricCard(
             label = "Pace",
             value = if (isRunning) formatPace(runData.paceMinPerKm) else "--",
             modifier = Modifier.weight(1f),
@@ -41,12 +41,12 @@ fun MetricsPanel(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        MetricCard(
+        metricCard(
             label = "Distance",
             value = if (isRunning) String.format("%.2f km", runData.distanceMeters / 1000.0) else "--",
             modifier = Modifier.weight(1f),
         )
-        MetricCard(
+        metricCard(
             label = "Duration",
             value = if (isRunning) formatDuration(runData.durationMillis) else "--",
             modifier = Modifier.weight(1f),

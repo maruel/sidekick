@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,11 +24,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fghbuild.sidekick.data.HeartRateData
+import com.fghbuild.sidekick.data.HrmDevice
 import com.fghbuild.sidekick.data.RunData
-import com.fghbuild.sidekick.ui.components.heartRateChart
+import com.fghbuild.sidekick.ui.components.metricsPanel
 import com.fghbuild.sidekick.ui.components.paceChart
 import com.fghbuild.sidekick.ui.components.routeMap
-import com.fghbuild.sidekick.ui.components.MetricsPanel
 
 @Composable
 fun runInProgressScreen(
@@ -37,7 +38,7 @@ fun runInProgressScreen(
     onPause: () -> Unit = {},
     onResume: () -> Unit = {},
     onStop: () -> Unit = {},
-    connectedDevice: com.fghbuild.sidekick.data.HrmDevice? = null,
+    connectedDevice: HrmDevice? = null,
 ) {
     Column(
         modifier =
@@ -56,7 +57,7 @@ fun runInProgressScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        MetricsPanel(
+        metricsPanel(
             runData = runData,
             heartRateData = heartRateData,
             isRunning = true,
@@ -84,7 +85,7 @@ fun runInProgressScreen(
             Text(
                 text = "Connected: ${connectedDevice.name}",
                 fontSize = 14.sp,
-                color = androidx.compose.material3.MaterialTheme.colorScheme.secondary,
+                color = MaterialTheme.colorScheme.secondary,
             )
         }
 

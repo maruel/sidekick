@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun MetricCard(
+fun metricCard(
     label: String,
     value: String,
     modifier: Modifier = Modifier,
