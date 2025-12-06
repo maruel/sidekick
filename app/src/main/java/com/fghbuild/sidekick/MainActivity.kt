@@ -38,6 +38,7 @@ import androidx.core.app.ActivityCompat
 import com.fghbuild.sidekick.audio.AnnouncementManager
 import com.fghbuild.sidekick.audio.VoiceCommandListener
 import com.fghbuild.sidekick.ble.BleManager
+import com.fghbuild.sidekick.data.HrmDevice
 import com.fghbuild.sidekick.database.SidekickDatabase
 import com.fghbuild.sidekick.location.LocationTracker
 import com.fghbuild.sidekick.preferences.DevicePreferences
@@ -198,6 +199,16 @@ fun sidekickApp() {
                     action = RunTrackingService.ACTION_STOP_RUN
                 }
             context.startService(stopIntent)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        // Auto-reconnect to last HRM device on app startup
+        val lastDeviceAddress = devicePreferences?.getLastHrmDeviceAddress()
+        val lastDeviceName = devicePreferences?.getLastHrmDeviceName()
+        if (!lastDeviceAddress.isNullOrEmpty() && !lastDeviceName.isNullOrEmpty()) {
+            val lastDevice = HrmDevice(address = lastDeviceAddress, name = lastDeviceName, rssi = 0)
+            bleManager.connectToDevice(lastDevice)
         }
     }
 
