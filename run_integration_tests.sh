@@ -126,6 +126,13 @@ echo "AVD config found"
 rm -f "$LOG_FILE"
 echo "Booting emulator: $EMULATOR_NAME (logging to $LOG_FILE)..."
 
+# Check for KVM availability (not available on GitHub Actions)
+ACCEL_FLAG="auto"
+if [ -f /.dockerenv ] || [ ! -e /dev/kvm ]; then
+    echo "KVM not available (Docker/GitHub Actions), using software acceleration"
+    ACCEL_FLAG="off"
+fi
+
 # Launch emulator with detailed output to diagnose startup issues
 emulator -avd ${EMULATOR_NAME} \
     -no-window \
@@ -133,7 +140,7 @@ emulator -avd ${EMULATOR_NAME} \
     -no-boot-anim \
     -no-metrics \
     -memory 2048 \
-    -accel auto \
+    -accel ${ACCEL_FLAG} \
     -read-only \
     -logcat '*:V' \
     > "$LOG_FILE" 2>&1 &
