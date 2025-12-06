@@ -46,31 +46,21 @@ fun metricCard(
             color = MaterialTheme.colorScheme.onSurface,
         )
 
-        if (averageValue != null || maxValue != null) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                if (averageValue != null) {
-                    Text(
-                        text = "avg: $averageValue",
-                        fontSize = 10.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                } else {
-                    Text(text = "", fontSize = 10.sp)
-                }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Text(
+                text = "avg: ${averageValue ?: "--"}",
+                fontSize = 10.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
 
-                if (maxValue != null) {
-                    Text(
-                        text = "max: $maxValue",
-                        fontSize = 10.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                } else {
-                    Text(text = "", fontSize = 10.sp)
-                }
-            }
+            Text(
+                text = "max: ${maxValue ?: "--"}",
+                fontSize = 10.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
 }

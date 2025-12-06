@@ -95,20 +95,11 @@ fun sidekickApp() {
         remember {
             RunRepository(database.runDao(), database.routePointDao())
         }
-    val devicePreferences =
-        remember {
-            try {
-                DevicePreferences(context)
-            } catch (e: Exception) {
-                // Log error - this is more critical since we need preferences for onboarding
-                android.util.Log.e("DevicePreferences", "Failed to initialize preferences", e)
-                null
-            }
-        }
+    val devicePreferences = remember { DevicePreferences(context) }
 
     var onboardingComplete by remember {
         mutableStateOf(
-            devicePreferences?.isOnboardingComplete() ?: false,
+            devicePreferences.isOnboardingComplete(),
         )
     }
 
@@ -204,8 +195,8 @@ fun sidekickApp() {
 
     LaunchedEffect(Unit) {
         // Auto-reconnect to last HRM device on app startup
-        val lastDeviceAddress = devicePreferences?.getLastHrmDeviceAddress()
-        val lastDeviceName = devicePreferences?.getLastHrmDeviceName()
+        val lastDeviceAddress = devicePreferences.getLastHrmDeviceAddress()
+        val lastDeviceName = devicePreferences.getLastHrmDeviceName()
         if (!lastDeviceAddress.isNullOrEmpty() && !lastDeviceName.isNullOrEmpty()) {
             val lastDevice = HrmDevice(address = lastDeviceAddress, name = lastDeviceName, rssi = 0)
             bleManager.connectToDevice(lastDevice)
@@ -258,14 +249,8 @@ fun sidekickApp() {
             onboardingScreen(
                 modifier = Modifier.padding(innerPadding),
                 onBirthYearSubmit = { birthYear ->
-                    try {
-                        devicePreferences?.saveBirthYear(birthYear)
-                        onboardingComplete = true
-                    } catch (e: Exception) {
-                        // Log error but allow user to proceed
-                        android.util.Log.e("Onboarding", "Failed to save birth year", e)
-                        onboardingComplete = true
-                    }
+                    devicePreferences.saveBirthYear(birthYear)
+                    onboardingComplete = true
                 },
             )
         }
@@ -291,6 +276,7 @@ fun sidekickApp() {
                 when (currentDestination) {
                     AppDestinations.RUN ->
                         if (runData.isRunning || runData.isPaused) {
+                            val userAge = devicePreferences.getCurrentAge()
                             runInProgressScreen(
                                 modifier = Modifier.padding(innerPadding),
                                 runData = runData,
@@ -311,8 +297,10 @@ fun sidekickApp() {
                                     }
                                 },
                                 connectedDevice = connectedDevice,
+                                userAge = userAge,
                             )
                         } else {
+                            val userAge = devicePreferences.getCurrentAge()
                             homeScreen(
                                 modifier = Modifier.padding(innerPadding),
                                 isRunning = false,
@@ -326,6 +314,7 @@ fun sidekickApp() {
                                 runData = runData,
                                 heartRateData = heartRateData,
                                 connectedDevice = connectedDevice,
+                                userAge = userAge,
                             )
                         }
 
@@ -339,7 +328,7 @@ fun sidekickApp() {
                             onStopScanning = { bleManager.stopScanning() },
                             onSelectDevice = { device ->
                                 bleManager.connectToDevice(device)
-                                devicePreferences?.saveLastHrmDevice(device.address, device.name)
+                                devicePreferences.saveLastHrmDevice(device.address, device.name)
                             },
                             onDisconnect = { bleManager.disconnect() },
                         )

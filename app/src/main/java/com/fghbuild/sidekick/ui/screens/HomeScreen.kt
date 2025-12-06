@@ -31,6 +31,7 @@ fun homeScreen(
     runData: RunData = RunData(),
     heartRateData: HeartRateData = HeartRateData(),
     connectedDevice: HrmDevice? = null,
+    userAge: Int = 30,
 ) {
     Column(
         modifier =
@@ -56,10 +57,11 @@ fun homeScreen(
         )
 
         // Show heart rate chart when device is connected and has measurements
-        if (connectedDevice != null && heartRateData.measurements.isNotEmpty()) {
+        if (connectedDevice != null) {
             Spacer(modifier = Modifier.height(24.dp))
             heartRateChart(
                 measurements = heartRateData.measurements,
+                age = userAge,
                 modifier = Modifier.fillMaxWidth(),
             )
         }

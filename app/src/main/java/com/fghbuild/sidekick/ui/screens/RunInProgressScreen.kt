@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import com.fghbuild.sidekick.data.HeartRateData
 import com.fghbuild.sidekick.data.HrmDevice
 import com.fghbuild.sidekick.data.RunData
+import com.fghbuild.sidekick.ui.components.heartRateChart
 import com.fghbuild.sidekick.ui.components.metricsPanel
 import com.fghbuild.sidekick.ui.components.paceChart
 import com.fghbuild.sidekick.ui.components.routeMap
@@ -39,6 +40,7 @@ fun runInProgressScreen(
     onResume: () -> Unit = {},
     onStop: () -> Unit = {},
     connectedDevice: HrmDevice? = null,
+    userAge: Int = 30,
 ) {
     Column(
         modifier =
@@ -67,6 +69,14 @@ fun runInProgressScreen(
 
         routeMap(
             routePoints = runData.routePoints,
+            modifier = Modifier.fillMaxWidth(),
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        heartRateChart(
+            measurements = heartRateData.measurements,
+            age = userAge,
             modifier = Modifier.fillMaxWidth(),
         )
 

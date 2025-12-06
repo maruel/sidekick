@@ -66,8 +66,8 @@ class DevicePreferences(context: Context) {
         }
     }
 
-    fun getCurrentAge(): Int? {
-        val birthYear = getBirthYear() ?: return null
+    fun getCurrentAge(): Int {
+        val birthYear = getBirthYear() ?: return 30
         return Calendar.getInstance().get(Calendar.YEAR) - birthYear
     }
 }
