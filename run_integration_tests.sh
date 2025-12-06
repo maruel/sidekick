@@ -198,7 +198,7 @@ while [ $COUNTER -lt $TIMEOUT ]; do
     fi
 
     # Check for connected device
-    DEVICE_COUNT=$(adb devices 2>/dev/null | grep -c "emulator.*device" 2>/dev/null)
+    DEVICE_COUNT=$(adb devices 2>/dev/null | grep -c "emulator.*device" 2>/dev/null || true)
     DEVICE_COUNT=${DEVICE_COUNT:-0}
     if [ "$DEVICE_COUNT" -gt "$LAST_DEVICE_COUNT" ]; then
         LAST_DEVICE_COUNT=$DEVICE_COUNT
