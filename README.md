@@ -40,6 +40,11 @@ An Android running companion app that tracks your runs with GPS, heart rate moni
 # Run unit tests
 ./gradlew test
 
+# Run unit tests with code coverage
+./gradlew jacocoTestReport
+# HTML report: app/build/reports/jacoco/jacocoTestReport/html/index.html
+# XML report: app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml
+
 # Run with Docker (no setup needed)
 docker build -f Dockerfile.tests -t sidekick-tests . && docker run sidekick-tests
 

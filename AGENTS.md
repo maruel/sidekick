@@ -13,6 +13,7 @@ Instructions for coding agents working on this project.
 | `./gradlew connectedAndroidTest` | Run instrumentation tests on device/emulator |
 | `./gradlew ktlintCheck` | Check code formatting |
 | `./gradlew ktlintFormat` | Auto-fix formatting |
+| `./gradlew jacocoTestReport` | Generate code coverage report |
 
 ## Requirements
 
