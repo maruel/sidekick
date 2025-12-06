@@ -22,6 +22,8 @@ class RunManager {
     fun startRun() {
         startTimeMillis = System.currentTimeMillis()
         lastLocationTimeMillis = 0L
+        lastLocation = null
+        pausedTimeMillis = 0L
         runExplicitlyStarted = true
         _runData.value = RunData(isRunning = true)
     }
@@ -40,6 +42,9 @@ class RunManager {
 
     fun updateLocation(location: Location) {
         val currentData = _runData.value
+        if (!currentData.isRunning) {
+            return
+        }
         var distanceMeters = currentData.distanceMeters
 
         lastLocation?.let {
@@ -74,8 +79,13 @@ class RunManager {
         lastLocation = location
         lastLocationTimeMillis = locationTime
 
-        // Track pace history (keep all entries)
-        val paceHistory = currentData.paceHistory + paceMinPerKm
+        // Track pace history (only record meaningful pace values)
+        val paceHistory =
+            if (distanceMeters > 0 && paceMinPerKm > 0.0) {
+                currentData.paceHistory + paceMinPerKm
+            } else {
+                currentData.paceHistory
+            }
 
         _runData.value =
             currentData.copy(

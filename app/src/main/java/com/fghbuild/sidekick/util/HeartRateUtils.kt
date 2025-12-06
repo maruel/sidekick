@@ -23,7 +23,8 @@ object HeartRateUtils {
     }
 
     fun calculateMaxHeartRate(age: Int): Int {
-        return 220 - age
+        val clampedAge = age.coerceIn(5, 100)
+        return 220 - clampedAge
     }
 
     fun getHeartRateZones(age: Int): List<HeartRateZone> {
