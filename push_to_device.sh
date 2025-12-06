@@ -20,4 +20,4 @@ ADB_DEVICE=$($ADB devices | grep -v "List of devices attached" | grep -v "daemon
 $ADB -s "$ADB_DEVICE" install -r app/build/outputs/apk/debug/app-debug.apk
 $ADB -s "$ADB_DEVICE" shell am start -n com.fghbuild.sidekick/.MainActivity
 # $ADB -s "$ADB_DEVICE" logcat YourAppTag:D *:S
-$ADB -s "$ADB_DEVICE" logcat | grep "com.fghbuild.sidekick"
+# $ADB -s "$ADB_DEVICE" logcat | grep "com.fghbuild.sidekick"

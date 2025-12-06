@@ -2,6 +2,7 @@ package com.fghbuild.sidekick.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,7 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fghbuild.sidekick.data.HeartRateData
 import com.fghbuild.sidekick.data.HrmDevice
+import com.fghbuild.sidekick.data.RunData
 import com.fghbuild.sidekick.ui.components.heartRateChart
+import com.fghbuild.sidekick.ui.components.MetricsPanel
 
 @Composable
 fun homeScreen(
@@ -26,6 +29,7 @@ fun homeScreen(
     isRunning: Boolean = false,
     onStartRun: () -> Unit = {},
     onStopRun: () -> Unit = {},
+    runData: RunData = RunData(),
     heartRateData: HeartRateData = HeartRateData(),
     connectedDevice: HrmDevice? = null,
 ) {
@@ -34,19 +38,36 @@ fun homeScreen(
             modifier
                 .fillMaxSize()
                 .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(
-            text = "Sidekick",
-            fontSize = 32.sp,
-        )
-        Spacer(modifier = Modifier.height(24.dp))
+        // Top title - fixed height
         Text(
             text = if (isRunning) "Run in progress..." else "Ready to run!",
+            fontSize = 28.sp,
         )
 
-        // Show connected device and HR metrics if device is connected
+        Spacer(modifier = Modifier.height(32.dp))
+
+        // Metric cards grid
+        MetricsPanel(
+            runData = runData,
+            heartRateData = heartRateData,
+            isRunning = isRunning,
+        )
+
+        // Show heart rate chart when device is connected and has measurements
+        if (connectedDevice != null && heartRateData.measurements.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(24.dp))
+            heartRateChart(
+                measurements = heartRateData.measurements,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        // Show connected device if available
         if (connectedDevice != null) {
             Spacer(modifier = Modifier.height(24.dp))
             Text(
@@ -54,21 +75,10 @@ fun homeScreen(
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.secondary,
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "Heart Rate: ${heartRateData.currentBpm} bpm",
-                fontSize = 20.sp,
-            )
-            if (heartRateData.measurements.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(16.dp))
-                heartRateChart(
-                    measurements = heartRateData.measurements,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
+
         if (isRunning) {
             Button(
                 onClick = onStopRun,
@@ -84,5 +94,7 @@ fun homeScreen(
                 Text("Start Run")
             }
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }

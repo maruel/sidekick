@@ -27,6 +27,7 @@ import com.fghbuild.sidekick.data.RunData
 import com.fghbuild.sidekick.ui.components.heartRateChart
 import com.fghbuild.sidekick.ui.components.paceChart
 import com.fghbuild.sidekick.ui.components.routeMap
+import com.fghbuild.sidekick.ui.components.MetricsPanel
 
 @Composable
 fun runInProgressScreen(
@@ -36,6 +37,7 @@ fun runInProgressScreen(
     onPause: () -> Unit = {},
     onResume: () -> Unit = {},
     onStop: () -> Unit = {},
+    connectedDevice: com.fghbuild.sidekick.data.HrmDevice? = null,
 ) {
     Column(
         modifier =
@@ -46,36 +48,19 @@ fun runInProgressScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        // Top title - fixed height (matches home screen)
         Text(
-            text = "Run in Progress",
+            text = "Run in progress...",
             fontSize = 28.sp,
         )
-        Spacer(modifier = Modifier.height(16.dp))
 
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text(
-                "Distance: ${String.format("%.2f", runData.distanceMeters / 1000.0)} km",
-                fontSize = 20.sp,
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                "Pace: ${formatPace(runData.paceMinPerKm)} min/km",
-                fontSize = 20.sp,
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                "Heart Rate: ${heartRateData.currentBpm} bpm",
-                fontSize = 20.sp,
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                "Duration: ${formatDuration(runData.durationMillis)}",
-                fontSize = 20.sp,
-            )
-        }
+        Spacer(modifier = Modifier.height(32.dp))
+
+        MetricsPanel(
+            runData = runData,
+            heartRateData = heartRateData,
+            isRunning = true,
+        )
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -91,14 +76,19 @@ fun runInProgressScreen(
             modifier = Modifier.fillMaxWidth(),
         )
 
+        Spacer(modifier = Modifier.weight(1f))
+
+        // Show connected device if available
+        if (connectedDevice != null) {
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = "Connected: ${connectedDevice.name}",
+                fontSize = 14.sp,
+                color = androidx.compose.material3.MaterialTheme.colorScheme.secondary,
+            )
+        }
+
         Spacer(modifier = Modifier.height(16.dp))
-
-        heartRateChart(
-            measurements = heartRateData.measurements,
-            modifier = Modifier.fillMaxWidth(),
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -117,23 +107,7 @@ fun runInProgressScreen(
                 Icon(Icons.Default.Close, contentDescription = "Stop")
             }
         }
-    }
-}
 
-private fun formatPace(paceMinPerKm: Double): String {
-    return if (paceMinPerKm.isFinite() && paceMinPerKm > 0) {
-        val minutes = paceMinPerKm.toInt()
-        val seconds = ((paceMinPerKm - minutes) * 60).toInt()
-        String.format("%d:%02d", minutes, seconds)
-    } else {
-        "0:00"
+        Spacer(modifier = Modifier.height(16.dp))
     }
-}
-
-private fun formatDuration(milliseconds: Long): String {
-    val totalSeconds = milliseconds / 1000
-    val hours = totalSeconds / 3600
-    val minutes = (totalSeconds % 3600) / 60
-    val seconds = totalSeconds % 60
-    return String.format("%02d:%02d:%02d", hours, minutes, seconds)
 }

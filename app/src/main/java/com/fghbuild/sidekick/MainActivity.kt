@@ -310,6 +310,7 @@ fun sidekickApp() {
                                         )
                                     }
                                 },
+                                connectedDevice = connectedDevice,
                             )
                         } else {
                             homeScreen(
@@ -322,6 +323,7 @@ fun sidekickApp() {
                                     locationTracker.startTracking()
                                 },
                                 onStopRun = {},
+                                runData = runData,
                                 heartRateData = heartRateData,
                                 connectedDevice = connectedDevice,
                             )
