@@ -45,7 +45,7 @@ class MultipleRunsAndHistoryTest {
     }
 
     @Test
-    fun save3Runs_displaysAllInHistory() =
+    fun save3Runs_displaysAllInHistory() {
         runBlocking {
             val now = System.currentTimeMillis()
 
@@ -115,9 +115,10 @@ class MultipleRunsAndHistoryTest {
 
             composeTestRule.onNodeWithText("Run History").assertIsDisplayed()
         }
+    }
 
     @Test
-    fun deleteRunFromHistory_removedFromDatabase() =
+    fun deleteRunFromHistory_removedFromDatabase() {
         runBlocking {
             val startTime = System.currentTimeMillis()
 
@@ -149,9 +150,10 @@ class MultipleRunsAndHistoryTest {
             val runsAfter = repository.getAllRuns().first()
             assertEquals(0, runsAfter.size)
         }
+    }
 
     @Test
-    fun historyWithVaryingDistances_allDisplayedCorrectly() =
+    fun historyWithVaryingDistances_allDisplayedCorrectly() {
         runBlocking {
             val distances = listOf(1.0, 3.5, 5.0, 8.0, 15.0, 21.0, 42.195)
             val now = System.currentTimeMillis()
@@ -190,6 +192,7 @@ class MultipleRunsAndHistoryTest {
 
             composeTestRule.onNodeWithText("Run History").assertIsDisplayed()
         }
+    }
 
     @Test
     fun historySorting_newestRunsFirst() {
@@ -239,7 +242,7 @@ class MultipleRunsAndHistoryTest {
     }
 
     @Test
-    fun deleteAllRuns_historyShowsEmptyState() =
+    fun deleteAllRuns_historyShowsEmptyState() {
         runBlocking {
             val now = System.currentTimeMillis()
 
@@ -289,6 +292,7 @@ class MultipleRunsAndHistoryTest {
             composeTestRule.onNodeWithText("Run History").assertIsDisplayed()
             composeTestRule.onNodeWithText("No runs recorded yet").assertIsDisplayed()
         }
+    }
 
     @Test
     fun historyWithHeartRateVariation_displaysStatsCorrectly() {

@@ -16,9 +16,13 @@ class RunManager {
     private var startTimeMillis: Long = 0
     private var lastLocation: Location? = null
     private var pausedTimeMillis: Long = 0
+    private var lastLocationTimeMillis: Long = 0
+    private var runExplicitlyStarted = false
 
     fun startRun() {
         startTimeMillis = System.currentTimeMillis()
+        lastLocationTimeMillis = 0L
+        runExplicitlyStarted = true
         _runData.value = RunData(isRunning = true)
     }
 
@@ -48,10 +52,27 @@ class RunManager {
                 )
         }
 
-        val durationMillis = System.currentTimeMillis() - startTimeMillis
+        // Use location timestamp if available (for test data with realistic timestamps)
+        val locationTime = location.time
+
+        // If run wasn't explicitly started and this is the first location, use its timestamp as start
+        if (!runExplicitlyStarted && lastLocationTimeMillis == 0L && locationTime > 0) {
+            startTimeMillis = locationTime
+        }
+
+        // Calculate duration using location timestamps when available
+        val durationMillis =
+            if (locationTime > 0) {
+                // Use location timestamp but ensure it's not negative (handle race conditions)
+                maxOf(0L, locationTime - startTimeMillis)
+            } else {
+                System.currentTimeMillis() - startTimeMillis
+            }
+
         val paceMinPerKm = PaceUtils.calculatePaceMinPerKm(durationMillis, distanceMeters)
 
         lastLocation = location
+        lastLocationTimeMillis = locationTime
 
         // Track pace history (keep all entries)
         val paceHistory = currentData.paceHistory + paceMinPerKm
