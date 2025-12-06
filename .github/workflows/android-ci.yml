@@ -14,6 +14,13 @@ jobs:
           java-version: "21"
           distribution: "temurin"
           cache: gradle
+      - name: Configure Android environment
+        run: |
+          echo "ANDROID_HOME=$HOME/Android/Sdk" >> $GITHUB_ENV
+          echo "$HOME/Android/Sdk/emulator" >> $GITHUB_PATH
+          echo "$HOME/Android/Sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
+          echo "$HOME/Android/Sdk/platform-tools" >> $GITHUB_PATH
+          ./setup.sh
       - run: ./gradlew ktlintCheck
       - run: ./gradlew build
       - run: ./gradlew test
@@ -34,19 +41,13 @@ jobs:
           java-version: "21"
           distribution: "temurin"
           cache: gradle
-      - uses: android-actions/setup-android@v3
-        with:
-          cmdline-tools-version: 13730595
-      - name: Add SDK tools to PATH
+      - name: Configure Android environment
         run: |
-          echo "${ANDROID_SDK_ROOT}/emulator" >> $GITHUB_PATH
-          echo "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin" >> $GITHUB_PATH
-      - name: Install Android SDK dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y xvfb libvulkan1 libpulse0
-      - name: Install Android emulator and system image
-        run: echo "y" | sdkmanager "emulator" "system-images;android-36;google_apis;x86_64" "build-tools;36.0.0"
+          echo "ANDROID_HOME=$HOME/Android/Sdk" >> $GITHUB_ENV
+          echo "$HOME/Android/Sdk/emulator" >> $GITHUB_PATH
+          echo "$HOME/Android/Sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
+          echo "$HOME/Android/Sdk/platform-tools" >> $GITHUB_PATH
+          ./setup.sh
       - run: ./gradlew build -x connectedAndroidTest
       - name: Run integration tests
         run: ./run_integration_tests.sh
