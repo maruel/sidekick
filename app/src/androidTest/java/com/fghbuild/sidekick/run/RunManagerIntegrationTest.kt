@@ -256,7 +256,8 @@ class RunManagerIntegrationTest {
             }
 
             val runData = runManager.runData.first()
-            assertEquals(updateCount, runData.paceHistory.size)
+            // First location has no prior point, so pace history has updateCount - 1 entries
+            assertEquals(updateCount - 1, runData.paceHistory.size)
 
             // All pace values should be positive
             for (pace in runData.paceHistory) {
