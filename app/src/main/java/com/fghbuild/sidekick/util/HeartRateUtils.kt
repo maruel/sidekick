@@ -75,4 +75,11 @@ object HeartRateUtils {
     ): HeartRateZone? {
         return getHeartRateZones(age).find { bpm in it.minBpm..it.maxBpm }
     }
+
+    fun getGraphDisplayMin(age: Int): Int {
+        val maxHR = calculateMaxHeartRate(age)
+        val zone1Bottom = (maxHR * 0.50).toInt()
+        // Start 20% of maxHR below zone 1 bottom
+        return (zone1Bottom - (maxHR * 0.20f)).toInt().coerceAtLeast(0)
+    }
 }
