@@ -4,6 +4,7 @@ import android.Manifest
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
+import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothManager
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanFilter
@@ -43,6 +44,8 @@ class BleManager(private val context: Context) {
             UUID.fromString("0000180d-0000-1000-8000-00805f9b34fb")
         private val HEART_RATE_MEASUREMENT_UUID =
             UUID.fromString("00002a37-0000-1000-8000-00805f9b34fb")
+        private val CLIENT_CHARACTERISTIC_CONFIG_UUID =
+            UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
     }
 
     fun startScanning() {
@@ -223,6 +226,14 @@ class BleManager(private val context: Context) {
                                 ) == android.content.pm.PackageManager.PERMISSION_GRANTED
                             ) {
                                 gatt.setCharacteristicNotification(it, true)
+
+                                // Write to CCCD (Client Characteristic Configuration Descriptor)
+                                val descriptor =
+                                    it.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG_UUID)
+                                descriptor?.let { desc ->
+                                    desc.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+                                    gatt.writeDescriptor(desc)
+                                }
                             }
                         } catch (e: Exception) {
                             e.printStackTrace()

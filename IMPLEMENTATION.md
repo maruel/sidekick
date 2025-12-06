@@ -15,7 +15,7 @@ Sidekick is an Android running companion app. See [AGENTS.md](AGENTS.md) for bui
 
 ### Phase 1: Core Setup ✓
 - Android project with Kotlin and Jetpack Compose
-- Navigation with `NavigationSuiteScaffold` (Home, Run, History tabs)
+- Navigation with `NavigationSuiteScaffold` (Run, History tabs)
 - Material 3 theming
 
 ### Phase 2: GPS Tracking ✓
@@ -55,6 +55,13 @@ Sidekick is an Android running companion app. See [AGENTS.md](AGENTS.md) for bui
 - `HeartRateUtils` - Calculates personalized heart rate zones (5 zones based on age)
 - Extensible onboarding: new questions auto-require before showing app
 
+### Phase 9: HRM Device Pairing UI ✓
+- `DevicePairingScreen` - BLE scanning and device pairing UI
+- Device discovery with real-time RSSI signal strength display
+- Connect/disconnect device management
+- Persistent device pairing via `DevicePreferences`
+- Navigation tab for easy device management
+
 ## Project Structure
 
 ```
@@ -70,7 +77,7 @@ app/src/main/java/com/fghbuild/sidekick/
 ├── run/             # Run state management
 ├── ui/
 │   ├── components/  # Charts, map
-│   ├── screens/     # Home, Run, History
+│   ├── screens/     # Run, History, Device Pairing
 │   └── theme/       # Material theme
 └── util/            # Calculation utilities
 ```

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.Bluetooth
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -38,6 +39,7 @@ import com.fghbuild.sidekick.preferences.DevicePreferences
 import com.fghbuild.sidekick.repository.RunRepository
 import com.fghbuild.sidekick.run.RunManager
 import com.fghbuild.sidekick.run.RunStateManager
+import com.fghbuild.sidekick.ui.screens.devicePairingScreen
 import com.fghbuild.sidekick.ui.screens.historyScreen
 import com.fghbuild.sidekick.ui.screens.homeScreen
 import com.fghbuild.sidekick.ui.screens.onboardingScreen
@@ -136,6 +138,9 @@ fun sidekickApp() {
     val heartRateData by bleManager.heartRateData.collectAsState()
     val allRuns by runRepository.getAllRuns().collectAsState(initial = emptyList())
     val routePoints by locationTracker.routePoints.collectAsState()
+    val discoveredDevices by bleManager.discoveredDevices.collectAsState()
+    val connectedDevice by bleManager.connectedDevice.collectAsState()
+    val isScanning by bleManager.isScanning.collectAsState()
 
     LaunchedEffect(runData.isRunning) {
         if (runData.isRunning) {
@@ -231,6 +236,21 @@ fun sidekickApp() {
                             )
                         }
 
+                    AppDestinations.PAIRING ->
+                        devicePairingScreen(
+                            modifier = Modifier.padding(innerPadding),
+                            discoveredDevices = discoveredDevices,
+                            connectedDevice = connectedDevice,
+                            isScanning = isScanning,
+                            onStartScanning = { bleManager.startScanning() },
+                            onStopScanning = { bleManager.stopScanning() },
+                            onSelectDevice = { device ->
+                                bleManager.connectToDevice(device)
+                                devicePreferences?.saveLastHrmDevice(device.address, device.name)
+                            },
+                            onDisconnect = { bleManager.disconnect() },
+                        )
+
                     AppDestinations.HISTORY ->
                         historyScreen(
                             modifier = Modifier.padding(innerPadding),
@@ -252,5 +272,6 @@ enum class AppDestinations(
     val icon: ImageVector,
 ) {
     RUN("Run", Icons.Default.PlayArrow),
+    PAIRING("Device", Icons.Default.Bluetooth),
     HISTORY("History", Icons.AutoMirrored.Filled.List),
 }
