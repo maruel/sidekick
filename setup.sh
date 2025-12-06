@@ -4,10 +4,10 @@ set -eu
 
 echo "Installing system dependencies..."
 sudo apt-get update -qq
-sudo apt-get install -qq -y libvulkan1 libpulse0 openjdk-21-jdk xvfb curl
-
-export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
-export PATH=$JAVA_HOME/bin:$PATH
+# On CI, we use actions/setup-java because it automatically caches graddle output, which is critical for
+# performance.
+#  openjdk-21-jdk-headless
+sudo apt-get install -qq -y curl libpulse0 libvulkan1 xvfb
 
 mkdir -p "$ANDROID_HOME"
 mkdir -p "$ANDROID_HOME/cmdline-tools"
