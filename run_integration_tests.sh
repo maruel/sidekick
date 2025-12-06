@@ -2,6 +2,9 @@
 # Integration Test Runner with xvfb for headless Android emulator
 set -eu
 
+export ANDROID_HOME="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-$HOME/Android/Sdk}}"
+echo "Using ANDROID_HOME=$ANDROID_HOME"
+
 # Configuration
 RESOLUTION="1024x768x24"
 EMULATOR_NAME="test_device"
