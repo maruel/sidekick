@@ -48,7 +48,7 @@ class RunFlowScreenTest {
         }
 
     @Test
-    fun inProgressScreen_updatesWithLocationData() =
+    fun inProgressScreen_updatesWithLocationData() {
         runBlocking {
             runManager.startRun()
 
@@ -75,6 +75,7 @@ class RunFlowScreenTest {
             composeTestRule.onNodeWithText("Run in Progress").assertIsDisplayed()
             composeTestRule.onNodeWithText("Distance:", substring = true).assertIsDisplayed()
         }
+    }
 
     @Test
     fun inProgressScreen_displaysHeartRateData() =
@@ -207,7 +208,7 @@ class RunFlowScreenTest {
         }
 
     @Test
-    fun realistic5kmRun_fullFlow() =
+    fun realistic5kmRun_fullFlow() {
         runBlocking {
             // Start
             runManager.startRun()
@@ -246,9 +247,10 @@ class RunFlowScreenTest {
             composeTestRule.onNodeWithText("Run in Progress").assertIsDisplayed()
             composeTestRule.onNodeWithText("Distance: 5.", substring = true).assertIsDisplayed()
         }
+    }
 
     @Test
-    fun veryShortRun_handlesMinimalData() =
+    fun veryShortRun_handlesMinimalData() {
         runBlocking {
             runManager.startRun()
 
@@ -272,6 +274,7 @@ class RunFlowScreenTest {
 
             composeTestRule.onNodeWithText("Run in Progress").assertIsDisplayed()
         }
+    }
 
     @Test
     fun longRun_handles15kmPlus() =

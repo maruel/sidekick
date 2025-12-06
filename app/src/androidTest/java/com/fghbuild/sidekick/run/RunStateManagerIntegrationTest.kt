@@ -7,6 +7,7 @@ import com.fghbuild.sidekick.audio.AnnouncementManager
 import com.fghbuild.sidekick.audio.VoiceCommand
 import com.fghbuild.sidekick.audio.VoiceCommandListener
 import com.fghbuild.sidekick.fixtures.TestDataFactory
+import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.flow.first
@@ -28,8 +29,11 @@ class RunStateManagerIntegrationTest {
 
         runManager = RunManager()
 
-        announcementManager = spyk(AnnouncementManager(context))
-        voiceCommandListener = spyk(VoiceCommandListener(context))
+        announcementManager = spyk(AnnouncementManager(context), recordPrivateCalls = true)
+
+        // Skip actual VoiceCommandListener to avoid SpeechRecognizer thread issues in tests
+        // Use a mock with no StateFlow proxying
+        voiceCommandListener = mockk(relaxed = true)
 
         runStateManager = RunStateManager(runManager, announcementManager, voiceCommandListener)
     }

@@ -33,6 +33,13 @@ fi
 export DISPLAY=:${DISPLAY_NUM}
 echo "Using DISPLAY=:${DISPLAY_NUM}"
 
+# Kill any existing emulators before starting
+echo "Cleaning up any stale emulator processes..."
+pkill -9 -f "emulator.*${EMULATOR_NAME}" >/dev/null 2>&1 || true
+pkill -9 -f "qemu" >/dev/null 2>&1 || true
+adb kill-server >/dev/null 2>&1 || true
+sleep 2
+
 # Diagnostic function
 diagnose() {
     echo "=== Diagnostic Information ==="
@@ -69,10 +76,12 @@ cleanup() {
         echo "Force killing remaining emulator processes..."
         pkill -9 -f "emulator.*${EMULATOR_NAME}" || true
     fi
+    pkill -9 -f "qemu" >/dev/null 2>&1 || true
     if [ ! -z "${XVFB_PID:-}" ]; then
         echo "Killing Xvfb (PID: $XVFB_PID)..."
         kill $XVFB_PID 2>/dev/null || true
     fi
+    adb kill-server >/dev/null 2>&1 || true
 }
 trap cleanup EXIT
 
@@ -118,7 +127,6 @@ rm -f "$LOG_FILE"
 echo "Booting emulator: $EMULATOR_NAME (logging to $LOG_FILE)..."
 
 # Launch emulator with detailed output to diagnose startup issues
-# Use -show-kernel to see kernel output initially
 emulator -avd ${EMULATOR_NAME} \
     -no-window \
     -no-audio \
@@ -126,7 +134,7 @@ emulator -avd ${EMULATOR_NAME} \
     -no-metrics \
     -memory 2048 \
     -accel auto \
-    -feature UnicodeSupport \
+    -read-only \
     -logcat '*:V' \
     > "$LOG_FILE" 2>&1 &
 EMULATOR_PID=$!

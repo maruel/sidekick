@@ -19,7 +19,7 @@ class RunManagerIntegrationTest {
     }
 
     @Test
-    fun locationTracking_accumulatesDistance() =
+    fun locationTracking_accumulatesDistance() {
         runBlocking {
             runManager.startRun()
 
@@ -46,9 +46,10 @@ class RunManagerIntegrationTest {
             assertTrue(finalRunData.distanceMeters > 1900)
             assertTrue(finalRunData.distanceMeters < 2100)
         }
+    }
 
     @Test
-    fun distanceCalculation_usesHaversine() =
+    fun distanceCalculation_usesHaversine() {
         runBlocking {
             runManager.startRun()
 
@@ -89,9 +90,10 @@ class RunManagerIntegrationTest {
                 100.0,
             ) // Within 100m
         }
+    }
 
     @Test
-    fun paceCalculation_tracksHistory() =
+    fun paceCalculation_tracksHistory() {
         runBlocking {
             runManager.startRun()
 
@@ -111,9 +113,10 @@ class RunManagerIntegrationTest {
             assertTrue(finalRunData.paceHistory.isNotEmpty())
             assertTrue(finalRunData.paceMinPerKm > 0)
         }
+    }
 
     @Test
-    fun pauseResume_preservesData() =
+    fun pauseResume_preservesData() {
         runBlocking {
             runManager.startRun()
 
@@ -160,9 +163,10 @@ class RunManagerIntegrationTest {
             assertTrue(finalRunData.distanceMeters > 1900)
             assertTrue(finalRunData.distanceMeters < 2100)
         }
+    }
 
     @Test
-    fun runState_tracksStateTransitions() =
+    fun runState_tracksStateTransitions() {
         runBlocking {
             val initialState = runManager.runData.first()
             assertEquals(false, initialState.isRunning)
@@ -179,9 +183,10 @@ class RunManagerIntegrationTest {
             runData = runManager.runData.first()
             assertEquals(true, runData.isRunning)
         }
+    }
 
     @Test
-    fun routePoints_updatesFromLocationStream() =
+    fun routePoints_updatesFromLocationStream() {
         runBlocking {
             val testRoute = TestDataFactory.createTestRoute(distanceKm = 1.5)
 
@@ -203,9 +208,10 @@ class RunManagerIntegrationTest {
                 )
             }
         }
+    }
 
     @Test
-    fun duration_increasesWithTime() =
+    fun duration_increasesWithTime() {
         runBlocking {
             runManager.startRun()
             val startTime = System.currentTimeMillis()
@@ -227,9 +233,10 @@ class RunManagerIntegrationTest {
             assertTrue(runData.durationMillis > 0)
             assertTrue(runData.durationMillis <= elapsedTime + 1000)
         }
+    }
 
     @Test
-    fun paceHistory_accumulatesAllValues() =
+    fun paceHistory_accumulatesAllValues() {
         runBlocking {
             runManager.startRun()
 
@@ -254,4 +261,5 @@ class RunManagerIntegrationTest {
                 assertTrue(pace >= 0)
             }
         }
+    }
 }

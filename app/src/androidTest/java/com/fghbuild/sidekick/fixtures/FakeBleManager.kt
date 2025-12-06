@@ -41,10 +41,15 @@ class FakeBleManager {
      */
     fun simulateDeviceDiscovered(device: HrmDevice) {
         val currentDevices = _discoveredDevices.value
-        val exists = currentDevices.any { it.address == device.address }
-        if (!exists) {
-            _discoveredDevices.value = currentDevices + device
-        }
+        val existingIndex = currentDevices.indexOfFirst { it.address == device.address }
+        _discoveredDevices.value =
+            if (existingIndex >= 0) {
+                // Update existing device (e.g., RSSI)
+                currentDevices.toMutableList().apply { set(existingIndex, device) }
+            } else {
+                // Add new device
+                currentDevices + device
+            }
     }
 
     /**

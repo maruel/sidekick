@@ -192,7 +192,7 @@ class MultipleRunsAndHistoryTest {
         }
 
     @Test
-    fun historySorting_newestRunsFirst() =
+    fun historySorting_newestRunsFirst() {
         runBlocking {
             val now = System.currentTimeMillis()
 
@@ -236,6 +236,7 @@ class MultipleRunsAndHistoryTest {
 
             composeTestRule.onNodeWithText("Run History").assertIsDisplayed()
         }
+    }
 
     @Test
     fun deleteAllRuns_historyShowsEmptyState() =
@@ -290,7 +291,7 @@ class MultipleRunsAndHistoryTest {
         }
 
     @Test
-    fun historyWithHeartRateVariation_displaysStatsCorrectly() =
+    fun historyWithHeartRateVariation_displaysStatsCorrectly() {
         runBlocking {
             val now = System.currentTimeMillis()
 
@@ -352,4 +353,5 @@ class MultipleRunsAndHistoryTest {
 
             composeTestRule.onNodeWithText("Run History").assertIsDisplayed()
         }
+    }
 }

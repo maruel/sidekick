@@ -40,7 +40,7 @@ class FullRunWorkflowTest {
     }
 
     @Test
-    fun complete5kmRun_startTrackSaveVerify() =
+    fun complete5kmRun_startTrackSaveVerify() {
         runBlocking {
             val startTime = System.currentTimeMillis()
 
@@ -94,9 +94,10 @@ class FullRunWorkflowTest {
             assertTrue(savedRoutePoints.isNotEmpty())
             assertEquals(route.size, savedRoutePoints.size)
         }
+    }
 
     @Test
-    fun pauseResume_maintainsContinuity() =
+    fun pauseResume_maintainsContinuity() {
         runBlocking {
             val startTime = System.currentTimeMillis()
 
@@ -161,9 +162,10 @@ class FullRunWorkflowTest {
             assertEquals(1, savedRuns.size)
             assertTrue(savedRuns[0].distanceMeters > 4900)
         }
+    }
 
     @Test
-    fun highIntensityRun_elevatedHeartRateTracking() =
+    fun highIntensityRun_elevatedHeartRateTracking() {
         runBlocking {
             val startTime = System.currentTimeMillis()
 
@@ -203,9 +205,10 @@ class FullRunWorkflowTest {
             assertTrue(savedRun.maxHeartRate > 150)
             assertTrue(savedRun.averageHeartRate > 140)
         }
+    }
 
     @Test
-    fun easyRun_lowIntensityTracking() =
+    fun easyRun_lowIntensityTracking() {
         runBlocking {
             val startTime = System.currentTimeMillis()
 
@@ -245,9 +248,10 @@ class FullRunWorkflowTest {
             assertTrue(savedRun.maxHeartRate < 150)
             assertTrue(savedRun.averageHeartRate < 145)
         }
+    }
 
     @Test
-    fun veryLongRun_handlesMarathonDistance() =
+    fun veryLongRun_handlesMarathonDistance() {
         runBlocking {
             val startTime = System.currentTimeMillis()
 
@@ -280,9 +284,10 @@ class FullRunWorkflowTest {
 
             assertTrue(savedRun.distanceMeters > 42000)
         }
+    }
 
     @Test
-    fun multipleConsecutiveRuns_independentTracking() =
+    fun multipleConsecutiveRuns_independentTracking() {
         runBlocking {
             // Run 1
             val startTime1 = System.currentTimeMillis()
@@ -339,4 +344,5 @@ class FullRunWorkflowTest {
             assertTrue(run1 != null && run2 != null)
             assertTrue(run1!!.id != run2!!.id)
         }
+    }
 }
