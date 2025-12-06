@@ -322,6 +322,8 @@ fun sidekickApp() {
                                     locationTracker.startTracking()
                                 },
                                 onStopRun = {},
+                                heartRateData = heartRateData,
+                                connectedDevice = connectedDevice,
                             )
                         }
 
