@@ -21,8 +21,8 @@ echo "Downloading cmdline-tools from: $SDK_URL"
 wget -q "$SDK_URL" -O /tmp/cmdline-tools.zip
 unzip -q /tmp/cmdline-tools.zip -d /tmp
 rm /tmp/cmdline-tools.zip
-# Move cmdline-tools to proper location (sdkmanager expects this structure)
-mv /tmp/cmdline-tools "$ANDROID_HOME/cmdline-tools/latest"
+# Extract the inner cmdline-tools directory (zip contains cmdline-tools/cmdline-tools/...)
+mv /tmp/cmdline-tools/cmdline-tools "$ANDROID_HOME/cmdline-tools/latest"
 chmod 755 "$ANDROID_HOME/cmdline-tools/latest/bin"/*
 SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
 # Accept all licenses
