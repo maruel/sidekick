@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -65,17 +66,9 @@ fun onboardingScreen(
         OutlinedTextField(
             value = birthYearInput,
             onValueChange = { newValue ->
-                if (newValue.isEmpty()) {
-                    birthYearInput = ""
+                if (newValue.isEmpty() || newValue.all { it.isDigit() }) {
+                    birthYearInput = newValue
                     isError = false
-                } else {
-                    val year = newValue.toIntOrNull()
-                    if (year != null && year in 1900..currentYear) {
-                        birthYearInput = newValue
-                        isError = false
-                    } else {
-                        isError = true
-                    }
                 }
             },
             label = { Text("Birth Year") },
@@ -85,7 +78,8 @@ fun onboardingScreen(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = 16.dp)
+                    .testTag("birthYearInput"),
             singleLine = true,
         )
 

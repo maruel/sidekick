@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [RunEntity::class, RoutePointEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false,
 )
 abstract class SidekickDatabase : RoomDatabase() {
@@ -26,6 +26,7 @@ abstract class SidekickDatabase : RoomDatabase() {
                     SidekickDatabase::class.java,
                     "sidekick_database",
                 )
+                    .fallbackToDestructiveMigration()
                     .build()
                     .also { instance = it }
             }
