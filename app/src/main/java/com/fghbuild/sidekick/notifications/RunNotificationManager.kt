@@ -27,6 +27,9 @@ class RunNotificationManager(private val context: Context) {
                     NotificationManager.IMPORTANCE_DEFAULT,
                 )
             channel.description = "Notifications for active run tracking"
+            channel.setSound(null, null)
+            channel.enableVibration(false)
+            channel.enableLights(false)
             val manager = context.getSystemService(NotificationManager::class.java)
             manager?.createNotificationChannel(channel)
         }
@@ -52,6 +55,8 @@ class RunNotificationManager(private val context: Context) {
             .setOngoing(true)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
+            .setSilent(true)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .build()
     }
 

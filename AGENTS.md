@@ -11,6 +11,7 @@ Instructions for coding agents working on this project.
 | `./gradlew assembleRelease` | Release APK |
 | `./gradlew test` | Run unit tests |
 | `./gradlew connectedAndroidTest` | Run instrumentation tests on device/emulator |
+| `./run_integration_tests.sh` | Run integration tests with emulator (automated setup) |
 | `./gradlew ktlintCheck` | Check code formatting |
 | `./gradlew ktlintFormat` | Auto-fix formatting |
 | `./gradlew jacocoTestReport` | Generate code coverage report |

@@ -1,7 +1,12 @@
 package com.fghbuild.sidekick
 
 import android.Manifest
+import android.content.ComponentName
+import android.content.Intent
+import android.content.ServiceConnection
+import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -39,6 +44,7 @@ import com.fghbuild.sidekick.preferences.DevicePreferences
 import com.fghbuild.sidekick.repository.RunRepository
 import com.fghbuild.sidekick.run.RunManager
 import com.fghbuild.sidekick.run.RunStateManager
+import com.fghbuild.sidekick.service.RunTrackingService
 import com.fghbuild.sidekick.ui.screens.devicePairingScreen
 import com.fghbuild.sidekick.ui.screens.historyScreen
 import com.fghbuild.sidekick.ui.screens.homeScreen
@@ -81,6 +87,7 @@ fun sidekickApp() {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.RUN) }
+    var trackingService by remember { mutableStateOf<RunTrackingService?>(null) }
 
     val database = remember { SidekickDatabase.getInstance(context) }
     val runRepository =
@@ -142,11 +149,76 @@ fun sidekickApp() {
     val connectedDevice by bleManager.connectedDevice.collectAsState()
     val isScanning by bleManager.isScanning.collectAsState()
 
+    // Bind to tracking service
+    DisposableEffect(Unit) {
+        val serviceConnection =
+            object : ServiceConnection {
+                override fun onServiceConnected(
+                    name: ComponentName?,
+                    service: IBinder?,
+                ) {
+                    if (service is RunTrackingService.LocalBinder) {
+                        trackingService = service.getService()
+                        // If run is already active, restore the run state
+                        if (service.getService().isRunActive() && !runData.isRunning) {
+                            runStateManager.resumeRun()
+                        }
+                    }
+                }
+
+                override fun onServiceDisconnected(name: ComponentName?) {
+                    trackingService = null
+                }
+            }
+
+        val intent = Intent(context, RunTrackingService::class.java)
+        context.bindService(intent, serviceConnection, ComponentActivity.BIND_AUTO_CREATE)
+
+        onDispose {
+            context.unbindService(serviceConnection)
+        }
+    }
+
+    LaunchedEffect(runData.isRunning || runData.isPaused) {
+        if (runData.isRunning || runData.isPaused) {
+            // Start foreground service to keep app alive
+            val serviceIntent =
+                Intent(context, RunTrackingService::class.java).apply {
+                    action = RunTrackingService.ACTION_START_RUN
+                }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(serviceIntent)
+            } else {
+                context.startService(serviceIntent)
+            }
+        } else {
+            // Stop foreground service when run ends
+            val stopIntent =
+                Intent(context, RunTrackingService::class.java).apply {
+                    action = RunTrackingService.ACTION_STOP_RUN
+                }
+            context.startService(stopIntent)
+        }
+    }
+
     LaunchedEffect(runData.isRunning) {
         if (runData.isRunning) {
             locationTracker.currentLocation.filterNotNull().collect { location ->
                 runManager.updateLocation(location)
             }
+        }
+    }
+
+    LaunchedEffect(runData) {
+        if (runData.isRunning || runData.isPaused) {
+            // Update notification with current run stats
+            val durationSeconds = runData.durationMillis / 1000
+            val distanceKm = runData.distanceMeters / 1000.0
+            trackingService?.updateNotification(
+                distanceKm = distanceKm,
+                paceMinPerKm = runData.paceMinPerKm,
+                durationSeconds = durationSeconds,
+            )
         }
     }
 
@@ -161,6 +233,12 @@ fun sidekickApp() {
             runStateManager.cleanup()
             locationTracker.stopTracking()
             bleManager.disconnect()
+            // Stop foreground service on app destroy
+            val stopIntent =
+                Intent(context, RunTrackingService::class.java).apply {
+                    action = RunTrackingService.ACTION_STOP_RUN
+                }
+            context.startService(stopIntent)
         }
     }
 
