@@ -74,6 +74,7 @@ class RunInProgressScreenTest {
         var resumeClicked = false
         composeTestRule.setContent {
             runInProgressScreen(
+                runData = TestDataFactory.createTestRunData(isPaused = true),
                 onResume = { resumeClicked = true },
             )
         }

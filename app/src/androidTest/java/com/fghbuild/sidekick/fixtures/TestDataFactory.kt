@@ -138,6 +138,7 @@ object TestDataFactory {
     fun createTestRunData(
         distanceKm: Double = 5.0,
         durationMinutes: Int = 45,
+        isPaused: Boolean = false,
     ): RunData {
         val route = createTestRoute(distanceKm)
         val paceHistory =
@@ -150,6 +151,7 @@ object TestDataFactory {
             routePoints = route,
             paceHistory = paceHistory,
             isRunning = false,
+            isPaused = isPaused,
         )
     }
 
