@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -79,7 +78,7 @@ class MainActivity : ComponentActivity() {
 fun sidekickApp() {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.HOME) }
+    var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.RUN) }
 
     val database = remember { SidekickDatabase.getInstance(context) }
     val runRepository =
@@ -196,54 +195,41 @@ fun sidekickApp() {
         ) {
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                 when (currentDestination) {
-                    AppDestinations.HOME ->
-                        homeScreen(
-                            modifier = Modifier.padding(innerPadding),
-                            isRunning = runData.isRunning,
-                            onStartRun = {
-                                runStartTime = System.currentTimeMillis()
-                                locationTracker.resetRoute()
-                                runStateManager.startRun()
-                                locationTracker.startTracking()
-                                currentDestination = AppDestinations.RUN
-                            },
-                            onStopRun = {
-                                val endTime = System.currentTimeMillis()
-                                runStateManager.stopRun()
-                                locationTracker.stopTracking()
-                                scope.launch {
-                                    runRepository.saveRun(
-                                        runData = runData,
-                                        heartRateData = heartRateData,
-                                        startTime = runStartTime,
-                                        endTime = endTime,
-                                    )
-                                }
-                                currentDestination = AppDestinations.HOME
-                            },
-                        )
-
                     AppDestinations.RUN ->
-                        runInProgressScreen(
-                            modifier = Modifier.padding(innerPadding),
-                            runData = runData,
-                            heartRateData = heartRateData,
-                            onResume = { runStateManager.resumeRun() },
-                            onStop = {
-                                val endTime = System.currentTimeMillis()
-                                runStateManager.stopRun()
-                                locationTracker.stopTracking()
-                                scope.launch {
-                                    runRepository.saveRun(
-                                        runData = runData,
-                                        heartRateData = heartRateData,
-                                        startTime = runStartTime,
-                                        endTime = endTime,
-                                    )
-                                }
-                                currentDestination = AppDestinations.HOME
-                            },
-                        )
+                        if (runData.isRunning || runData.isPaused) {
+                            runInProgressScreen(
+                                modifier = Modifier.padding(innerPadding),
+                                runData = runData,
+                                heartRateData = heartRateData,
+                                onPause = { runStateManager.pauseRun() },
+                                onResume = { runStateManager.resumeRun() },
+                                onStop = {
+                                    val endTime = System.currentTimeMillis()
+                                    runStateManager.stopRun()
+                                    locationTracker.stopTracking()
+                                    scope.launch {
+                                        runRepository.saveRun(
+                                            runData = runData,
+                                            heartRateData = heartRateData,
+                                            startTime = runStartTime,
+                                            endTime = endTime,
+                                        )
+                                    }
+                                },
+                            )
+                        } else {
+                            homeScreen(
+                                modifier = Modifier.padding(innerPadding),
+                                isRunning = false,
+                                onStartRun = {
+                                    runStartTime = System.currentTimeMillis()
+                                    locationTracker.resetRoute()
+                                    runStateManager.startRun()
+                                    locationTracker.startTracking()
+                                },
+                                onStopRun = {},
+                            )
+                        }
 
                     AppDestinations.HISTORY ->
                         historyScreen(
@@ -265,7 +251,6 @@ enum class AppDestinations(
     val label: String,
     val icon: ImageVector,
 ) {
-    HOME("Home", Icons.Default.Home),
     RUN("Run", Icons.Default.PlayArrow),
     HISTORY("History", Icons.AutoMirrored.Filled.List),
 }

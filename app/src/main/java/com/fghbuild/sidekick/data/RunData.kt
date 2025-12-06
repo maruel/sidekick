@@ -7,4 +7,5 @@ data class RunData(
     val routePoints: List<RoutePoint> = emptyList(),
     val paceHistory: List<Double> = emptyList(),
     val isRunning: Boolean = false,
+    val isPaused: Boolean = false,
 )

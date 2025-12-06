@@ -12,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,6 +33,7 @@ fun runInProgressScreen(
     modifier: Modifier = Modifier,
     runData: RunData = RunData(),
     heartRateData: HeartRateData = HeartRateData(),
+    onPause: () -> Unit = {},
     onResume: () -> Unit = {},
     onStop: () -> Unit = {},
 ) {
@@ -102,8 +104,14 @@ fun runInProgressScreen(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            IconButton(onClick = onResume) {
-                Icon(Icons.Default.PlayArrow, contentDescription = "Resume")
+            if (runData.isPaused) {
+                IconButton(onClick = onResume) {
+                    Icon(Icons.Default.PlayArrow, contentDescription = "Resume")
+                }
+            } else {
+                IconButton(onClick = onPause) {
+                    Icon(Icons.Default.Pause, contentDescription = "Pause")
+                }
             }
             IconButton(onClick = onStop) {
                 Icon(Icons.Default.Close, contentDescription = "Stop")

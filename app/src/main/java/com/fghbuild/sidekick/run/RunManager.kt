@@ -30,14 +30,18 @@ class RunManager {
 
     fun pauseRun() {
         pausedTimeMillis = System.currentTimeMillis()
-        _runData.value = _runData.value.copy(isRunning = false)
+        _runData.value = _runData.value.copy(isRunning = false, isPaused = true)
     }
 
     fun resumeRun() {
         if (!_runData.value.isRunning) {
             startTimeMillis += System.currentTimeMillis() - pausedTimeMillis
-            _runData.value = _runData.value.copy(isRunning = true)
+            _runData.value = _runData.value.copy(isRunning = true, isPaused = false)
         }
+    }
+
+    fun stopRun() {
+        _runData.value = _runData.value.copy(isRunning = false, isPaused = false)
     }
 
     fun updateLocation(location: Location) {
