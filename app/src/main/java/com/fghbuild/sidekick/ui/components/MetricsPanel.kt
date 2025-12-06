@@ -24,13 +24,17 @@ fun metricsPanel(
         metricCard(
             label = "Heart Rate",
             value = if (heartRateData.currentBpm > 0) "${heartRateData.currentBpm} bpm" else "--",
-            averageValue = if (heartRateData.averageBpm > 0) "${heartRateData.averageBpm} bpm" else null,
-            maxValue = if (heartRateData.measurements.isNotEmpty()) "${heartRateData.measurements.maxOrNull() ?: 0} bpm" else null,
+            averageValue = if (heartRateData.averageBpm > 0) "${heartRateData.averageBpm}" else null,
+            minValue = if (heartRateData.measurements.isNotEmpty()) "${heartRateData.measurements.minOrNull() ?: 0}" else null,
+            maxValue = if (heartRateData.measurements.isNotEmpty()) "${heartRateData.measurements.maxOrNull() ?: 0}" else null,
             modifier = Modifier.weight(1f),
         )
         metricCard(
             label = "Pace",
             value = if (isRunning) formatPace(runData.paceMinPerKm) else "--",
+            averageValue = if (runData.paceHistory.isNotEmpty()) formatPace(runData.paceHistory.average()) else null,
+            minValue = if (runData.paceHistory.isNotEmpty()) formatPace(runData.paceHistory.minOrNull() ?: 0.0) else null,
+            maxValue = if (runData.paceHistory.isNotEmpty()) formatPace(runData.paceHistory.maxOrNull() ?: 0.0) else null,
             modifier = Modifier.weight(1f),
         )
     }

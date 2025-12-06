@@ -21,6 +21,7 @@ fun metricCard(
     value: String,
     modifier: Modifier = Modifier,
     averageValue: String? = null,
+    minValue: String? = null,
     maxValue: String? = null,
 ) {
     Column(
@@ -50,6 +51,12 @@ fun metricCard(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
+            Text(
+                text = "min: ${minValue ?: "--"}",
+                fontSize = 10.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
             Text(
                 text = "avg: ${averageValue ?: "--"}",
                 fontSize = 10.sp,
