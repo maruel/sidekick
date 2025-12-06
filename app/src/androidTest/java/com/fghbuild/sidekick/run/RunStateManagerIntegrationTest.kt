@@ -4,15 +4,14 @@ import android.content.Context
 import android.location.Location
 import androidx.test.core.app.ApplicationProvider
 import com.fghbuild.sidekick.audio.AnnouncementManager
-import com.fghbuild.sidekick.audio.VoiceCommandListener
+import com.fghbuild.sidekick.audio.FakeVoiceCommandListener
+import com.fghbuild.sidekick.audio.VoiceCommand
 import com.fghbuild.sidekick.fixtures.TestDataFactory
-import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -20,7 +19,7 @@ class RunStateManagerIntegrationTest {
     private lateinit var context: Context
     private lateinit var runManager: RunManager
     private lateinit var announcementManager: AnnouncementManager
-    private lateinit var voiceCommandListener: VoiceCommandListener
+    private lateinit var voiceCommandListener: FakeVoiceCommandListener
     private lateinit var runStateManager: RunStateManager
 
     @Before
@@ -31,15 +30,12 @@ class RunStateManagerIntegrationTest {
 
         announcementManager = spyk(AnnouncementManager(context), recordPrivateCalls = true)
 
-        // Mock VoiceCommandListener to avoid SpeechRecognizer instantiation
-        // Note: This causes StateFlow proxy issues in runtime that will cause some tests to fail
-        // See: https://github.com/mockk/mockk/issues/897
-        voiceCommandListener = mockk(relaxed = true)
+        // Use FakeVoiceCommandListener instead of mockk to avoid StateFlow proxy issues
+        voiceCommandListener = FakeVoiceCommandListener()
 
         runStateManager = RunStateManager(runManager, announcementManager, voiceCommandListener)
     }
 
-    @Ignore("StateFlow proxy issue with mockk relaxed mock")
     @Test
     fun startRun_initializesThresholds() {
         runBlocking {
@@ -48,13 +44,12 @@ class RunStateManagerIntegrationTest {
             val runData = runStateManager.runData.first()
             assertEquals(true, runData.isRunning)
 
-            verify(timeout = 1000) {
-                voiceCommandListener.startListening()
-            }
+            // Verify listening started
+            val listeningState = voiceCommandListener.isListening.first()
+            assertEquals(true, listeningState)
         }
     }
 
-    @Ignore("StateFlow proxy issue with mockk relaxed mock")
     @Test
     fun distanceAnnouncements_triggersAt1kmIntervals() {
         runBlocking {
@@ -85,7 +80,6 @@ class RunStateManagerIntegrationTest {
         }
     }
 
-    @Ignore("StateFlow proxy issue with mockk relaxed mock")
     @Test
     fun paceAnnouncements_includesWithDistance() {
         runBlocking {
@@ -110,21 +104,20 @@ class RunStateManagerIntegrationTest {
         }
     }
 
-    @Ignore("StateFlow proxy issue with mockk relaxed mock")
     @Test
     fun voiceCommandHandling_receivesPauseCommand() {
         runBlocking {
             runStateManager.startRun()
 
-            // This test is skipped due to StateFlow proxy issues with mockk
-            // The relaxed mock can't properly handle the lastCommand StateFlow property
-            verify(timeout = 1000) {
-                voiceCommandListener.startListening()
-            }
+            // Simulate receiving a pause command
+            voiceCommandListener.simulateCommand(VoiceCommand.PAUSE)
+
+            // Verify the command was received via the StateFlow
+            val lastCommand = runStateManager.lastCommand.first()
+            assertEquals(VoiceCommand.PAUSE, lastCommand)
         }
     }
 
-    @Ignore("StateFlow proxy issue with mockk relaxed mock")
     @Test
     fun pauseRun_stopsTracking() {
         runBlocking {
@@ -149,7 +142,6 @@ class RunStateManagerIntegrationTest {
         }
     }
 
-    @Ignore("StateFlow proxy issue with mockk relaxed mock")
     @Test
     fun resumeRun_restartsAnnouncements() {
         runBlocking {
@@ -175,7 +167,6 @@ class RunStateManagerIntegrationTest {
         }
     }
 
-    @Ignore("StateFlow proxy issue with mockk relaxed mock")
     @Test
     fun stopRun_stopsServicesGracefully() {
         runBlocking {
@@ -183,14 +174,17 @@ class RunStateManagerIntegrationTest {
 
             runStateManager.stopRun()
 
+            // Verify listening stopped
+            val listeningState = voiceCommandListener.isListening.first()
+            assertEquals(false, listeningState)
+
+            // Verify announcement manager was called to stop
             verify {
-                voiceCommandListener.stopListening()
                 announcementManager.stop()
             }
         }
     }
 
-    @Ignore("StateFlow proxy issue with mockk relaxed mock")
     @Test
     fun hourlyAnnouncements_updatesEveryMinute() {
         runBlocking {

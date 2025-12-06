@@ -1,15 +1,15 @@
 package com.fghbuild.sidekick.run
 
 import com.fghbuild.sidekick.audio.AnnouncementManager
+import com.fghbuild.sidekick.audio.IVoiceCommandListener
 import com.fghbuild.sidekick.audio.VoiceCommand
-import com.fghbuild.sidekick.audio.VoiceCommandListener
 import com.fghbuild.sidekick.data.RunData
 import kotlinx.coroutines.flow.StateFlow
 
 class RunStateManager(
     private val runManager: RunManager,
     private val announcements: AnnouncementManager,
-    private val voiceListener: VoiceCommandListener,
+    private val voiceListener: IVoiceCommandListener,
 ) {
     private var lastKilometerAnnouncement = 0.0
     private var lastMinuteAnnouncement = 0L

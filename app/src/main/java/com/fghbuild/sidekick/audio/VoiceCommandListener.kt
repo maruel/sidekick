@@ -16,16 +16,27 @@ enum class VoiceCommand {
     NONE,
 }
 
-class VoiceCommandListener(private val context: Context) : RecognitionListener {
+interface IVoiceCommandListener {
+    val lastCommand: StateFlow<VoiceCommand>
+    val isListening: StateFlow<Boolean>
+
+    fun startListening()
+
+    fun stopListening()
+
+    fun destroy()
+}
+
+class VoiceCommandListener(private val context: Context) : RecognitionListener, IVoiceCommandListener {
     private val speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
 
     private val _lastCommand = MutableStateFlow(VoiceCommand.NONE)
-    val lastCommand: StateFlow<VoiceCommand> = _lastCommand.asStateFlow()
+    override val lastCommand: StateFlow<VoiceCommand> = _lastCommand.asStateFlow()
 
     private val _isListening = MutableStateFlow(false)
-    val isListening: StateFlow<Boolean> = _isListening.asStateFlow()
+    override val isListening: StateFlow<Boolean> = _isListening.asStateFlow()
 
-    fun startListening() {
+    override fun startListening() {
         if (_isListening.value) return
 
         try {
@@ -57,7 +68,7 @@ class VoiceCommandListener(private val context: Context) : RecognitionListener {
         }
     }
 
-    fun stopListening() {
+    override fun stopListening() {
         try {
             speechRecognizer.stopListening()
         } catch (e: Exception) {
@@ -122,7 +133,7 @@ class VoiceCommandListener(private val context: Context) : RecognitionListener {
         // Event occurred
     }
 
-    fun destroy() {
+    override fun destroy() {
         try {
             speechRecognizer.destroy()
         } catch (e: Exception) {
