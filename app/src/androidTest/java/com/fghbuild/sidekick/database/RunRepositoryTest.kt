@@ -6,20 +6,18 @@ import com.fghbuild.sidekick.fixtures.TestDataFactory
 import com.fghbuild.sidekick.repository.RunRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Test
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-@DisplayName("RunRepository Integration Tests")
 class RunRepositoryTest {
     private lateinit var database: SidekickDatabase
     private lateinit var repository: RunRepository
 
-    @BeforeEach
+    @Before
     fun setup() {
         val context = ApplicationProvider.getApplicationContext<android.app.Application>()
         database =
@@ -33,13 +31,12 @@ class RunRepositoryTest {
         repository = RunRepository(database.runDao(), database.routePointDao())
     }
 
-    @AfterEach
+    @After
     fun teardown() {
         database.close()
     }
 
     @Test
-    @DisplayName("saveRun: persists run with empty route")
     fun saveRun_withEmptyRoute() =
         runBlocking {
             val runData = TestDataFactory.createTestRunData(distanceKm = 0.0)
@@ -62,7 +59,6 @@ class RunRepositoryTest {
         }
 
     @Test
-    @DisplayName("saveRun: persists run with route points")
     fun saveRun_withRoutePoints() =
         runBlocking {
             val runData = TestDataFactory.createTestRunData(distanceKm = 5.0)
@@ -88,7 +84,6 @@ class RunRepositoryTest {
         }
 
     @Test
-    @DisplayName("saveRun: persists run with 100+ route points")
     fun saveRun_with100PlusRoutePoints() =
         runBlocking {
             val runData =
@@ -111,7 +106,6 @@ class RunRepositoryTest {
         }
 
     @Test
-    @DisplayName("getAllRuns: returns runs ordered by date (newest first)")
     fun getAllRuns_returnsSortedByDate() =
         runBlocking {
             val now = System.currentTimeMillis()
@@ -134,7 +128,6 @@ class RunRepositoryTest {
         }
 
     @Test
-    @DisplayName("getRoutePointsForRun: returns points for specific run")
     fun getRoutePointsForRun_returnsSpecificRunPoints() =
         runBlocking {
             val now = System.currentTimeMillis()
@@ -163,7 +156,6 @@ class RunRepositoryTest {
         }
 
     @Test
-    @DisplayName("deleteRun: removes run and cascade deletes route points")
     fun deleteRun_cascadeDeletesRoutePoints() =
         runBlocking {
             val now = System.currentTimeMillis()
@@ -189,7 +181,6 @@ class RunRepositoryTest {
         }
 
     @Test
-    @DisplayName("saveRun: calculates average pace correctly")
     fun saveRun_calculatesAveragePaceCorrectly() =
         runBlocking {
             val runData =
@@ -217,7 +208,6 @@ class RunRepositoryTest {
         }
 
     @Test
-    @DisplayName("saveRun: persists heart rate statistics")
     fun saveRun_persistsHeartRateStatistics() =
         runBlocking {
             val measurements = listOf(100, 120, 140, 160, 180, 170, 150, 130, 120, 110)

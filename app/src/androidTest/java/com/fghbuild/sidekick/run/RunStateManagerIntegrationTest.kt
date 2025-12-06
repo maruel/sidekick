@@ -11,12 +11,10 @@ import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Test
+import org.junit.Before
+import org.junit.Test
 import kotlin.test.assertEquals
 
-@DisplayName("RunStateManager Integration Tests")
 class RunStateManagerIntegrationTest {
     private lateinit var context: Context
     private lateinit var runManager: RunManager
@@ -24,7 +22,7 @@ class RunStateManagerIntegrationTest {
     private lateinit var voiceCommandListener: VoiceCommandListener
     private lateinit var runStateManager: RunStateManager
 
-    @BeforeEach
+    @Before
     fun setup() {
         context = ApplicationProvider.getApplicationContext()
 
@@ -37,7 +35,6 @@ class RunStateManagerIntegrationTest {
     }
 
     @Test
-    @DisplayName("startRun: initializes announcement thresholds")
     fun startRun_initializesThresholds() =
         runBlocking {
             runStateManager.startRun()
@@ -51,7 +48,6 @@ class RunStateManagerIntegrationTest {
         }
 
     @Test
-    @DisplayName("distance announcements: triggers at 1km intervals")
     fun distanceAnnouncements_triggersAt1kmIntervals() =
         runBlocking {
             runStateManager.startRun()
@@ -81,7 +77,6 @@ class RunStateManagerIntegrationTest {
         }
 
     @Test
-    @DisplayName("pace announcements: includes pace with distance")
     fun paceAnnouncements_includesWithDistance() =
         runBlocking {
             runStateManager.startRun()
@@ -105,7 +100,6 @@ class RunStateManagerIntegrationTest {
         }
 
     @Test
-    @DisplayName("voice command handling: receives pause command")
     fun voiceCommandHandling_receivesPauseCommand() =
         runBlocking {
             runStateManager.startRun()
@@ -118,7 +112,6 @@ class RunStateManagerIntegrationTest {
         }
 
     @Test
-    @DisplayName("pauseRun: stops distance tracking for announcements")
     fun pauseRun_stopsTracking() =
         runBlocking {
             runStateManager.startRun()
@@ -142,7 +135,6 @@ class RunStateManagerIntegrationTest {
         }
 
     @Test
-    @DisplayName("resumeRun: restarts announcement timing")
     fun resumeRun_restartsAnnouncements() =
         runBlocking {
             runStateManager.startRun()
@@ -167,7 +159,6 @@ class RunStateManagerIntegrationTest {
         }
 
     @Test
-    @DisplayName("stopRun: stops voice listening and announcements")
     fun stopRun_stopsServicesGracefully() =
         runBlocking {
             runStateManager.startRun()
@@ -181,7 +172,6 @@ class RunStateManagerIntegrationTest {
         }
 
     @Test
-    @DisplayName("hourly announcements: updates every minute")
     fun hourlyAnnouncements_updatesEveryMinute() =
         runBlocking {
             runStateManager.startRun()

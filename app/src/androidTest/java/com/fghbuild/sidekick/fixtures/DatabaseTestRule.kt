@@ -4,36 +4,49 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.fghbuild.sidekick.database.SidekickDatabase
 import com.fghbuild.sidekick.repository.RunRepository
-import org.junit.jupiter.api.extension.BeforeEachCallback
-import org.junit.jupiter.api.extension.ExtensionContext
+import org.junit.rules.TestRule
+import org.junit.runner.Description
+import org.junit.runners.model.Statement
 
 /**
- * JUnit 5 extension for managing test database lifecycle.
+ * JUnit 4 rule for managing test database lifecycle.
  * Automatically creates a fresh in-memory database for each test.
  *
  * Usage:
  * ```kotlin
- * @ExtendWith(DatabaseTestRule::class)
  * class MyDatabaseTest {
- *     private lateinit var database: SidekickDatabase
- *     private lateinit var repository: RunRepository
+ *     @get:Rule
+ *     val databaseRule = DatabaseTestRule()
  *
- *     @BeforeEach
- *     fun setup(extension: DatabaseTestRule) {
- *         database = extension.database
- *         repository = extension.repository
+ *     @Test
+ *     fun myTest() {
+ *         val database = databaseRule.database
+ *         val repository = databaseRule.repository
  *     }
  * }
  * ```
  */
-class DatabaseTestRule : BeforeEachCallback {
+class DatabaseTestRule : TestRule {
     lateinit var database: SidekickDatabase
     lateinit var repository: RunRepository
 
-    override fun beforeEach(context: ExtensionContext) {
-        val appContext = ApplicationProvider.getApplicationContext<Context>()
-        database = TestDatabase.createTestDatabase(appContext)
-        repository = RunRepository(database.runDao(), database.routePointDao())
+    override fun apply(
+        base: Statement,
+        description: Description,
+    ): Statement {
+        return object : Statement() {
+            override fun evaluate() {
+                val appContext = ApplicationProvider.getApplicationContext<Context>()
+                database = TestDatabase.createTestDatabase(appContext)
+                repository = RunRepository(database.runDao(), database.routePointDao())
+
+                try {
+                    base.evaluate()
+                } finally {
+                    close()
+                }
+            }
+        }
     }
 
     fun close() {

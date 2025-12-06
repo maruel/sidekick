@@ -12,20 +12,20 @@ import com.fghbuild.sidekick.run.RunManager
 import com.fghbuild.sidekick.ui.screens.historyScreen
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Test
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-@DisplayName("Multiple Runs and History Management Tests")
 class MultipleRunsAndHistoryTest {
-    private val composeTestRule = createComposeRule()
+    @get:Rule
+    val composeTestRule = createComposeRule()
     private lateinit var database: SidekickDatabase
     private lateinit var repository: RunRepository
 
-    @BeforeEach
+    @Before
     fun setup() {
         val context = ApplicationProvider.getApplicationContext<android.app.Application>()
         database =
@@ -39,13 +39,12 @@ class MultipleRunsAndHistoryTest {
         repository = RunRepository(database.runDao(), database.routePointDao())
     }
 
-    @AfterEach
+    @After
     fun teardown() {
         database.close()
     }
 
     @Test
-    @DisplayName("save 3 runs: displays all in history")
     fun save3Runs_displaysAllInHistory() =
         runBlocking {
             val now = System.currentTimeMillis()
@@ -118,7 +117,6 @@ class MultipleRunsAndHistoryTest {
         }
 
     @Test
-    @DisplayName("delete run from history: removed from database")
     fun deleteRunFromHistory_removedFromDatabase() =
         runBlocking {
             val startTime = System.currentTimeMillis()
@@ -153,7 +151,6 @@ class MultipleRunsAndHistoryTest {
         }
 
     @Test
-    @DisplayName("history with varying distances: all displayed correctly")
     fun historyWithVaryingDistances_allDisplayedCorrectly() =
         runBlocking {
             val distances = listOf(1.0, 3.5, 5.0, 8.0, 15.0, 21.0, 42.195)
@@ -195,7 +192,6 @@ class MultipleRunsAndHistoryTest {
         }
 
     @Test
-    @DisplayName("history sorting: newest runs first")
     fun historySorting_newestRunsFirst() =
         runBlocking {
             val now = System.currentTimeMillis()
@@ -242,7 +238,6 @@ class MultipleRunsAndHistoryTest {
         }
 
     @Test
-    @DisplayName("delete all runs: history shows empty state")
     fun deleteAllRuns_historyShowsEmptyState() =
         runBlocking {
             val now = System.currentTimeMillis()
@@ -295,7 +290,6 @@ class MultipleRunsAndHistoryTest {
         }
 
     @Test
-    @DisplayName("history with heart rate variation: displays stats correctly")
     fun historyWithHeartRateVariation_displaysStatsCorrectly() =
         runBlocking {
             val now = System.currentTimeMillis()

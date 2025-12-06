@@ -8,20 +8,18 @@ import com.fghbuild.sidekick.repository.RunRepository
 import com.fghbuild.sidekick.run.RunManager
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Test
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-@DisplayName("Full Run Workflow Integration Tests")
 class FullRunWorkflowTest {
     private lateinit var database: SidekickDatabase
     private lateinit var repository: RunRepository
     private lateinit var runManager: RunManager
 
-    @BeforeEach
+    @Before
     fun setup() {
         val context = ApplicationProvider.getApplicationContext<android.app.Application>()
         database =
@@ -36,13 +34,12 @@ class FullRunWorkflowTest {
         runManager = RunManager()
     }
 
-    @AfterEach
+    @After
     fun teardown() {
         database.close()
     }
 
     @Test
-    @DisplayName("complete 5km run: start → track → save → verify")
     fun complete5kmRun_startTrackSaveVerify() =
         runBlocking {
             val startTime = System.currentTimeMillis()
@@ -99,7 +96,6 @@ class FullRunWorkflowTest {
         }
 
     @Test
-    @DisplayName("pause → resume: maintains continuity")
     fun pauseResume_maintainsContinuity() =
         runBlocking {
             val startTime = System.currentTimeMillis()
@@ -167,7 +163,6 @@ class FullRunWorkflowTest {
         }
 
     @Test
-    @DisplayName("high intensity run: elevated heart rate tracking")
     fun highIntensityRun_elevatedHeartRateTracking() =
         runBlocking {
             val startTime = System.currentTimeMillis()
@@ -210,7 +205,6 @@ class FullRunWorkflowTest {
         }
 
     @Test
-    @DisplayName("easy run: low intensity tracking")
     fun easyRun_lowIntensityTracking() =
         runBlocking {
             val startTime = System.currentTimeMillis()
@@ -253,7 +247,6 @@ class FullRunWorkflowTest {
         }
 
     @Test
-    @DisplayName("very long run: handles marathon distance")
     fun veryLongRun_handlesMarathonDistance() =
         runBlocking {
             val startTime = System.currentTimeMillis()
@@ -289,7 +282,6 @@ class FullRunWorkflowTest {
         }
 
     @Test
-    @DisplayName("multiple consecutive runs: independent tracking")
     fun multipleConsecutiveRuns_independentTracking() =
         runBlocking {
             // Run 1

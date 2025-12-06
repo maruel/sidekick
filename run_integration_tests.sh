@@ -163,7 +163,7 @@ while [ $COUNTER -lt $TIMEOUT ]; do
     fi
 
     # Check for connected device
-    DEVICE_COUNT=$(adb devices 2>/dev/null | grep -c "emulator.*device" 2>/dev/null || echo "0" | xargs)
+    DEVICE_COUNT=$(adb devices 2>/dev/null | grep -c "emulator.*device" 2>/dev/null || echo "0")
     if [ "$DEVICE_COUNT" -gt "$LAST_DEVICE_COUNT" ]; then
         LAST_DEVICE_COUNT=$DEVICE_COUNT
         echo "Device detected! (attempt: $((COUNTER/5)))"
@@ -191,6 +191,12 @@ if [ $COUNTER -ge $TIMEOUT ]; then
 fi
 
 sleep 5
+
+echo "Clearing app data and cache from emulator..."
+adb shell pm clear com.fghbuild.sidekick || true
+adb shell rm -rf /data/user/0/com.fghbuild.sidekick || true
+adb shell rm -rf /data/data/com.fghbuild.sidekick || true
+adb shell rm -rf /data/app/*/app_dxmaker_cache || true
 
 echo "Running integration tests..."
 ./gradlew connectedAndroidTest --continue

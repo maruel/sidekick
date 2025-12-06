@@ -10,6 +10,7 @@ Instructions for coding agents working on this project.
 | `./gradlew assembleDebug` | Debug APK |
 | `./gradlew assembleRelease` | Release APK |
 | `./gradlew test` | Run unit tests |
+| `./gradlew connectedAndroidTest` | Run instrumentation tests on device/emulator |
 | `./gradlew ktlintCheck` | Check code formatting |
 | `./gradlew ktlintFormat` | Auto-fix formatting |
 
@@ -28,6 +29,8 @@ Instructions for coding agents working on this project.
 | Database | Room |
 | Min SDK | 34 (Android 14) |
 | Target SDK | 36 |
+| Unit Tests | JUnit 6 (Jupiter) |
+| Integration Tests | JUnit 6 with Compose UI Testing |
 
 ## Key Dependencies
 
@@ -47,5 +50,8 @@ Instructions for coding agents working on this project.
 - `HeartRateUtils` - HR statistics
 
 ### Testing
-- Unit tests in `src/test/` for utilities and managers
-- UI tests in `src/androidTest/` for Compose screens
+- Unit tests in `src/test/` use JUnit 6 (Jupiter) with annotations from `org.junit.jupiter.api`
+- Instrumentation tests in `src/androidTest/` use JUnit 4 with Compose test rule for device/emulator testing
+- Compose UI tests use `@get:Rule val composeTestRule = createComposeRule()`
+- Unit test fixtures: `@BeforeEach`, `@AfterEach`, `@DisplayName` from `org.junit.jupiter.api`
+- Integration test fixtures: `@Before`, `@After`, `@Test` from `org.junit` (JUnit 4)

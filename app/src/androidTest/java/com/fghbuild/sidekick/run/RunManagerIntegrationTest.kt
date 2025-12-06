@@ -5,23 +5,20 @@ import com.fghbuild.sidekick.fixtures.TestDataFactory
 import com.fghbuild.sidekick.util.GeoUtils
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Test
+import org.junit.Before
+import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-@DisplayName("RunManager Integration Tests")
 class RunManagerIntegrationTest {
     private lateinit var runManager: RunManager
 
-    @BeforeEach
+    @Before
     fun setup() {
         runManager = RunManager()
     }
 
     @Test
-    @DisplayName("location tracking: accumulates distance from multiple updates")
     fun locationTracking_accumulatesDistance() =
         runBlocking {
             runManager.startRun()
@@ -51,7 +48,6 @@ class RunManagerIntegrationTest {
         }
 
     @Test
-    @DisplayName("distance calculation: uses Haversine formula")
     fun distanceCalculation_usesHaversine() =
         runBlocking {
             runManager.startRun()
@@ -95,7 +91,6 @@ class RunManagerIntegrationTest {
         }
 
     @Test
-    @DisplayName("pace calculation: tracks pace history")
     fun paceCalculation_tracksHistory() =
         runBlocking {
             runManager.startRun()
@@ -118,7 +113,6 @@ class RunManagerIntegrationTest {
         }
 
     @Test
-    @DisplayName("pause/resume: preserves distance and pace")
     fun pauseResume_preservesData() =
         runBlocking {
             runManager.startRun()
@@ -168,7 +162,6 @@ class RunManagerIntegrationTest {
         }
 
     @Test
-    @DisplayName("run state: tracks running state correctly")
     fun runState_tracksStateTransitions() =
         runBlocking {
             val initialState = runManager.runData.first()
@@ -188,7 +181,6 @@ class RunManagerIntegrationTest {
         }
 
     @Test
-    @DisplayName("route points: updates from location stream")
     fun routePoints_updatesFromLocationStream() =
         runBlocking {
             val testRoute = TestDataFactory.createTestRoute(distanceKm = 1.5)
@@ -213,7 +205,6 @@ class RunManagerIntegrationTest {
         }
 
     @Test
-    @DisplayName("duration: increases with run time")
     fun duration_increasesWithTime() =
         runBlocking {
             runManager.startRun()
@@ -238,7 +229,6 @@ class RunManagerIntegrationTest {
         }
 
     @Test
-    @DisplayName("pace history: accumulates all pace values")
     fun paceHistory_accumulatesAllValues() =
         runBlocking {
             runManager.startRun()

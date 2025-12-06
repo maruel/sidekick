@@ -5,16 +5,15 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.fghbuild.sidekick.fixtures.TestDataFactory
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Test
+import org.junit.Rule
+import org.junit.Test
 import kotlin.test.assertTrue
 
-@DisplayName("HistoryScreen Tests")
 class HistoryScreenTest {
-    private val composeTestRule = createComposeRule()
+    @get:Rule
+    val composeTestRule = createComposeRule()
 
     @Test
-    @DisplayName("displays title")
     fun historyScreen_displaysTitle() {
         composeTestRule.setContent {
             historyScreen()
@@ -23,7 +22,6 @@ class HistoryScreenTest {
     }
 
     @Test
-    @DisplayName("empty state: displays no runs message")
     fun historyScreen_emptyState_displaysNoRunsMessage() {
         composeTestRule.setContent {
             historyScreen(runs = emptyList())
@@ -33,7 +31,6 @@ class HistoryScreenTest {
     }
 
     @Test
-    @DisplayName("single run: displays run data")
     fun historyScreen_singleRun_displaysRunData() {
         val run = TestDataFactory.createTestRunEntity(distanceMeters = 5000.0)
         composeTestRule.setContent {
@@ -44,7 +41,6 @@ class HistoryScreenTest {
     }
 
     @Test
-    @DisplayName("run card: displays distance formatted")
     fun historyScreen_runCard_displaysDistanceFormatted() {
         val run =
             TestDataFactory.createTestRunEntity(
@@ -57,7 +53,6 @@ class HistoryScreenTest {
     }
 
     @Test
-    @DisplayName("run card: displays duration formatted")
     fun historyScreen_runCard_displaysDurationFormatted() {
         val run =
             TestDataFactory.createTestRunEntity(
@@ -70,7 +65,6 @@ class HistoryScreenTest {
     }
 
     @Test
-    @DisplayName("run card: displays pace formatted")
     fun historyScreen_runCard_displaysPaceFormatted() {
         val run =
             TestDataFactory.createTestRunEntity(
@@ -83,7 +77,6 @@ class HistoryScreenTest {
     }
 
     @Test
-    @DisplayName("run card: displays heart rate stats when available")
     fun historyScreen_runCard_displaysHeartRateStatsWhenAvailable() {
         val run =
             TestDataFactory.createTestRunEntity(
@@ -100,7 +93,6 @@ class HistoryScreenTest {
     }
 
     @Test
-    @DisplayName("run card: hides heart rate stats when zero")
     fun historyScreen_runCard_hidesHeartRateStatsWhenZero() {
         val run =
             TestDataFactory.createTestRunEntity(
@@ -116,7 +108,6 @@ class HistoryScreenTest {
     }
 
     @Test
-    @DisplayName("delete button: triggers callback with run ID")
     fun historyScreen_deleteButton_triggersCallback() {
         val run = TestDataFactory.createTestRunEntity(id = 42)
         var deletedRunId: Long? = null
@@ -133,7 +124,6 @@ class HistoryScreenTest {
     }
 
     @Test
-    @DisplayName("multiple runs: displays all runs")
     fun historyScreen_multipleRuns_displaysAllRuns() {
         val now = System.currentTimeMillis()
         val run1 =
@@ -158,7 +148,6 @@ class HistoryScreenTest {
     }
 
     @Test
-    @DisplayName("large distance: displays correctly formatted")
     fun historyScreen_largeDistance_displaysCorrectlyFormatted() {
         val run =
             TestDataFactory.createTestRunEntity(
@@ -171,7 +160,6 @@ class HistoryScreenTest {
     }
 
     @Test
-    @DisplayName("realistic runs: displays with all stats")
     fun historyScreen_realisticRuns_displaysWithAllStats() {
         val runs =
             listOf(
@@ -207,7 +195,6 @@ class HistoryScreenTest {
     }
 
     @Test
-    @DisplayName("very short run: displays data without errors")
     fun historyScreen_veryShortRun_displaysDataWithoutErrors() {
         val run =
             TestDataFactory.createTestRunEntity(

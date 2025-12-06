@@ -3,20 +3,18 @@ package com.fghbuild.sidekick.database
 import androidx.test.core.app.ApplicationProvider
 import com.fghbuild.sidekick.fixtures.TestDataFactory
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Test
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-@DisplayName("RoutePointDao Tests")
 class RoutePointDaoTest {
     private lateinit var database: SidekickDatabase
     private lateinit var runDao: RunDao
     private lateinit var routePointDao: RoutePointDao
 
-    @BeforeEach
+    @Before
     fun setup() {
         val context = ApplicationProvider.getApplicationContext<android.app.Application>()
         database =
@@ -31,13 +29,12 @@ class RoutePointDaoTest {
         routePointDao = database.routePointDao()
     }
 
-    @AfterEach
+    @After
     fun teardown() {
         database.close()
     }
 
     @Test
-    @DisplayName("insertRoutePoints: stores single route point")
     fun insertRoutePoints_singlePoint() =
         runBlocking {
             val runEntity = TestDataFactory.createTestRunEntity()
@@ -61,7 +58,6 @@ class RoutePointDaoTest {
         }
 
     @Test
-    @DisplayName("insertRoutePoints: stores 100+ route points")
     fun insertRoutePoints_hundredPlusPoints() =
         runBlocking {
             val runEntity = TestDataFactory.createTestRunEntity()
@@ -82,7 +78,6 @@ class RoutePointDaoTest {
         }
 
     @Test
-    @DisplayName("getRoutePointsForRun: returns empty list for nonexistent run")
     fun getRoutePointsForRun_nonexistentRun() =
         runBlocking {
             val points = routePointDao.getRoutePointsForRun(99999)
@@ -90,7 +85,6 @@ class RoutePointDaoTest {
         }
 
     @Test
-    @DisplayName("deleteRoutePointsForRun: removes all points for run")
     fun deleteRoutePointsForRun_removesAllPoints() =
         runBlocking {
             val runEntity = TestDataFactory.createTestRunEntity()
@@ -113,7 +107,6 @@ class RoutePointDaoTest {
         }
 
     @Test
-    @DisplayName("insertRoutePoints: preserves latitude/longitude precision")
     fun insertRoutePoints_preservesPrecision() =
         runBlocking {
             val runEntity = TestDataFactory.createTestRunEntity()
@@ -139,7 +132,6 @@ class RoutePointDaoTest {
         }
 
     @Test
-    @DisplayName("insertRoutePoints: multiple runs don't interfere")
     fun insertRoutePoints_multipleRunsIndependent() =
         runBlocking {
             // Create run 1
@@ -163,7 +155,6 @@ class RoutePointDaoTest {
         }
 
     @Test
-    @DisplayName("insertRoutePoints: preserves timestamp order")
     fun insertRoutePoints_preservesTimestampOrder() =
         runBlocking {
             val runEntity = TestDataFactory.createTestRunEntity()

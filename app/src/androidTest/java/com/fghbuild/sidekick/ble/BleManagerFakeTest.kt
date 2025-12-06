@@ -5,24 +5,21 @@ import com.fghbuild.sidekick.fixtures.FakeBleManager
 import com.fghbuild.sidekick.fixtures.TestDataFactory
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Test
+import org.junit.Before
+import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-@DisplayName("BleManager with Fake Device Tests")
 class BleManagerFakeTest {
     private lateinit var bleManager: FakeBleManager
 
-    @BeforeEach
+    @Before
     fun setup() {
         bleManager = FakeBleManager()
     }
 
     @Test
-    @DisplayName("scan: discovers fake devices")
     fun scan_discoversFakeDevices() =
         runBlocking {
             bleManager.startScanning()
@@ -40,7 +37,6 @@ class BleManagerFakeTest {
         }
 
     @Test
-    @DisplayName("connect: transitions device to connected state")
     fun connect_transitionsToConnected() =
         runBlocking {
             val device = HrmDevice(address = "AA:BB:CC:DD:EE:F1", name = "Garmin HRM", rssi = -50)
@@ -53,7 +49,6 @@ class BleManagerFakeTest {
         }
 
     @Test
-    @DisplayName("heartRate: receives single measurement")
     fun heartRate_receivesSingleMeasurement() =
         runBlocking {
             val device = HrmDevice(address = "AA:BB:CC:DD:EE:F1", name = "Garmin HRM", rssi = -50)
@@ -67,7 +62,6 @@ class BleManagerFakeTest {
         }
 
     @Test
-    @DisplayName("heartRate: streams multiple measurements")
     fun heartRate_streamsMultipleMeasurements() =
         runBlocking {
             val device = HrmDevice(address = "AA:BB:CC:DD:EE:F1", name = "Garmin HRM", rssi = -50)
@@ -82,7 +76,6 @@ class BleManagerFakeTest {
         }
 
     @Test
-    @DisplayName("heartRate: calculates average from stream")
     fun heartRate_calculatesAverageFromStream() =
         runBlocking {
             val device = HrmDevice(address = "AA:BB:CC:DD:EE:F1", name = "Garmin HRM", rssi = -50)
@@ -99,7 +92,6 @@ class BleManagerFakeTest {
         }
 
     @Test
-    @DisplayName("heartRate: tracks min/max during run")
     fun heartRate_tracksMinMaxDuringRun() =
         runBlocking {
             val device = HrmDevice(address = "AA:BB:CC:DD:EE:F1", name = "Garmin HRM", rssi = -50)
@@ -116,7 +108,6 @@ class BleManagerFakeTest {
         }
 
     @Test
-    @DisplayName("disconnect: clears heart rate data")
     fun disconnect_clearsHeartRateData() =
         runBlocking {
             val device = HrmDevice(address = "AA:BB:CC:DD:EE:F1", name = "Garmin HRM", rssi = -50)
@@ -135,7 +126,6 @@ class BleManagerFakeTest {
         }
 
     @Test
-    @DisplayName("scan: duplicate devices update RSSI")
     fun scan_duplicateDevicesUpdateRssi() =
         runBlocking {
             bleManager.startScanning()
@@ -158,7 +148,6 @@ class BleManagerFakeTest {
         }
 
     @Test
-    @DisplayName("reset: clears all state")
     fun reset_clearsAllState() =
         runBlocking {
             val device = HrmDevice(address = "AA:BB:CC:DD:EE:F1", name = "Garmin HRM", rssi = -50)
@@ -175,7 +164,6 @@ class BleManagerFakeTest {
         }
 
     @Test
-    @DisplayName("realistic run: device discovery and connection flow")
     fun realisticRun_deviceDiscoveryAndConnectionFlow() =
         runBlocking {
             // Start scan

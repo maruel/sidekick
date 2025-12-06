@@ -9,24 +9,23 @@ import com.fghbuild.sidekick.fixtures.TestDataFactory
 import com.fghbuild.sidekick.run.RunManager
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Test
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-@DisplayName("Run Flow Screen Tests (Start → InProgress → Save)")
 class RunFlowScreenTest {
-    private val composeTestRule = createComposeRule()
+    @get:Rule
+    val composeTestRule = createComposeRule()
     private lateinit var runManager: RunManager
 
-    @BeforeEach
+    @Before
     fun setup() {
         runManager = RunManager()
     }
 
     @Test
-    @DisplayName("home screen: start run button transitions to in-progress")
     fun homeScreen_startRunButton_transitionsToInProgress() =
         runBlocking {
             var transitionedToRun = false
@@ -49,7 +48,6 @@ class RunFlowScreenTest {
         }
 
     @Test
-    @DisplayName("in-progress screen: updates with location data")
     fun inProgressScreen_updatesWithLocationData() =
         runBlocking {
             runManager.startRun()
@@ -79,7 +77,6 @@ class RunFlowScreenTest {
         }
 
     @Test
-    @DisplayName("in-progress screen: displays heart rate data")
     fun inProgressScreen_displaysHeartRateData() =
         runBlocking {
             runManager.startRun()
@@ -98,7 +95,6 @@ class RunFlowScreenTest {
         }
 
     @Test
-    @DisplayName("pause → resume: preserves run data")
     fun pauseResume_preservesRunData() =
         runBlocking {
             runManager.startRun()
@@ -144,7 +140,6 @@ class RunFlowScreenTest {
         }
 
     @Test
-    @DisplayName("complete flow: start → track → stop → ready to save")
     fun completeFlow_startTrackStopReadyToSave() =
         runBlocking {
             // Home: Start run
@@ -212,7 +207,6 @@ class RunFlowScreenTest {
         }
 
     @Test
-    @DisplayName("realistic 5km run: full flow")
     fun realistic5kmRun_fullFlow() =
         runBlocking {
             // Start
@@ -254,7 +248,6 @@ class RunFlowScreenTest {
         }
 
     @Test
-    @DisplayName("very short run: handles minimal data")
     fun veryShortRun_handlesMinimalData() =
         runBlocking {
             runManager.startRun()
@@ -281,7 +274,6 @@ class RunFlowScreenTest {
         }
 
     @Test
-    @DisplayName("long run: handles 15km+")
     fun longRun_handles15kmPlus() =
         runBlocking {
             runManager.startRun()

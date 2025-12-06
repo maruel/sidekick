@@ -4,19 +4,17 @@ import androidx.test.core.app.ApplicationProvider
 import com.fghbuild.sidekick.fixtures.TestDataFactory
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Test
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-@DisplayName("SidekickDatabase Schema Tests")
 class RunDatabaseTest {
     private lateinit var database: SidekickDatabase
 
-    @BeforeEach
+    @Before
     fun setup() {
         val context = ApplicationProvider.getApplicationContext<android.app.Application>()
         database =
@@ -28,13 +26,12 @@ class RunDatabaseTest {
                 .build()
     }
 
-    @AfterEach
+    @After
     fun teardown() {
         database.close()
     }
 
     @Test
-    @DisplayName("database: provides both DAOs")
     fun database_providesDaos() {
         val runDao = database.runDao()
         val routePointDao = database.routePointDao()
@@ -44,7 +41,6 @@ class RunDatabaseTest {
     }
 
     @Test
-    @DisplayName("RunEntity: schema allows required fields")
     fun runEntity_schemaAllowsRequiredFields() =
         runBlocking {
             val runDao = database.runDao()
@@ -67,7 +63,6 @@ class RunDatabaseTest {
         }
 
     @Test
-    @DisplayName("RunEntity: schema validates foreignKey relationships")
     fun runEntity_schemaSupportsRunQueries() =
         runBlocking {
             val runDao = database.runDao()
@@ -90,7 +85,6 @@ class RunDatabaseTest {
         }
 
     @Test
-    @DisplayName("RoutePointEntity: schema requires runId foreignKey")
     fun routePointEntity_schemaRequiresForeignKey() =
         runBlocking {
             val runDao = database.runDao()
@@ -112,7 +106,6 @@ class RunDatabaseTest {
         }
 
     @Test
-    @DisplayName("RoutePointEntity: cascading delete works")
     fun routePointEntity_supportsCascadingDelete() =
         runBlocking {
             val runDao = database.runDao()
@@ -142,7 +135,6 @@ class RunDatabaseTest {
         }
 
     @Test
-    @DisplayName("getAllRuns: returns all runs sorted by startTime descending")
     fun getAllRuns_returnsSortedByStartTime() =
         runBlocking {
             val runDao = database.runDao()
@@ -180,7 +172,6 @@ class RunDatabaseTest {
         }
 
     @Test
-    @DisplayName("database: supports concurrent reads")
     fun database_supportsConcurrentReads() =
         runBlocking {
             val runDao = database.runDao()
