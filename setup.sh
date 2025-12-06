@@ -1,13 +1,28 @@
 #!/bin/bash
 # Installs Java, Android SDK cmdline-tools, emulator, and required system images
+# Usage: ./setup.sh [--no-emulator]
+#   --no-emulator: Skip installing emulator and system images (for build-only jobs)
 set -eu
+
+INSTALL_EMULATOR=true
+for arg in "$@"; do
+    case $arg in
+        --no-emulator)
+            INSTALL_EMULATOR=false
+            ;;
+    esac
+done
 
 echo "Installing system dependencies..."
 sudo apt-get update -qq
 # On CI, we use actions/setup-java because it automatically caches graddle output, which is critical for
 # performance.
 #  openjdk-21-jdk-headless
-sudo apt-get install -qq -y curl libpulse0 libvulkan1 xvfb
+if [ "$INSTALL_EMULATOR" = true ]; then
+    sudo apt-get install -qq -y curl libpulse0 libvulkan1 xvfb
+else
+    sudo apt-get install -qq -y curl
+fi
 
 ANDROID_HOME="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-$HOME/Android/Sdk}}"
 mkdir -p "$ANDROID_HOME/cmdline-tools"
@@ -37,10 +52,17 @@ yes | "$SDKMANAGER" --licenses >/dev/null 2>&1 || true
 
 # Install required SDK components
 echo "Installing Android SDK packages..."
-"$SDKMANAGER" \
-    "build-tools;36.0.0" \
-    "emulator" \
-    "platform-tools" \
-    "platforms;android-36" \
-    "system-images;android-36;google_apis;x86_64"
+if [ "$INSTALL_EMULATOR" = true ]; then
+    "$SDKMANAGER" \
+        "build-tools;36.0.0" \
+        "emulator" \
+        "platform-tools" \
+        "platforms;android-36" \
+        "system-images;android-36;google_apis;x86_64"
+else
+    "$SDKMANAGER" \
+        "build-tools;36.0.0" \
+        "platform-tools" \
+        "platforms;android-36"
+fi
 echo "Android SDK setup complete!"
