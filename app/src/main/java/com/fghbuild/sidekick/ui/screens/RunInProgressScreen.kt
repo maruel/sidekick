@@ -28,6 +28,7 @@ import com.fghbuild.sidekick.data.HrmDevice
 import com.fghbuild.sidekick.data.RunData
 import com.fghbuild.sidekick.ui.components.heartRateChart
 import com.fghbuild.sidekick.ui.components.metricsPanel
+import com.fghbuild.sidekick.ui.components.paceChart
 import com.fghbuild.sidekick.ui.components.routeMap
 
 @Composable
@@ -69,6 +70,13 @@ fun runInProgressScreen(
         heartRateChart(
             measurements = heartRateData.measurements,
             age = userAge,
+            modifier = Modifier.fillMaxWidth(),
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        paceChart(
+            paceHistory = runData.paceHistory,
             modifier = Modifier.fillMaxWidth(),
         )
 
