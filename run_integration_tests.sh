@@ -204,17 +204,12 @@ while [ $COUNTER -lt $TIMEOUT ]; do
         LAST_DEVICE_COUNT=$DEVICE_COUNT
         echo "Device detected! (attempt: $((COUNTER/5)))"
     fi
-
     if [ "$DEVICE_COUNT" -gt 0 ]; then
-        echo "Emulator ready! Running 'adb shell getprop sys.boot_completed'..."
         if adb shell getprop sys.boot_completed | grep -q "1"; then
             echo "Boot completed confirmed!"
             break
-        else
-            echo "Boot still in progress..."
         fi
     fi
-
     echo "Waiting... ($COUNTER/$TIMEOUT)"
     sleep 5
     COUNTER=$((COUNTER + 5))
