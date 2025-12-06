@@ -35,6 +35,7 @@ class RunStateManager(
     }
 
     fun stopRun() {
+        runManager.pauseRun()
         voiceListener.stopListening()
         announcements.stop()
     }
