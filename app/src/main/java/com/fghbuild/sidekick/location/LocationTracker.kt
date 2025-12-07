@@ -46,34 +46,26 @@ class LocationTracker(private val context: Context) {
     fun startTracking() {
         if (isTracking) return
 
-        try {
-            if (
-                ActivityCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                ) == android.content.pm.PackageManager.PERMISSION_GRANTED
-            ) {
-                isTracking = true
-                val locationRequest =
-                    LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000L).build()
-                fusedLocationClient.requestLocationUpdates(
-                    locationRequest,
-                    locationCallback,
-                    null,
-                )
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
+        if (
+            ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+            ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        ) {
+            isTracking = true
+            val locationRequest =
+                LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000L).build()
+            fusedLocationClient.requestLocationUpdates(
+                locationRequest,
+                locationCallback,
+                null,
+            )
         }
     }
 
     fun stopTracking() {
         isTracking = false
-        try {
-            fusedLocationClient.removeLocationUpdates(locationCallback)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
     fun resetRoute() {

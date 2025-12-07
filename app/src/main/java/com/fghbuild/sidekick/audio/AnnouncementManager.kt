@@ -50,27 +50,15 @@ class AnnouncementManager(context: Context) : TextToSpeech.OnInitListener {
     }
 
     private fun speak(text: String) {
-        try {
-            @Suppress("DEPRECATION")
-            textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        @Suppress("DEPRECATION")
+        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null)
     }
 
     fun stop() {
-        try {
-            textToSpeech.stop()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        textToSpeech.stop()
     }
 
     fun shutdown() {
-        try {
-            textToSpeech.shutdown()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        textToSpeech.shutdown()
     }
 }

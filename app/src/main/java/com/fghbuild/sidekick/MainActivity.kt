@@ -107,22 +107,11 @@ fun sidekickApp() {
     val runManager = remember { RunManager() }
     val bleManager =
         remember {
-            try {
-                BleManager(context)
-            } catch (e: Exception) {
-                android.util.Log.w("BleManager", "Failed to initialize BleManager", e)
-                // Still create a dummy instance to avoid nulls - just won't connect
-                BleManager(context)
-            }
+            BleManager(context)
         }
     val locationTracker =
         remember {
-            try {
-                LocationTracker(context)
-            } catch (e: Exception) {
-                android.util.Log.w("LocationTracker", "Failed to initialize LocationTracker", e)
-                LocationTracker(context)
-            }
+            LocationTracker(context)
         }
     val announcementManager = remember { AnnouncementManager(context) }
     val voiceCommandListener = remember { VoiceCommandListener(context) }

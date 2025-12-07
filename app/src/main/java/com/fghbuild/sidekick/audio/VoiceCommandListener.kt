@@ -69,11 +69,7 @@ class VoiceCommandListener(private val context: Context) : RecognitionListener, 
     }
 
     override fun stopListening() {
-        try {
-            speechRecognizer.stopListening()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        speechRecognizer.stopListening()
         _isListening.value = false
     }
 
@@ -134,10 +130,6 @@ class VoiceCommandListener(private val context: Context) : RecognitionListener, 
     }
 
     override fun destroy() {
-        try {
-            speechRecognizer.destroy()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        speechRecognizer.destroy()
     }
 }

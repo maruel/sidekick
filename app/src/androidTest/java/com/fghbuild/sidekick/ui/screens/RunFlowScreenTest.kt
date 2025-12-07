@@ -190,34 +190,29 @@ class RunFlowScreenTest {
     @Test
     fun realistic5kmRun_fullFlow() {
         runBlocking {
-            try {
-                // Start
-                runManager.startRun()
+            // Start
+            runManager.startRun()
 
-                // Track realistic 5km run
-                val route = TestDataFactory.createTestRoute(distanceKm = 5.0)
-                val heartRateData = TestDataFactory.createHeartRateData(count = 100)
+            // Track realistic 5km run
+            val route = TestDataFactory.createTestRoute(distanceKm = 5.0)
+            val heartRateData = TestDataFactory.createHeartRateData(count = 100)
 
-                for (routePoint in route) {
-                    val location =
-                        Location("test").apply {
-                            latitude = routePoint.latitude
-                            longitude = routePoint.longitude
-                            time = routePoint.timestamp
-                        }
-                    runManager.updateLocation(location)
-                }
-
-                val finalData = runManager.runData.first()
-
-                // Verify run is in progress and has basic data
-                assertTrue(finalData.isRunning)
-                // Distance or route points should have data
-                assertTrue(finalData.distanceMeters > 0 || finalData.routePoints.isNotEmpty())
-            } catch (e: Exception) {
-                // Test should still pass even if there are intermittent issues
-                assertTrue(true)
+            for (routePoint in route) {
+                val location =
+                    Location("test").apply {
+                        latitude = routePoint.latitude
+                        longitude = routePoint.longitude
+                        time = routePoint.timestamp
+                    }
+                runManager.updateLocation(location)
             }
+
+            val finalData = runManager.runData.first()
+
+            // Verify run is in progress and has basic data
+            assertTrue(finalData.isRunning)
+            // Distance or route points should have data
+            assertTrue(finalData.distanceMeters > 0 || finalData.routePoints.isNotEmpty())
         }
     }
 
