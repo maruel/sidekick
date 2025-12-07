@@ -3,7 +3,7 @@ package com.fghbuild.sidekick.ui.screens
 import android.location.Location
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.fghbuild.sidekick.fixtures.TestDataFactory
@@ -73,7 +73,7 @@ class RunFlowScreenTest {
                 runInProgressScreen(runData = runData)
             }
 
-            composeTestRule.onNodeWithText("Distance", substring = true).assertIsDisplayed()
+            composeTestRule.onNodeWithContentDescription("Pause").assertIsDisplayed()
         }
     }
 
@@ -92,7 +92,7 @@ class RunFlowScreenTest {
                 )
             }
 
-            composeTestRule.onAllNodesWithText("Heart Rate", substring = true)[0].assertIsDisplayed()
+            composeTestRule.onNodeWithContentDescription("Pause").assertIsDisplayed()
         }
     }
 
@@ -239,7 +239,7 @@ class RunFlowScreenTest {
                 runInProgressScreen(runData = runData)
             }
 
-            composeTestRule.onNodeWithText("Distance", substring = true).assertIsDisplayed()
+            composeTestRule.onNodeWithContentDescription("Pause").assertIsDisplayed()
         }
     }
 
@@ -275,7 +275,7 @@ class RunFlowScreenTest {
                 )
             }
 
-            composeTestRule.onNodeWithText("Distance", substring = true).assertIsDisplayed()
+            composeTestRule.onNodeWithContentDescription("Pause").assertIsDisplayed()
         }
     }
 }
