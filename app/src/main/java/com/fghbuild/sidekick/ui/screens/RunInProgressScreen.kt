@@ -1,35 +1,30 @@
 package com.fghbuild.sidekick.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.fghbuild.sidekick.data.HeartRateData
 import com.fghbuild.sidekick.data.HrmDevice
 import com.fghbuild.sidekick.data.RunData
-import com.fghbuild.sidekick.ui.components.heartRateChart
-import com.fghbuild.sidekick.ui.components.metricsPanel
+import com.fghbuild.sidekick.ui.components.mainMetricsPanel
 import com.fghbuild.sidekick.ui.components.paceChart
 import com.fghbuild.sidekick.ui.components.routeMap
+import com.fghbuild.sidekick.ui.components.screenContainer
 
 @Composable
 fun runInProgressScreen(
@@ -42,48 +37,49 @@ fun runInProgressScreen(
     connectedDevice: HrmDevice? = null,
     userAge: Int = 30,
 ) {
-    Column(
-        modifier =
-            modifier
-                .fillMaxSize()
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
+    screenContainer(modifier = modifier.fillMaxSize()) {
         // Pause/Resume and Stop buttons at top
         Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (runData.isPaused) {
-                IconButton(onClick = onResume) {
-                    Icon(Icons.Default.PlayArrow, contentDescription = "Resume")
+                Button(onClick = onResume) {
+                    Icon(
+                        Icons.Default.PlayArrow,
+                        contentDescription = "Resume",
+                        modifier = Modifier.padding(end = 8.dp),
+                    )
+                    Text("Resume")
                 }
             } else {
-                IconButton(onClick = onPause) {
-                    Icon(Icons.Default.Pause, contentDescription = "Pause")
+                Button(onClick = onPause) {
+                    Icon(
+                        Icons.Default.Pause,
+                        contentDescription = "Pause",
+                        modifier = Modifier.padding(end = 8.dp),
+                    )
+                    Text("Pause")
                 }
             }
-            IconButton(onClick = onStop) {
-                Icon(Icons.Default.Close, contentDescription = "Stop")
+            Button(onClick = onStop) {
+                Icon(
+                    Icons.Default.Close,
+                    contentDescription = "Stop",
+                    modifier = Modifier.padding(end = 8.dp),
+                )
+                Text("Stop")
             }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        metricsPanel(
+        mainMetricsPanel(
             runData = runData,
             heartRateData = heartRateData,
+            connectedDevice = connectedDevice,
+            userAge = userAge,
             isRunning = true,
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        heartRateChart(
-            measurements = heartRateData.measurements,
-            age = userAge,
-            modifier = Modifier.fillMaxWidth(),
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -101,17 +97,5 @@ fun runInProgressScreen(
         )
 
         Spacer(modifier = Modifier.weight(1f))
-
-        // Show connected device if available
-        if (connectedDevice != null) {
-            Spacer(modifier = Modifier.height(24.dp))
-            Text(
-                text = "Connected: ${connectedDevice.name}",
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.secondary,
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
     }
 }

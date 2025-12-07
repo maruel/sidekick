@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.fghbuild.sidekick.data.HeartRateData
+import com.fghbuild.sidekick.data.HrmDevice
 import com.fghbuild.sidekick.data.RunData
 
 @Composable
@@ -71,6 +72,34 @@ private fun formatPace(paceMinPerKm: Double): String {
         String.format("%d:%02d", minutes, seconds)
     } else {
         "0:00"
+    }
+}
+
+@Composable
+fun mainMetricsPanel(
+    runData: RunData,
+    heartRateData: HeartRateData,
+    connectedDevice: HrmDevice? = null,
+    userAge: Int = 30,
+    isRunning: Boolean = false,
+    onHeartRateLongPress: () -> Unit = {},
+) {
+    // Metric cards
+    metricsPanel(
+        runData = runData,
+        heartRateData = heartRateData,
+        isRunning = isRunning,
+        onHeartRateLongPress = onHeartRateLongPress,
+    )
+
+    // Show heart rate chart when device is connected
+    if (connectedDevice != null) {
+        Spacer(modifier = Modifier.height(24.dp))
+        heartRateChart(
+            measurements = heartRateData.measurements,
+            age = userAge,
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }
 
