@@ -129,7 +129,7 @@ fun devicePairingDialog(
                         onClick = {
                             onStopScanning()
                             onDismiss()
-                        }
+                        },
                     ) {
                         Icon(Icons.Default.Close, contentDescription = "Close")
                     }
