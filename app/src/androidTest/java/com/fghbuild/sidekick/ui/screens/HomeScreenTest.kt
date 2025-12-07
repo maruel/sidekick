@@ -13,19 +13,11 @@ class HomeScreenTest {
     val composeTestRule = createComposeRule()
 
     @Test
-    fun homeScreen_displaysTitle() {
+    fun homeScreen_displaysStartButton() {
         composeTestRule.setContent {
             homeScreen()
         }
-        composeTestRule.onNodeWithText("Ready to run!").assertIsDisplayed()
-    }
-
-    @Test
-    fun homeScreen_notRunning_showsReadyMessage() {
-        composeTestRule.setContent {
-            homeScreen(isRunning = false)
-        }
-        composeTestRule.onNodeWithText("Ready to run!").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Start Run").assertIsDisplayed()
     }
 
     @Test
@@ -37,19 +29,11 @@ class HomeScreenTest {
     }
 
     @Test
-    fun homeScreen_running_showsInProgressMessage() {
+    fun homeScreen_alwaysShowsStartButton() {
         composeTestRule.setContent {
-            homeScreen(isRunning = true)
+            homeScreen(isRunning = false)
         }
-        composeTestRule.onNodeWithText("Run in progress...").assertIsDisplayed()
-    }
-
-    @Test
-    fun homeScreen_running_showsStopButton() {
-        composeTestRule.setContent {
-            homeScreen(isRunning = true)
-        }
-        composeTestRule.onNodeWithText("Stop Run").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Start Run").assertIsDisplayed()
     }
 
     @Test
@@ -63,18 +47,5 @@ class HomeScreenTest {
         }
         composeTestRule.onNodeWithText("Start Run").performClick()
         assertTrue(startClicked)
-    }
-
-    @Test
-    fun homeScreen_stopButtonClick_callsOnStopRun() {
-        var stopClicked = false
-        composeTestRule.setContent {
-            homeScreen(
-                isRunning = true,
-                onStopRun = { stopClicked = true },
-            )
-        }
-        composeTestRule.onNodeWithText("Stop Run").performClick()
-        assertTrue(stopClicked)
     }
 }

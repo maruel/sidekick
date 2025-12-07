@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,11 +40,10 @@ fun homeScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        // Top title - fixed height
-        Text(
-            text = if (isRunning) "Run in progress..." else "Ready to run!",
-            fontSize = 28.sp,
-        )
+        // Start button at top
+        Button(onClick = onStartRun) {
+            Text("Start Run")
+        }
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -76,24 +74,6 @@ fun homeScreen(
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.secondary,
             )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        if (isRunning) {
-            Button(
-                onClick = onStopRun,
-                colors =
-                    ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.error,
-                    ),
-            ) {
-                Text("Stop Run")
-            }
-        } else {
-            Button(onClick = onStartRun) {
-                Text("Start Run")
-            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))

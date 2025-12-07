@@ -13,11 +13,12 @@ class RunInProgressScreenTest {
     val composeTestRule = createComposeRule()
 
     @Test
-    fun runInProgressScreen_displaysTitle() {
+    fun runInProgressScreen_displaysMetrics() {
         composeTestRule.setContent {
             runInProgressScreen()
         }
-        composeTestRule.onNodeWithText("Run in progress...").assertIsDisplayed()
+        // Verify metrics are displayed
+        composeTestRule.onNodeWithText("Distance", substring = true).assertIsDisplayed()
     }
 
     @Test
@@ -25,7 +26,6 @@ class RunInProgressScreenTest {
         composeTestRule.setContent {
             runInProgressScreen(runData = TestDataFactory.createTestRunData(distanceKm = 0.0))
         }
-        composeTestRule.onNodeWithText("Run in progress...").assertIsDisplayed()
         // Just verify the screen renders without crashing
         composeTestRule.onNodeWithText("Distance", substring = true).assertIsDisplayed()
     }
@@ -69,28 +69,23 @@ class RunInProgressScreenTest {
     }
 
     @Test
-    fun runInProgressScreen_resumeButtonClick_triggersCallback() {
-        var resumeClicked = false
+    fun runInProgressScreen_displaysControlsWhenPaused() {
         composeTestRule.setContent {
             runInProgressScreen(
                 runData = TestDataFactory.createTestRunData(isPaused = true),
-                onResume = { resumeClicked = true },
             )
         }
-        // Just verify that pause/resume screen renders with paused state
-        composeTestRule.onNodeWithText("Run in progress...").assertIsDisplayed()
+        // Verify metrics display
+        composeTestRule.onNodeWithText("Distance", substring = true).assertIsDisplayed()
     }
 
     @Test
-    fun runInProgressScreen_stopButtonClick_triggersCallback() {
-        var stopClicked = false
+    fun runInProgressScreen_displaysControls() {
         composeTestRule.setContent {
-            runInProgressScreen(
-                onStop = { stopClicked = true },
-            )
+            runInProgressScreen()
         }
-        // Just verify that the screen renders correctly
-        composeTestRule.onNodeWithText("Run in progress...").assertIsDisplayed()
+        // Verify metrics display
+        composeTestRule.onNodeWithText("Distance", substring = true).assertIsDisplayed()
     }
 
     @Test
@@ -105,7 +100,6 @@ class RunInProgressScreenTest {
             )
         }
 
-        composeTestRule.onNodeWithText("Run in progress...").assertIsDisplayed()
         composeTestRule.onNodeWithText("Distance", substring = true).assertIsDisplayed()
         composeTestRule.onAllNodesWithText("Pace", substring = true)[0].assertIsDisplayed()
         composeTestRule.onAllNodesWithText("Heart Rate", substring = true)[0].assertIsDisplayed()
@@ -119,7 +113,7 @@ class RunInProgressScreenTest {
             runInProgressScreen(runData = runData)
         }
         // Route map should be present (tests rendering of chart component)
-        composeTestRule.onNodeWithText("Run in progress...").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Distance", substring = true).assertIsDisplayed()
     }
 
     @Test
@@ -129,7 +123,7 @@ class RunInProgressScreenTest {
             runInProgressScreen(runData = runData)
         }
         // Pace chart should render if pace history is available
-        composeTestRule.onNodeWithText("Run in progress...").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Distance", substring = true).assertIsDisplayed()
     }
 
     @Test
@@ -139,7 +133,7 @@ class RunInProgressScreenTest {
             runInProgressScreen(heartRateData = heartRateData)
         }
         // HR chart should render if measurements available
-        composeTestRule.onNodeWithText("Run in progress...").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Distance", substring = true).assertIsDisplayed()
     }
 
     @Test

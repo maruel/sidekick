@@ -51,11 +51,24 @@ fun runInProgressScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        // Top title - fixed height (matches home screen)
-        Text(
-            text = "Run in progress...",
-            fontSize = 28.sp,
-        )
+        // Pause/Resume and Stop buttons at top
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (runData.isPaused) {
+                IconButton(onClick = onResume) {
+                    Icon(Icons.Default.PlayArrow, contentDescription = "Resume")
+                }
+            } else {
+                IconButton(onClick = onPause) {
+                    Icon(Icons.Default.Pause, contentDescription = "Pause")
+                }
+            }
+            IconButton(onClick = onStop) {
+                Icon(Icons.Default.Close, contentDescription = "Stop")
+            }
+        }
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -97,26 +110,6 @@ fun runInProgressScreen(
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.secondary,
             )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            if (runData.isPaused) {
-                IconButton(onClick = onResume) {
-                    Icon(Icons.Default.PlayArrow, contentDescription = "Resume")
-                }
-            } else {
-                IconButton(onClick = onPause) {
-                    Icon(Icons.Default.Pause, contentDescription = "Pause")
-                }
-            }
-            IconButton(onClick = onStop) {
-                Icon(Icons.Default.Close, contentDescription = "Stop")
-            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))

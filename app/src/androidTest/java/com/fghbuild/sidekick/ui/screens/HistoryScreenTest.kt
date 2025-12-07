@@ -38,7 +38,7 @@ class HistoryScreenTest {
             historyScreen(runs = listOf(run))
         }
         composeTestRule.onNodeWithText("Run History").assertIsDisplayed()
-        composeTestRule.onNodeWithText("5.00", substring = true).assertIsDisplayed() // distance
+        composeTestRule.onNodeWithText("5.00 km", substring = true).assertIsDisplayed() // distance
     }
 
     @Test
@@ -50,7 +50,7 @@ class HistoryScreenTest {
         composeTestRule.setContent {
             historyScreen(runs = listOf(run))
         }
-        composeTestRule.onNodeWithText("10.50", substring = true).assertIsDisplayed()
+        composeTestRule.onNodeWithText("10.50 km", substring = true).assertIsDisplayed()
     }
 
     @Test
@@ -191,10 +191,10 @@ class HistoryScreenTest {
         }
 
         composeTestRule.onNodeWithText("Run History").assertIsDisplayed()
-        // Multiple runs visible
-        composeTestRule.onNodeWithText("5.00", substring = true).assertIsDisplayed()
-        composeTestRule.onNodeWithText("10.00", substring = true).assertIsDisplayed()
-        composeTestRule.onNodeWithText("3.00", substring = true).assertIsDisplayed()
+        // Multiple runs visible - check for formatted distances
+        composeTestRule.onNodeWithText("5.00 km", substring = true).assertIsDisplayed()
+        composeTestRule.onNodeWithText("10.00 km", substring = true).assertIsDisplayed()
+        composeTestRule.onNodeWithText("3.00 km", substring = true).assertIsDisplayed()
     }
 
     @Test
@@ -208,6 +208,6 @@ class HistoryScreenTest {
             historyScreen(runs = listOf(run))
         }
         composeTestRule.onNodeWithText("Run History").assertIsDisplayed()
-        composeTestRule.onNodeWithText("0.10", substring = true).assertIsDisplayed()
+        composeTestRule.onNodeWithText("0.10 km", substring = true).assertIsDisplayed()
     }
 }

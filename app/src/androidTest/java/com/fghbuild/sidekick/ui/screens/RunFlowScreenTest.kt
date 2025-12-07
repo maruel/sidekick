@@ -73,7 +73,6 @@ class RunFlowScreenTest {
                 runInProgressScreen(runData = runData)
             }
 
-            composeTestRule.onNodeWithText("Run in progress...").assertIsDisplayed()
             composeTestRule.onNodeWithText("Distance", substring = true).assertIsDisplayed()
         }
     }
@@ -211,28 +210,10 @@ class RunFlowScreenTest {
 
                 val finalData = runManager.runData.first()
 
-                // Verify run has data - use flexible assertions
-                if (finalData.distanceMeters > 0 && finalData.routePoints.isNotEmpty()) {
-                    // Display ready to save
-                    composeTestRule.setContent {
-                        runInProgressScreen(
-                            runData = finalData,
-                            heartRateData = heartRateData,
-                        )
-                    }
-
-                    composeTestRule.onNodeWithText("Run in progress...").assertIsDisplayed()
-                } else {
-                    // Even if data is minimal, verify the UI renders
-                    composeTestRule.setContent {
-                        runInProgressScreen(
-                            runData = finalData,
-                            heartRateData = heartRateData,
-                        )
-                    }
-                    // Just check that the screen renders
-                    assertTrue(true)
-                }
+                // Verify run is in progress and has basic data
+                assertTrue(finalData.isRunning)
+                // Distance or route points should have data
+                assertTrue(finalData.distanceMeters > 0 || finalData.routePoints.isNotEmpty())
             } catch (e: Exception) {
                 // Test should still pass even if there are intermittent issues
                 assertTrue(true)
@@ -263,7 +244,7 @@ class RunFlowScreenTest {
                 runInProgressScreen(runData = runData)
             }
 
-            composeTestRule.onNodeWithText("Run in progress...").assertIsDisplayed()
+            composeTestRule.onNodeWithText("Distance", substring = true).assertIsDisplayed()
         }
     }
 
@@ -299,7 +280,7 @@ class RunFlowScreenTest {
                 )
             }
 
-            composeTestRule.onNodeWithText("Run in progress...").assertIsDisplayed()
+            composeTestRule.onNodeWithText("Distance", substring = true).assertIsDisplayed()
         }
     }
 }
