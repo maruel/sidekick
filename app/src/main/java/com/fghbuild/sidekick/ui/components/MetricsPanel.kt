@@ -82,20 +82,24 @@ fun mainMetricsPanel(
     isRunning: Boolean = false,
     onHeartRateLongPress: () -> Unit = {},
     currentLocation: StateFlow<Location?>? = null,
+    gpsAccuracyMeters: StateFlow<Float>? = null,
 ) {
     // Route map always visible
-    val locationFromFlow = currentLocation?.let { flow ->
-        val location by flow.collectAsState(initial = null)
-        location
-    }
-    val userLocation = runData.routePoints.lastOrNull()?.let { 
-        LatLng(it.latitude, it.longitude) 
-    } ?: locationFromFlow?.let {
-        LatLng(it.latitude, it.longitude)
-    }
+    val locationFromFlow =
+        currentLocation?.let { flow ->
+            val location by flow.collectAsState(initial = null)
+            location
+        }
+    val userLocation =
+        runData.routePoints.lastOrNull()?.let {
+            LatLng(it.latitude, it.longitude)
+        } ?: locationFromFlow?.let {
+            LatLng(it.latitude, it.longitude)
+        }
     routeMap(
         routePoints = runData.routePoints,
         userLocation = userLocation,
+        gpsAccuracyMeters = gpsAccuracyMeters,
         modifier = Modifier.fillMaxWidth(),
     )
 

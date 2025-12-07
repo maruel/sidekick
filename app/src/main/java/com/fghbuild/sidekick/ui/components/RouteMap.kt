@@ -13,6 +13,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,16 +27,19 @@ import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.Circle
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun routeMap(
     routePoints: List<RoutePoint>,
     userLocation: LatLng? = null,
+    gpsAccuracyMeters: StateFlow<Float>? = null,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -66,6 +71,7 @@ fun routeMap(
                 routeMapGoogle(
                     routePoints = routePoints,
                     userLocation = userLocation,
+                    gpsAccuracyMeters = gpsAccuracyMeters,
                     modifier =
                         Modifier
                             .fillMaxWidth()
@@ -96,21 +102,23 @@ private fun createBlueDotBitmap(sizePixels: Int = 48): BitmapDescriptor {
 private fun routeMapGoogle(
     routePoints: List<RoutePoint>,
     userLocation: LatLng? = null,
+    gpsAccuracyMeters: StateFlow<Float>? = null,
     modifier: Modifier = Modifier,
 ) {
     // Convert RoutePoint to LatLng
     val latLngPoints = routePoints.map { LatLng(it.latitude, it.longitude) }
 
     // Calculate center of route or use user location
-    val centerPoint = if (latLngPoints.size >= 2) {
-        val avgLat = latLngPoints.map { it.latitude }.average()
-        val avgLng = latLngPoints.map { it.longitude }.average()
-        LatLng(avgLat, avgLng)
-    } else if (userLocation != null) {
-        userLocation
-    } else {
-        return
-    }
+    val centerPoint =
+        if (latLngPoints.size >= 2) {
+            val avgLat = latLngPoints.map { it.latitude }.average()
+            val avgLng = latLngPoints.map { it.longitude }.average()
+            LatLng(avgLat, avgLng)
+        } else if (userLocation != null) {
+            userLocation
+        } else {
+            return
+        }
 
     val cameraPositionState =
         rememberCameraPositionState {
@@ -122,6 +130,13 @@ private fun routeMapGoogle(
     }
 
     val routeColor = MaterialTheme.colorScheme.primary
+
+    // Collect GPS accuracy if available
+    val gpsAccuracy by if (gpsAccuracyMeters != null) {
+        gpsAccuracyMeters.collectAsState(initial = 0f)
+    } else {
+        androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(0f) }
+    }
 
     GoogleMap(
         modifier = modifier,
@@ -136,8 +151,19 @@ private fun routeMapGoogle(
             )
         }
 
-        // Draw user location marker if available
+        // Draw user location marker and accuracy circle if available
         userLocation?.let {
+            // Draw GPS accuracy radius as a circle
+            if (gpsAccuracy > 0f) {
+                Circle(
+                    center = it,
+                    radius = gpsAccuracy.toDouble(),
+                    fillColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
+                    strokeColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                    strokeWidth = 1f,
+                )
+            }
+
             Marker(
                 state = rememberMarkerState(position = it),
                 title = "Current Location",

@@ -1,5 +1,6 @@
 package com.fghbuild.sidekick.ui.screens
 
+import android.location.Location
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -12,7 +13,6 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import android.location.Location
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -112,6 +112,7 @@ fun homeScreen(
                 }
             },
             currentLocation = currentLocation,
+            gpsAccuracyMeters = gpsAccuracyMeters,
         )
 
         Spacer(modifier = Modifier.weight(1f))

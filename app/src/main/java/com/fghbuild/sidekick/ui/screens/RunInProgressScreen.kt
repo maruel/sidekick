@@ -1,5 +1,6 @@
 package com.fghbuild.sidekick.ui.screens
 
+import android.location.Location
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,7 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import android.location.Location
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -89,6 +89,7 @@ fun runInProgressScreen(
             userAge = userAge,
             isRunning = true,
             currentLocation = currentLocation,
+            gpsAccuracyMeters = gpsAccuracyMeters,
         )
 
         Spacer(modifier = Modifier.height(4.dp))
