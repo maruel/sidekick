@@ -236,8 +236,10 @@ class BleManager(private val context: Context) {
                                 val descriptor =
                                     it.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG_UUID)
                                 descriptor?.let { desc ->
-                                    desc.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
-                                    gatt.writeDescriptor(desc)
+                                    gatt.writeDescriptor(
+                                        desc,
+                                        BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE,
+                                    )
                                 }
                             }
                         } catch (_: SecurityException) {

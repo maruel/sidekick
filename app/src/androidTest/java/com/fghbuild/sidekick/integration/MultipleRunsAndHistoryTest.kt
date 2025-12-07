@@ -50,7 +50,11 @@ class MultipleRunsAndHistoryTest {
             val now = System.currentTimeMillis()
 
             // Run 1: 5km
-            val runManager1 = RunManager()
+            val runManager1 =
+                RunManager(
+                    database.gpsMeasurementDao(),
+                    database.gpsCalibrationDao(),
+                )
             runManager1.startRun()
             val route1 = TestDataFactory.createTestRoute(distanceKm = 5.0)
             for (routePoint in route1) {
@@ -68,7 +72,11 @@ class MultipleRunsAndHistoryTest {
             repository.saveRun(runData1, hrData1, now - 7200000, now - 5400000)
 
             // Run 2: 3km
-            val runManager2 = RunManager()
+            val runManager2 =
+                RunManager(
+                    database.gpsMeasurementDao(),
+                    database.gpsCalibrationDao(),
+                )
             runManager2.startRun()
             val route2 = TestDataFactory.createTestRoute(distanceKm = 3.0)
             for (routePoint in route2) {
@@ -86,7 +94,11 @@ class MultipleRunsAndHistoryTest {
             repository.saveRun(runData2, hrData2, now - 3600000, now - 1800000)
 
             // Run 3: 10km
-            val runManager3 = RunManager()
+            val runManager3 =
+                RunManager(
+                    database.gpsMeasurementDao(),
+                    database.gpsCalibrationDao(),
+                )
             runManager3.startRun()
             val route3 = TestDataFactory.createTestRoute(distanceKm = 10.0)
             val step = route3.size / 30
@@ -123,7 +135,11 @@ class MultipleRunsAndHistoryTest {
             val startTime = System.currentTimeMillis()
 
             // Save a run
-            val runManager = RunManager()
+            val runManager =
+                RunManager(
+                    database.gpsMeasurementDao(),
+                    database.gpsCalibrationDao(),
+                )
             runManager.startRun()
             val route = TestDataFactory.createTestRoute(distanceKm = 5.0)
             for (routePoint in route) {
@@ -159,7 +175,11 @@ class MultipleRunsAndHistoryTest {
             val now = System.currentTimeMillis()
 
             for ((index, distance) in distances.withIndex()) {
-                val runManager = RunManager()
+                val runManager =
+                    RunManager(
+                        database.gpsMeasurementDao(),
+                        database.gpsCalibrationDao(),
+                    )
                 runManager.startRun()
 
                 val route = TestDataFactory.createTestRoute(distanceKm = distance)
@@ -201,7 +221,11 @@ class MultipleRunsAndHistoryTest {
 
             // Create 3 runs in non-chronological order
             for (index in listOf(1, 0, 2)) {
-                val runManager = RunManager()
+                val runManager =
+                    RunManager(
+                        database.gpsMeasurementDao(),
+                        database.gpsCalibrationDao(),
+                    )
                 runManager.startRun()
 
                 val route = TestDataFactory.createTestRoute(distanceKm = 5.0)
@@ -249,7 +273,11 @@ class MultipleRunsAndHistoryTest {
             // Create 3 runs
             val runIds = mutableListOf<Long>()
             for (i in 0..2) {
-                val runManager = RunManager()
+                val runManager =
+                    RunManager(
+                        database.gpsMeasurementDao(),
+                        database.gpsCalibrationDao(),
+                    )
                 runManager.startRun()
 
                 val route = TestDataFactory.createTestRoute(distanceKm = (i + 1) * 2.0)
@@ -300,7 +328,11 @@ class MultipleRunsAndHistoryTest {
             val now = System.currentTimeMillis()
 
             // Easy run (low HR)
-            val runManager1 = RunManager()
+            val runManager1 =
+                RunManager(
+                    database.gpsMeasurementDao(),
+                    database.gpsCalibrationDao(),
+                )
             runManager1.startRun()
             val route1 = TestDataFactory.createTestRoute(distanceKm = 3.0)
             val step = route1.size / 15
@@ -325,7 +357,11 @@ class MultipleRunsAndHistoryTest {
             repository.saveRun(runData1, hrData1, now - 7200000, now - 5400000)
 
             // Hard run (high HR)
-            val runManager2 = RunManager()
+            val runManager2 =
+                RunManager(
+                    database.gpsMeasurementDao(),
+                    database.gpsCalibrationDao(),
+                )
             runManager2.startRun()
             val route2 = TestDataFactory.createTestRoute(distanceKm = 5.0)
             for (i in 0 until route2.size step step) {

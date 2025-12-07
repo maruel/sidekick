@@ -102,14 +102,17 @@ fun sidekickApp() {
     }
 
     // Create managers but they're only used after onboarding completes
-    val runManager = remember { RunManager() }
+    val gpsMeasurementDao = remember { database.gpsMeasurementDao() }
+    val gpsCalibrationDao = remember { database.gpsCalibrationDao() }
+
+    val runManager = remember { RunManager(gpsMeasurementDao, gpsCalibrationDao) }
     val bleManager =
         remember {
             BleManager(context)
         }
     val locationTracker =
         remember {
-            LocationTracker(context)
+            LocationTracker(context, gpsMeasurementDao)
         }
     val announcementManager = remember { AnnouncementManager(context) }
     val voiceCommandListener = remember { VoiceCommandListener(context) }
@@ -190,6 +193,11 @@ fun sidekickApp() {
         }
     }
 
+    // Start GPS measurement collection at app startup (pre-warmup)
+    LaunchedEffect(Unit) {
+        locationTracker.startTracking(runId = null, activity = null)
+    }
+
     LaunchedEffect(runData.isRunning) {
         if (runData.isRunning) {
             locationTracker.currentLocation.filterNotNull().collect { location ->
@@ -220,6 +228,14 @@ fun sidekickApp() {
     LaunchedEffect(runData) {
         if (runData.isRunning) {
             runStateManager.update()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        // Flush measurements periodically (both during runs and pre-warmup)
+        while (true) {
+            kotlinx.coroutines.delay(10000) // Flush every 10 seconds
+            locationTracker.flushPendingMeasurements()
         }
     }
 
@@ -281,16 +297,20 @@ fun sidekickApp() {
                                     runStateManager.stopRun()
                                     locationTracker.stopTracking()
                                     scope.launch {
-                                        runRepository.saveRun(
-                                            runData = runData,
-                                            heartRateData = heartRateData,
-                                            startTime = runStartTime,
-                                            endTime = endTime,
-                                        )
+                                        locationTracker.flushPendingMeasurements()
+                                        val runId =
+                                            runRepository.saveRun(
+                                                runData = runData,
+                                                heartRateData = heartRateData,
+                                                startTime = runStartTime,
+                                                endTime = endTime,
+                                            )
+                                        runManager.finalizeRunSession()
                                     }
                                 },
                                 connectedDevice = connectedDevice,
                                 userAge = userAge,
+                                gpsAccuracyMeters = locationTracker.currentAccuracyMeters,
                             )
                         } else {
                             val userAge = devicePreferences.getCurrentAge()
@@ -301,7 +321,20 @@ fun sidekickApp() {
                                     runStartTime = System.currentTimeMillis()
                                     locationTracker.resetRoute()
                                     runStateManager.startRun()
-                                    locationTracker.startTracking()
+                                    scope.launch {
+                                        val runId =
+                                            runRepository.createRun(
+                                                com.fghbuild.sidekick.database.RunEntity(
+                                                    startTime = runStartTime,
+                                                    endTime = runStartTime,
+                                                    distanceMeters = 0.0,
+                                                    durationMillis = 0L,
+                                                    averagePaceMinPerKm = 0.0,
+                                                ),
+                                            )
+                                        locationTracker.startTracking(runId)
+                                        runManager.initializeRunSession(runId)
+                                    }
                                 },
                                 onStopRun = {},
                                 runData = runData,
@@ -317,6 +350,7 @@ fun sidekickApp() {
                                     devicePreferences.saveLastHrmDevice(device.address, device.name)
                                 },
                                 onDisconnect = { bleManager.disconnect() },
+                                gpsAccuracyMeters = locationTracker.currentAccuracyMeters,
                             )
                         }
 

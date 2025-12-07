@@ -6,14 +6,23 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [RunEntity::class, RoutePointEntity::class],
-    version = 2,
+    entities = [
+        RunEntity::class,
+        RoutePointEntity::class,
+        GpsMeasurementEntity::class,
+        GpsCalibrationEntity::class,
+    ],
+    version = 3,
     exportSchema = false,
 )
 abstract class SidekickDatabase : RoomDatabase() {
     abstract fun runDao(): RunDao
 
     abstract fun routePointDao(): RoutePointDao
+
+    abstract fun gpsMeasurementDao(): GpsMeasurementDao
+
+    abstract fun gpsCalibrationDao(): GpsCalibrationDao
 
     companion object {
         @Volatile

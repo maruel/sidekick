@@ -15,16 +15,20 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.fghbuild.sidekick.data.HeartRateData
 import com.fghbuild.sidekick.data.HrmDevice
 import com.fghbuild.sidekick.data.RunData
+import com.fghbuild.sidekick.ui.components.gpsAccuracyIndicator
 import com.fghbuild.sidekick.ui.components.mainMetricsPanel
 import com.fghbuild.sidekick.ui.components.paceChart
 import com.fghbuild.sidekick.ui.components.routeMap
 import com.fghbuild.sidekick.ui.components.screenContainer
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun runInProgressScreen(
@@ -36,6 +40,7 @@ fun runInProgressScreen(
     onStop: () -> Unit = {},
     connectedDevice: HrmDevice? = null,
     userAge: Int = 30,
+    gpsAccuracyMeters: StateFlow<Float>? = null,
 ) {
     screenContainer(modifier = modifier.fillMaxSize()) {
         // Pause/Resume and Stop buttons at top
@@ -97,5 +102,11 @@ fun runInProgressScreen(
         )
 
         Spacer(modifier = Modifier.weight(1f))
+
+        // GPS Accuracy indicator at bottom
+        gpsAccuracyMeters?.let { accuracyFlow ->
+            val accuracy by accuracyFlow.collectAsState()
+            gpsAccuracyIndicator(accuracyMeters = accuracy)
+        }
     }
 }

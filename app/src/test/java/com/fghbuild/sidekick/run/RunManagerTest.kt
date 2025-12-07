@@ -2,6 +2,8 @@ package com.fghbuild.sidekick.run
 
 import android.location.Location
 import com.fghbuild.sidekick.data.RoutePoint
+import com.fghbuild.sidekick.database.GpsCalibrationDao
+import com.fghbuild.sidekick.database.GpsMeasurementDao
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
@@ -14,10 +16,14 @@ import kotlin.test.assertTrue
 @DisplayName("RunManager Tests")
 class RunManagerTest {
     private lateinit var runManager: RunManager
+    private lateinit var gpsMeasurementDao: GpsMeasurementDao
+    private lateinit var gpsCalibrationDao: GpsCalibrationDao
 
     @BeforeEach
     fun setup() {
-        runManager = RunManager()
+        gpsMeasurementDao = mockk(relaxed = true)
+        gpsCalibrationDao = mockk(relaxed = true)
+        runManager = RunManager(gpsMeasurementDao, gpsCalibrationDao)
     }
 
     @Test

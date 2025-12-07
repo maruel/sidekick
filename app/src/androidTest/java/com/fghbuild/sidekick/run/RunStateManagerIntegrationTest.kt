@@ -2,10 +2,12 @@ package com.fghbuild.sidekick.run
 
 import android.content.Context
 import android.location.Location
+import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.fghbuild.sidekick.audio.AnnouncementManager
 import com.fghbuild.sidekick.audio.FakeVoiceCommandListener
 import com.fghbuild.sidekick.audio.VoiceCommand
+import com.fghbuild.sidekick.database.SidekickDatabase
 import com.fghbuild.sidekick.fixtures.TestDataFactory
 import io.mockk.spyk
 import io.mockk.verify
@@ -17,6 +19,7 @@ import kotlin.test.assertEquals
 
 class RunStateManagerIntegrationTest {
     private lateinit var context: Context
+    private lateinit var database: SidekickDatabase
     private lateinit var runManager: RunManager
     private lateinit var announcementManager: AnnouncementManager
     private lateinit var voiceCommandListener: FakeVoiceCommandListener
@@ -26,7 +29,19 @@ class RunStateManagerIntegrationTest {
     fun setup() {
         context = ApplicationProvider.getApplicationContext()
 
-        runManager = RunManager()
+        database =
+            Room.inMemoryDatabaseBuilder(
+                context,
+                SidekickDatabase::class.java,
+            )
+                .allowMainThreadQueries()
+                .build()
+
+        runManager =
+            RunManager(
+                database.gpsMeasurementDao(),
+                database.gpsCalibrationDao(),
+            )
 
         announcementManager = spyk(AnnouncementManager(context), recordPrivateCalls = true)
 

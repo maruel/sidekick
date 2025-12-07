@@ -31,7 +31,11 @@ class FullRunWorkflowTest {
                 .build()
 
         repository = RunRepository(database.runDao(), database.routePointDao())
-        runManager = RunManager()
+        runManager =
+            RunManager(
+                database.gpsMeasurementDao(),
+                database.gpsCalibrationDao(),
+            )
     }
 
     @After
@@ -313,7 +317,11 @@ class FullRunWorkflowTest {
             repository.saveRun(runData, hrData1, startTime1, System.currentTimeMillis())
 
             // Reset and run 2
-            runManager = RunManager()
+            runManager =
+                RunManager(
+                    database.gpsMeasurementDao(),
+                    database.gpsCalibrationDao(),
+                )
             val startTime2 = System.currentTimeMillis()
             runManager.startRun()
 

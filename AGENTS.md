@@ -98,3 +98,7 @@ app/src/main/java/com/fghbuild/sidekick/
 - Compose UI tests use `@get:Rule val composeTestRule = createComposeRule()`
 - Unit test fixtures: `@BeforeEach`, `@AfterEach`, `@DisplayName` from `org.junit.jupiter.api`
 - Integration test fixtures: `@Before`, `@After`, `@Test` from `org.junit` (JUnit 4)
+
+### Localization
+- **Never hardcode `Locale.US`** - Always use `Locale.getDefault()` to respect user's device locale
+- Pass context to access LocalConfiguration for Compose when needed

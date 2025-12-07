@@ -1,6 +1,9 @@
 package com.fghbuild.sidekick.run
 
 import android.location.Location
+import androidx.room.Room
+import androidx.test.core.app.ApplicationProvider
+import com.fghbuild.sidekick.database.SidekickDatabase
 import com.fghbuild.sidekick.fixtures.TestDataFactory
 import com.fghbuild.sidekick.util.GeoUtils
 import kotlinx.coroutines.flow.first
@@ -12,10 +15,23 @@ import kotlin.test.assertTrue
 
 class RunManagerIntegrationTest {
     private lateinit var runManager: RunManager
+    private lateinit var database: SidekickDatabase
 
     @Before
     fun setup() {
-        runManager = RunManager()
+        val context = ApplicationProvider.getApplicationContext<android.app.Application>()
+        database =
+            Room.inMemoryDatabaseBuilder(
+                context,
+                SidekickDatabase::class.java,
+            )
+                .allowMainThreadQueries()
+                .build()
+        runManager =
+            RunManager(
+                database.gpsMeasurementDao(),
+                database.gpsCalibrationDao(),
+            )
     }
 
     @Test

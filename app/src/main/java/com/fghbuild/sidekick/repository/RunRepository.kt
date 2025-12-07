@@ -17,12 +17,16 @@ class RunRepository(
         return runDao.getAllRuns()
     }
 
+    suspend fun createRun(runEntity: RunEntity): Long {
+        return runDao.insertRun(runEntity)
+    }
+
     suspend fun saveRun(
         runData: RunData,
         heartRateData: HeartRateData,
         startTime: Long,
         endTime: Long,
-    ) {
+    ): Long {
         val averagePace =
             if (runData.paceHistory.isNotEmpty()) {
                 runData.paceHistory.average()
@@ -58,6 +62,8 @@ class RunRepository(
         if (routePointEntities.isNotEmpty()) {
             routePointDao.insertRoutePoints(routePointEntities)
         }
+
+        return runId
     }
 
     suspend fun deleteRun(runId: Long) {

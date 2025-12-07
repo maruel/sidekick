@@ -14,6 +14,8 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -22,8 +24,10 @@ import androidx.compose.ui.unit.dp
 import com.fghbuild.sidekick.data.HeartRateData
 import com.fghbuild.sidekick.data.HrmDevice
 import com.fghbuild.sidekick.data.RunData
+import com.fghbuild.sidekick.ui.components.gpsAccuracyIndicator
 import com.fghbuild.sidekick.ui.components.mainMetricsPanel
 import com.fghbuild.sidekick.ui.components.screenContainer
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 @Composable
@@ -42,6 +46,7 @@ fun homeScreen(
     onStopScanning: () -> Unit = {},
     onSelectDevice: (HrmDevice) -> Unit = {},
     onDisconnect: () -> Unit = {},
+    gpsAccuracyMeters: StateFlow<Float>? = null,
 ) {
     val showPairingDialog = remember { mutableStateOf(false) }
     val showDisconnectToast = remember { mutableStateOf(false) }
@@ -111,6 +116,12 @@ fun homeScreen(
                 Text("Connect Heart Rate Monitor")
             }
             Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        // GPS Accuracy indicator at bottom
+        gpsAccuracyMeters?.let { accuracyFlow ->
+            val accuracy by accuracyFlow.collectAsState()
+            gpsAccuracyIndicator(accuracyMeters = accuracy)
         }
     }
 

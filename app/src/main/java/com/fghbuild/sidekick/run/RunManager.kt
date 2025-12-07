@@ -4,13 +4,20 @@ import android.location.Location
 import com.fghbuild.sidekick.data.HeartRateData
 import com.fghbuild.sidekick.data.RoutePoint
 import com.fghbuild.sidekick.data.RunData
+import com.fghbuild.sidekick.database.GpsCalibrationDao
+import com.fghbuild.sidekick.database.GpsCalibrationEntity
+import com.fghbuild.sidekick.database.GpsMeasurementDao
 import com.fghbuild.sidekick.util.GeoUtils
+import com.fghbuild.sidekick.util.GpsCalibrationUtils
 import com.fghbuild.sidekick.util.PaceUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class RunManager {
+class RunManager(
+    private val gpsMeasurementDao: GpsMeasurementDao,
+    private val gpsCalibrationDao: GpsCalibrationDao,
+) {
     private val _runData = MutableStateFlow(RunData())
     val runData: StateFlow<RunData> = _runData.asStateFlow()
 
@@ -21,6 +28,8 @@ class RunManager {
     private var pausedTimeMillis: Long = 0
     private var lastLocationTimeMillis: Long = 0
     private var runExplicitlyStarted = false
+    private var currentRunId: Long? = null
+    private var currentActivity: String = "running"
 
     fun startRun() {
         startTimeMillis = System.currentTimeMillis()
@@ -105,5 +114,87 @@ class RunManager {
 
     fun updateRoutePoints(points: List<RoutePoint>) {
         _runData.value = _runData.value.copy(routePoints = points)
+    }
+
+    suspend fun initializeRunSession(
+        runId: Long,
+        activity: String = "running",
+    ) {
+        currentRunId = runId
+        currentActivity = activity
+    }
+
+    suspend fun finalizeRunSession() {
+        currentRunId?.let { runId ->
+            // Only update calibration if session was at least 30 seconds
+            val durationMillis = _runData.value.durationMillis
+            if (durationMillis >= 30000) {
+                val measurements = gpsMeasurementDao.getRunMeasurements(runId)
+                if (measurements.isNotEmpty()) {
+                    updateCalibration(measurements)
+                }
+            }
+        }
+        currentRunId = null
+    }
+
+    private suspend fun updateCalibration(measurements: List<com.fghbuild.sidekick.database.GpsMeasurementEntity>) {
+        val (avgAccuracy, p95Accuracy, avgBearingAccuracy) =
+            GpsCalibrationUtils.calculateMeasurementStats(measurements)
+
+        val kalmanNoise =
+            GpsCalibrationUtils.deriveKalmanMeasurementNoise(
+                measurements.map { it.accuracy },
+            )
+
+        // Get existing calibration for this activity
+        val existing = gpsCalibrationDao.getCalibration(currentActivity)
+
+        val newCalibration =
+            if (existing != null) {
+                // Merge with weighted average
+                GpsCalibrationEntity(
+                    activity = currentActivity,
+                    avgAccuracyMeters =
+                        GpsCalibrationUtils.weightedAverage(
+                            existing.avgAccuracyMeters,
+                            existing.samplesCollected,
+                            avgAccuracy,
+                            measurements.size,
+                        ),
+                    p95AccuracyMeters =
+                        GpsCalibrationUtils.weightedAverage(
+                            existing.p95AccuracyMeters,
+                            existing.samplesCollected,
+                            p95Accuracy,
+                            measurements.size,
+                        ),
+                    avgBearingAccuracyDegrees =
+                        GpsCalibrationUtils.weightedAverage(
+                            existing.avgBearingAccuracyDegrees,
+                            existing.samplesCollected,
+                            avgBearingAccuracy,
+                            measurements.size,
+                        ),
+                    samplesCollected = existing.samplesCollected + measurements.size,
+                    kalmanProcessNoise = existing.kalmanProcessNoise,
+                    kalmanMeasurementNoise = kalmanNoise,
+                    lastUpdated = System.currentTimeMillis(),
+                )
+            } else {
+                // First calibration for this activity
+                GpsCalibrationEntity(
+                    activity = currentActivity,
+                    avgAccuracyMeters = avgAccuracy,
+                    p95AccuracyMeters = p95Accuracy,
+                    avgBearingAccuracyDegrees = avgBearingAccuracy,
+                    samplesCollected = measurements.size,
+                    kalmanProcessNoise = 0.001,
+                    kalmanMeasurementNoise = kalmanNoise,
+                    lastUpdated = System.currentTimeMillis(),
+                )
+            }
+
+        gpsCalibrationDao.upsert(newCalibration)
     }
 }
