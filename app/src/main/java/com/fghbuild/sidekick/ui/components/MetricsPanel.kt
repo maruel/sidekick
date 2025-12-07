@@ -94,5 +94,4 @@ fun mainMetricsPanel(
             modifier = Modifier.fillMaxWidth(),
         )
     }
-    }
-
+}

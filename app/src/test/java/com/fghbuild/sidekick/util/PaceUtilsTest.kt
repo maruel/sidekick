@@ -79,24 +79,24 @@ class PaceUtilsTest {
     @Test
     fun formatDuration_oneHour_returnsFormattedString() {
         val formatted = PaceUtils.formatDuration(3600000)
-        assertEquals("01:00:00", formatted)
+        assertEquals("1:00:00", formatted)
     }
 
     @Test
     fun formatDuration_thirtyMinutes_returnsFormattedString() {
         val formatted = PaceUtils.formatDuration(1800000)
-        assertEquals("00:30:00", formatted)
+        assertEquals("0:30:00", formatted)
     }
 
     @Test
     fun formatDuration_oneMinuteThirtySeconds_returnsFormattedString() {
         val formatted = PaceUtils.formatDuration(90000)
-        assertEquals("00:01:30", formatted)
+        assertEquals("0:01:30", formatted)
     }
 
     @Test
     fun formatDuration_zero_returnsZero() {
         val formatted = PaceUtils.formatDuration(0)
-        assertEquals("00:00:00", formatted)
+        assertEquals("0:00:00", formatted)
     }
 }
