@@ -81,6 +81,7 @@ app/src/main/java/com/fghbuild/sidekick/
 - **Compose** - Material3, Navigation Suite
 - **Room** - Local database for run history
 - **Android APIs** - LocationManager, BluetoothLE, TextToSpeech, SpeechRecognizer
+- **Google Maps Compose** - Maps SDK for Android (v4.3.3) with Jetpack Compose support
 
 ## Code Patterns
 
@@ -103,3 +104,10 @@ app/src/main/java/com/fghbuild/sidekick/
 ### Localization
 - **Never hardcode `Locale.US`** - Always use `Locale.getDefault()` to respect user's device locale
 - Pass context to access LocalConfiguration for Compose when needed
+
+### Google Maps Integration
+- **API Key Management**: Store API key in `.env` (not in git)
+- **Build Configuration**: Key is injected via `resValue()` in `build.gradle.kts` at build time
+- **Manifest**: Reference key via `@string/google_maps_key` in AndroidManifest.xml metadata tag
+- **RouteMap Composable**: Uses `GoogleMap` with `Polyline` to display routes from `List<RoutePoint>`
+- **Camera Control**: Map centers on route using average lat/lng, zoom level 15f

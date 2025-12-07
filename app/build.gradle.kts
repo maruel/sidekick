@@ -1,3 +1,6 @@
+import java.io.File
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -6,6 +9,21 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
     id("jacoco")
     id("io.gitlab.arturbosch.detekt") version "1.23.8"
+}
+
+// Load API key from .env or GitHub Actions environment variable
+val localProperties = Properties()
+val secretsFile = File(rootDir, ".env")
+if (secretsFile.exists() && secretsFile.isFile) {
+    secretsFile.inputStream().use {
+        localProperties.load(it)
+    }
+}
+
+// Check environment variable (for CI/CD), falls back to .env file
+val googleMapsApiKeyEnv = System.getenv("GOOGLE_MAP_API_KEY")
+if (googleMapsApiKeyEnv != null) {
+    localProperties.setProperty("GOOGLE_MAP_API_KEY", googleMapsApiKeyEnv)
 }
 
 ktlint {
@@ -45,6 +63,8 @@ android {
         debug {
             enableUnitTestCoverage = true
             enableAndroidTestCoverage = true
+            val googleMapsApiKey = localProperties.getProperty("GOOGLE_MAP_API_KEY") ?: ""
+            resValue("string", "google_maps_key", googleMapsApiKey)
         }
         release {
             isMinifyEnabled = false
@@ -52,6 +72,8 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
+            val googleMapsApiKey = localProperties.getProperty("GOOGLE_MAP_API_KEY") ?: ""
+            resValue("string", "google_maps_key", googleMapsApiKey)
         }
     }
     compileOptions {
@@ -105,6 +127,8 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
     implementation(libs.play.services.location)
+    implementation(libs.play.services.maps)
+    implementation(libs.maps.compose)
 
     // Testing
     testImplementation(platform(libs.junit.bom))

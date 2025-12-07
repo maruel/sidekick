@@ -68,16 +68,17 @@ Bash script for running tests locally with xvfb:
 ./run_integration_tests.sh
 ```
 
-## Architecture
+## Setup Instructions
 
-The app uses MVVM architecture with Jetpack Compose for UI:
+### 1. Obtain a Google Maps API Key
 
-- `ui/screens/` - Compose screens (Home, Run, History)
-- `ui/components/` - Reusable UI components (charts, map)
-- `run/` - Run state management
-- `ble/` - Bluetooth heart rate monitor integration
-- `location/` - GPS tracking
-- `audio/` - Voice commands and text-to-speech
-- `database/` - Room persistence for run history
-- `repository/` - Data layer
-- `util/` - Calculation utilities
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select an existing one
+3. Enable the **Maps SDK for Android** API: https://console.cloud.google.com/google/maps-apis/home
+4. Create an API key at https://console.cloud.google.com/apis/credentials
+    1. Restrict the key to Android apps and add your app's certificate fingerprint (TODO)
+    1. Restrict to Maps SDK for Android
+5. Copy the API key and paste it into the `.env` file:
+   ```
+   GOOGLE_MAP_API_KEY=your_actual_api_key_here
+   ```
