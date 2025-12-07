@@ -120,9 +120,12 @@ private fun runHistoryCard(
                 )
                 statItem(
                     label = stringResource(R.string.history_duration),
-                    value = stringResource(R.string.format_duration, formatDurationValues(run.durationMillis)),
+                    value = PaceUtils.formatDuration(run.durationMillis),
                 )
-                statItem(label = stringResource(R.string.history_pace), value = PaceUtils.formatPace(run.averagePaceMinPerKm))
+                statItem(
+                    label = stringResource(R.string.history_pace),
+                    value = PaceUtils.formatPace(run.averagePaceMinPerKm) + " " + stringResource(R.string.unit_pace_suffix),
+                )
             }
 
             if (run.averageHeartRate > 0) {
@@ -170,12 +173,4 @@ private fun statItem(
 private fun formatDate(timestamp: Long): String {
     val dateFormat = SimpleDateFormat("MMM d, yyyy 'at' h:mm a", Locale.getDefault())
     return dateFormat.format(Date(timestamp))
-}
-
-private fun formatDurationValues(millis: Long): String {
-    val totalSeconds = millis / 1000
-    val hours = totalSeconds / 3600
-    val minutes = (totalSeconds % 3600) / 60
-    val seconds = totalSeconds % 60
-    return "$hours $minutes $seconds"
 }

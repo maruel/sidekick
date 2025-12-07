@@ -74,13 +74,10 @@
 
     <!-- Units -->
     <string name="unit_bpm">bpm</string>
-    <string name="unit_km">km</string>
     <string name="unit_pace_suffix">/km</string>
 
     <!-- Format strings -->
     <string name="format_distance">%.2f km</string>
-    <string name="format_pace">%s</string>
-    <string name="format_duration" formatted="false">%02d:%02d:%02d</string>
 
     <!-- Notifications -->
     <string name="notification_channel_name">Suivi de la course</string>

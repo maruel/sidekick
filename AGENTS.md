@@ -53,6 +53,7 @@ app/src/main/java/com/fghbuild/sidekick/
 | `./gradlew test` | Run unit tests |
 | `./gradlew connectedAndroidTest` | Run instrumentation tests on device/emulator |
 | `./run_integration_tests.sh` | Run integration tests with emulator (automated setup) |
+| `./gradlew lint` | Run Android lint check (fails on unused resources) |
 | `./gradlew ktlintCheck` | Check code formatting |
 | `./gradlew ktlintFormat` | Auto-fix formatting |
 | `./gradlew jacocoTestReport` | Generate code coverage report |

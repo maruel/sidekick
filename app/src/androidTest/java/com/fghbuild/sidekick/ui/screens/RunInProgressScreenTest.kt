@@ -65,7 +65,7 @@ class RunInProgressScreenTest {
         composeTestRule.setContent {
             runInProgressScreen(runData = runData)
         }
-        composeTestRule.onNodeWithText("00:45:00", substring = true).assertIsDisplayed()
+        composeTestRule.onNodeWithText("0:45:00", substring = true).assertIsDisplayed()
     }
 
     @Test

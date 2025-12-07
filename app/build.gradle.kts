@@ -84,6 +84,10 @@ android {
                 )
         }
     }
+
+    lint {
+        error.add("UnusedResources")
+    }
 }
 
 dependencies {

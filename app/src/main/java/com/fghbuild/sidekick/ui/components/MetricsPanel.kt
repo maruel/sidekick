@@ -61,7 +61,7 @@ fun metricsPanel(
         )
         metricCard(
             label = stringResource(R.string.metrics_duration),
-            value = if (isRunning) formatDuration(runData.durationMillis) else "--",
+            value = if (isRunning) PaceUtils.formatDuration(runData.durationMillis) else "--",
             emoji = "⏱️",
             modifier = Modifier.weight(1f),
         )
@@ -94,13 +94,5 @@ fun mainMetricsPanel(
             modifier = Modifier.fillMaxWidth(),
         )
     }
-}
+    }
 
-@Composable
-private fun formatDuration(milliseconds: Long): String {
-    val totalSeconds = milliseconds / 1000
-    val hours = totalSeconds / 3600
-    val minutes = (totalSeconds % 3600) / 60
-    val seconds = totalSeconds % 60
-    return stringResource(R.string.format_duration, hours, minutes, seconds)
-}

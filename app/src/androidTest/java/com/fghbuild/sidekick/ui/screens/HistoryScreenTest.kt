@@ -62,7 +62,7 @@ class HistoryScreenTest {
         composeTestRule.setContent {
             historyScreen(runs = listOf(run))
         }
-        composeTestRule.onNodeWithText("01:00:00", substring = true).assertIsDisplayed()
+        composeTestRule.onNodeWithText("1:00:00", substring = true).assertIsDisplayed()
     }
 
     @Test
