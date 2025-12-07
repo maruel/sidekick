@@ -313,6 +313,7 @@ fun sidekickApp() {
                                 connectedDevice = connectedDevice,
                                 userAge = userAge,
                                 gpsAccuracyMeters = locationTracker.currentAccuracyMeters,
+                                currentLocation = locationTracker.currentLocation,
                             )
                         } else {
                             val userAge = devicePreferences.getCurrentAge()
@@ -338,6 +339,7 @@ fun sidekickApp() {
                                         runManager.initializeRunSession(runId)
                                     }
                                 },
+                                currentLocation = locationTracker.currentLocation,
                                 onStopRun = {},
                                 runData = runData,
                                 heartRateData = heartRateData,

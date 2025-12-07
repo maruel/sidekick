@@ -34,7 +34,7 @@ fun paceChart(
         modifier =
             modifier
                 .fillMaxWidth()
-                .clip(MaterialTheme.shapes.medium)
+                .clip(MaterialTheme.shapes.small)
                 .background(
                     color = MaterialTheme.colorScheme.surfaceContainerHigh,
                     shape = MaterialTheme.shapes.medium,
@@ -52,8 +52,7 @@ fun paceChart(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .height(120.dp)
-                        .padding(top = 4.dp, bottom = 4.dp),
+                        .height(120.dp),
             )
 
             // Shoe emoji floats over graph, below data points
@@ -63,7 +62,7 @@ fun paceChart(
                 modifier =
                     Modifier
                         .align(Alignment.TopStart)
-                        .padding(start = 4.dp, top = 4.dp)
+                        .padding(start = 4.dp)
                         .zIndex(0.5f),
             )
         }
@@ -90,7 +89,7 @@ private fun paceGraphCanvas(
         // Draw zone background bands - note: faster pace is at top, slower at bottom
         for (i in zones.indices) {
             val zone = zones[i]
-            val zoneMinPace = zone.minPace
+            val zoneMinPace = if (i == zones.size - 1) displayMax else zones[i + 1].minPace
             val zoneMaxPace = zone.maxPace
 
             val zoneMaxY = height * ((zoneMinPace - displayMin) / (displayMax - displayMin))
@@ -132,7 +131,7 @@ private fun paceGraphCanvas(
             drawText(
                 textMeasurer = textMeasurer,
                 text = "${"%.1f".format(zonePace)}",
-                topLeft = Offset(2f, (yPos - 6f).toFloat()),
+                topLeft = Offset(2f + with(density) { 24.dp.toPx() }, (yPos - 6f).toFloat()),
                 style = androidx.compose.ui.text.TextStyle(fontSize = 8.sp),
             )
         }

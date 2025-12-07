@@ -12,6 +12,7 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import android.location.Location
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -50,6 +51,7 @@ fun homeScreen(
     onSelectDevice: (HrmDevice) -> Unit = {},
     onDisconnect: () -> Unit = {},
     gpsAccuracyMeters: StateFlow<Float>? = null,
+    currentLocation: StateFlow<Location?>? = null,
 ) {
     val showPairingDialog = remember { mutableStateOf(false) }
     val showDisconnectToast = remember { mutableStateOf(false) }
@@ -109,6 +111,7 @@ fun homeScreen(
                     showDisconnectToast.value = true
                 }
             },
+            currentLocation = currentLocation,
         )
 
         Spacer(modifier = Modifier.weight(1f))

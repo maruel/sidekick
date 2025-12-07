@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import android.location.Location
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -28,7 +29,6 @@ import com.fghbuild.sidekick.data.RunData
 import com.fghbuild.sidekick.ui.components.gpsAccuracyIndicator
 import com.fghbuild.sidekick.ui.components.mainMetricsPanel
 import com.fghbuild.sidekick.ui.components.paceChart
-import com.fghbuild.sidekick.ui.components.routeMap
 import com.fghbuild.sidekick.ui.components.screenContainer
 import kotlinx.coroutines.flow.StateFlow
 
@@ -43,6 +43,7 @@ fun runInProgressScreen(
     connectedDevice: HrmDevice? = null,
     userAge: Int = 30,
     gpsAccuracyMeters: StateFlow<Float>? = null,
+    currentLocation: StateFlow<Location?>? = null,
 ) {
     screenContainer(modifier = modifier.fillMaxSize()) {
         // Pause/Resume and Stop buttons at top
@@ -87,19 +88,13 @@ fun runInProgressScreen(
             connectedDevice = connectedDevice,
             userAge = userAge,
             isRunning = true,
+            currentLocation = currentLocation,
         )
 
         Spacer(modifier = Modifier.height(4.dp))
 
         paceChart(
             paceHistory = runData.paceHistory,
-            modifier = Modifier.fillMaxWidth(),
-        )
-
-        Spacer(modifier = Modifier.height(4.dp))
-
-        routeMap(
-            routePoints = runData.routePoints,
             modifier = Modifier.fillMaxWidth(),
         )
 

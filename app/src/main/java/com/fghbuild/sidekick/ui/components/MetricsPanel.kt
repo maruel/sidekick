@@ -1,11 +1,14 @@
 package com.fghbuild.sidekick.ui.components
 
+import android.location.Location
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -14,6 +17,8 @@ import com.fghbuild.sidekick.data.HeartRateData
 import com.fghbuild.sidekick.data.HrmDevice
 import com.fghbuild.sidekick.data.RunData
 import com.fghbuild.sidekick.util.PaceUtils
+import com.google.android.gms.maps.model.LatLng
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun metricsPanel(
@@ -76,7 +81,26 @@ fun mainMetricsPanel(
     userAge: Int = 30,
     isRunning: Boolean = false,
     onHeartRateLongPress: () -> Unit = {},
+    currentLocation: StateFlow<Location?>? = null,
 ) {
+    // Route map always visible
+    val locationFromFlow = currentLocation?.let { flow ->
+        val location by flow.collectAsState(initial = null)
+        location
+    }
+    val userLocation = runData.routePoints.lastOrNull()?.let { 
+        LatLng(it.latitude, it.longitude) 
+    } ?: locationFromFlow?.let {
+        LatLng(it.latitude, it.longitude)
+    }
+    routeMap(
+        routePoints = runData.routePoints,
+        userLocation = userLocation,
+        modifier = Modifier.fillMaxWidth(),
+    )
+
+    Spacer(modifier = Modifier.height(4.dp))
+
     // Metric cards
     metricsPanel(
         runData = runData,

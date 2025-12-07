@@ -35,7 +35,7 @@ fun heartRateChart(
         modifier =
             modifier
                 .fillMaxWidth()
-                .clip(MaterialTheme.shapes.medium)
+                .clip(MaterialTheme.shapes.small)
                 .background(
                     color = MaterialTheme.colorScheme.surfaceContainerHigh,
                     shape = MaterialTheme.shapes.medium,
@@ -48,7 +48,7 @@ fun heartRateChart(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .clip(MaterialTheme.shapes.medium),
+                    .clip(MaterialTheme.shapes.small),
         ) {
             heartRateGraphCanvas(
                 measurements = last5Minutes,
@@ -89,9 +89,7 @@ private fun heartRateGraphCanvas(
     val displayMax = maxHR.toFloat()
 
     Canvas(
-        modifier =
-            modifier
-                .padding(4.dp),
+        modifier = modifier,
     ) {
         val width = size.width
         val height = size.height
@@ -140,7 +138,7 @@ private fun heartRateGraphCanvas(
             drawText(
                 textMeasurer = textMeasurer,
                 text = "${zone.maxBpm}",
-                topLeft = Offset(2f, yPos - 6f),
+                topLeft = Offset(2f + with(density) { 24.dp.toPx() }, yPos - 6f),
                 style = androidx.compose.ui.text.TextStyle(fontSize = 8.sp),
             )
         }

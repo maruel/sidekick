@@ -1,5 +1,8 @@
 package com.fghbuild.sidekick.ui.components
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,25 +21,30 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fghbuild.sidekick.R
 import com.fghbuild.sidekick.data.RoutePoint
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.rememberMarkerState
 
 @Composable
 fun routeMap(
     routePoints: List<RoutePoint>,
+    userLocation: LatLng? = null,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier =
             modifier
                 .fillMaxWidth()
-                .clip(MaterialTheme.shapes.medium)
+                .clip(MaterialTheme.shapes.small)
                 .background(
                     color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                    shape = MaterialTheme.shapes.medium,
+                    shape = MaterialTheme.shapes.small,
                 )
                 .padding(4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -47,7 +56,7 @@ fun routeMap(
                     .height(200.dp),
             contentAlignment = Alignment.Center,
         ) {
-            if (routePoints.isEmpty()) {
+            if (routePoints.isEmpty() && userLocation == null) {
                 Text(
                     stringResource(R.string.route_no_data),
                     fontSize = 14.sp,
@@ -56,6 +65,7 @@ fun routeMap(
             } else {
                 routeMapGoogle(
                     routePoints = routePoints,
+                    userLocation = userLocation,
                     modifier =
                         Modifier
                             .fillMaxWidth()
@@ -66,25 +76,50 @@ fun routeMap(
     }
 }
 
+private fun createBlueDotBitmap(sizePixels: Int = 48): BitmapDescriptor {
+    val bitmap = Bitmap.createBitmap(sizePixels, sizePixels, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+
+    // Draw outer blue circle with transparency
+    paint.color = 0x4D2196F3.toInt() // Material blue with alpha
+    canvas.drawCircle(sizePixels / 2f, sizePixels / 2f, sizePixels / 2f, paint)
+
+    // Draw inner solid blue circle
+    paint.color = 0xFF2196F3.toInt() // Material blue
+    canvas.drawCircle(sizePixels / 2f, sizePixels / 2f, sizePixels / 4f, paint)
+
+    return BitmapDescriptorFactory.fromBitmap(bitmap)
+}
+
 @Composable
 private fun routeMapGoogle(
     routePoints: List<RoutePoint>,
+    userLocation: LatLng? = null,
     modifier: Modifier = Modifier,
 ) {
-    if (routePoints.size < 2) return
-
     // Convert RoutePoint to LatLng
     val latLngPoints = routePoints.map { LatLng(it.latitude, it.longitude) }
 
-    // Calculate center of route
-    val avgLat = latLngPoints.map { it.latitude }.average()
-    val avgLng = latLngPoints.map { it.longitude }.average()
-    val centerPoint = LatLng(avgLat, avgLng)
+    // Calculate center of route or use user location
+    val centerPoint = if (latLngPoints.size >= 2) {
+        val avgLat = latLngPoints.map { it.latitude }.average()
+        val avgLng = latLngPoints.map { it.longitude }.average()
+        LatLng(avgLat, avgLng)
+    } else if (userLocation != null) {
+        userLocation
+    } else {
+        return
+    }
 
     val cameraPositionState =
         rememberCameraPositionState {
             position = CameraPosition.fromLatLngZoom(centerPoint, 15f)
         }
+
+    LaunchedEffect(centerPoint) {
+        cameraPositionState.position = CameraPosition.fromLatLngZoom(centerPoint, 15f)
+    }
 
     val routeColor = MaterialTheme.colorScheme.primary
 
@@ -92,11 +127,22 @@ private fun routeMapGoogle(
         modifier = modifier,
         cameraPositionState = cameraPositionState,
     ) {
-        // Draw polyline for the route
-        Polyline(
-            points = latLngPoints,
-            color = routeColor,
-            width = 5f,
-        )
+        // Draw polyline for the route if available
+        if (latLngPoints.size >= 2) {
+            Polyline(
+                points = latLngPoints,
+                color = routeColor,
+                width = 5f,
+            )
+        }
+
+        // Draw user location marker if available
+        userLocation?.let {
+            Marker(
+                state = rememberMarkerState(position = it),
+                title = "Current Location",
+                icon = createBlueDotBitmap(),
+            )
+        }
     }
 }
