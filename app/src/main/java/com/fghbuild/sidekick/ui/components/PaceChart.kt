@@ -50,8 +50,8 @@ fun paceChart(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .height(140.dp)
-                        .padding(bottom = 4.dp),
+                        .height(120.dp)
+                        .padding(top = 8.dp, bottom = 8.dp),
             )
 
             // Shoe emoji floats over graph, below data points
@@ -90,32 +90,32 @@ private fun paceGraphCanvas(
         val width = size.width
         val height = size.height
 
-        // Draw zone background bands - note: inverted Y for pace (slower is higher)
+        // Draw zone background bands - note: faster pace is at top, slower at bottom
         for (i in zones.indices) {
             val zone = zones[i]
             val zoneMinPace = zone.minPace
             val zoneMaxPace = zone.maxPace
 
-            val zoneMinY = height * (1 - (zoneMinPace - displayMax) / (displayMin - displayMax))
-            val zoneMaxY = height * (1 - (zoneMaxPace - displayMax) / (displayMin - displayMax))
+            val zoneMaxY = height * ((zoneMinPace - displayMin) / (displayMax - displayMin))
+            val zoneMinY = height * ((zoneMaxPace - displayMin) / (displayMax - displayMin))
 
             val zoneColor =
                 when (zone.zone) {
-                    1 -> Color(0xFF4CAF50) // Green - Recovery
-                    2 -> Color(0xFF8BC34A) // Light Green - Easy
+                    1 -> Color(0xFFF44336) // Red - Recovery (slowest, at bottom)
+                    2 -> Color(0xFFFF9800) // Orange - Easy
                     3 -> Color(0xFFFFC107) // Yellow - Moderate
-                    4 -> Color(0xFFFF9800) // Orange - Tempo
-                    5 -> Color(0xFFF44336) // Red - Fast
+                    4 -> Color(0xFF8BC34A) // Light Green - Tempo
+                    5 -> Color(0xFF4CAF50) // Green - Fast (fastest, at top)
                     else -> Color.Gray
                 }
 
             drawRect(
                 color = zoneColor.copy(alpha = 0.25f),
-                topLeft = Offset(0f, zoneMaxY.toFloat()),
+                topLeft = Offset(0f, minOf(zoneMaxY, zoneMinY).toFloat()),
                 size =
                     androidx.compose.ui.geometry.Size(
                         width = width.toFloat(),
-                        height = (zoneMinY - zoneMaxY).toFloat(),
+                        height = kotlin.math.abs(zoneMinY - zoneMaxY).toFloat(),
                     ),
             )
         }
@@ -123,7 +123,7 @@ private fun paceGraphCanvas(
         // Draw grid lines and labels for zones
         for (zone in zones) {
             val zonePace = zone.maxPace
-            val yPos = height * (1 - (zonePace - displayMax) / (displayMin - displayMax))
+            val yPos = height * ((zonePace - displayMin) / (displayMax - displayMin))
             drawLine(
                 color = Color.Gray.copy(alpha = 0.2f),
                 start = Offset(0f, yPos.toFloat()),
@@ -148,23 +148,23 @@ private fun paceGraphCanvas(
             for (i in 0 until paceHistory.size - 1) {
                 val x1 = (i * xStep).toFloat()
                 val y1 =
-                    (height * (1 - (paceHistory[i] - displayMax) / (displayMin - displayMax)))
+                    (height * ((paceHistory[i] - displayMin) / (displayMax - displayMin)))
                         .toFloat()
                         .coerceIn(0f, height)
                 val x2 = ((i + 1) * xStep).toFloat()
                 val y2 =
-                    (height * (1 - (paceHistory[i + 1] - displayMax) / (displayMin - displayMax)))
+                    (height * ((paceHistory[i + 1] - displayMin) / (displayMax - displayMin)))
                         .toFloat()
                         .coerceIn(0f, height)
 
                 val pointColor =
                     PaceUtils.getZoneForPace(paceHistory[i])?.let { zone ->
                         when (zone.zone) {
-                            1 -> Color(0xFF4CAF50)
-                            2 -> Color(0xFF8BC34A)
+                            1 -> Color(0xFFF44336)
+                            2 -> Color(0xFFFF9800)
                             3 -> Color(0xFFFFC107)
-                            4 -> Color(0xFFFF9800)
-                            5 -> Color(0xFFF44336)
+                            4 -> Color(0xFF8BC34A)
+                            5 -> Color(0xFF4CAF50)
                             else -> primaryColor
                         }
                     } ?: primaryColor
@@ -181,18 +181,18 @@ private fun paceGraphCanvas(
             for (i in paceHistory.indices) {
                 val x = (i * xStep).toFloat()
                 val y =
-                    (height * (1 - (paceHistory[i] - displayMax) / (displayMin - displayMax)))
+                    (height * ((paceHistory[i] - displayMin) / (displayMax - displayMin)))
                         .toFloat()
                         .coerceIn(0f, height)
 
                 val pointColor =
                     PaceUtils.getZoneForPace(paceHistory[i])?.let { zone ->
                         when (zone.zone) {
-                            1 -> Color(0xFF4CAF50)
-                            2 -> Color(0xFF8BC34A)
+                            1 -> Color(0xFFF44336)
+                            2 -> Color(0xFFFF9800)
                             3 -> Color(0xFFFFC107)
-                            4 -> Color(0xFFFF9800)
-                            5 -> Color(0xFFF44336)
+                            4 -> Color(0xFF8BC34A)
+                            5 -> Color(0xFF4CAF50)
                             else -> primaryColor
                         }
                     } ?: primaryColor

@@ -24,6 +24,7 @@ fun metricsPanel(
         metricCard(
             label = "Heart Rate",
             value = if (heartRateData.currentBpm > 0) "${heartRateData.currentBpm} bpm" else "--",
+            emoji = "❤️",
             averageValue = if (heartRateData.averageBpm > 0) "${heartRateData.averageBpm}" else null,
             minValue = if (heartRateData.measurements.isNotEmpty()) "${heartRateData.measurements.minOrNull() ?: 0}" else null,
             maxValue = if (heartRateData.measurements.isNotEmpty()) "${heartRateData.measurements.maxOrNull() ?: 0}" else null,
@@ -31,7 +32,8 @@ fun metricsPanel(
         )
         metricCard(
             label = "Pace",
-            value = if (isRunning) formatPace(runData.paceMinPerKm) else "--",
+            value = if (isRunning) "${formatPace(runData.paceMinPerKm)}/km" else "--",
+            emoji = "⚡",
             averageValue = if (runData.paceHistory.isNotEmpty()) formatPace(runData.paceHistory.average()) else null,
             minValue = if (runData.paceHistory.isNotEmpty()) formatPace(runData.paceHistory.minOrNull() ?: 0.0) else null,
             maxValue = if (runData.paceHistory.isNotEmpty()) formatPace(runData.paceHistory.maxOrNull() ?: 0.0) else null,
@@ -48,11 +50,13 @@ fun metricsPanel(
         metricCard(
             label = "Distance",
             value = if (isRunning) String.format("%.2f km", runData.distanceMeters / 1000.0) else "--",
+            emoji = "🛣️",
             modifier = Modifier.weight(1f),
         )
         metricCard(
             label = "Duration",
             value = if (isRunning) formatDuration(runData.durationMillis) else "--",
+            emoji = "⏱️",
             modifier = Modifier.weight(1f),
         )
     }

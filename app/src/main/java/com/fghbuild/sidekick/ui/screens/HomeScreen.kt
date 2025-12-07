@@ -45,7 +45,7 @@ fun homeScreen(
             Text("Start Run")
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         // Metric cards grid
         metricsPanel(
