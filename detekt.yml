@@ -1,0 +1,248 @@
+build:
+  maxIssues: 0
+
+console-reports:
+  active: true
+
+output-reports:
+  active: true
+
+comments:
+  active: true
+  excludes: ['**/test/**', '**/androidTest/**']
+
+complexity:
+  active: true
+  excludes: ['**/test/**', '**/androidTest/**']
+  ComplexCondition:
+    active: true
+    threshold: 4
+  LongMethod:
+    active: false
+  LongParameterList:
+    active: false
+  NestedBlockDepth:
+    active: false
+  StringLiteralDuplication:
+    active: true
+    threshold: 3
+  CyclomaticComplexMethod:
+    active: false
+  TooManyFunctions:
+    active: true
+    thresholdInClasses: 11
+    thresholdInInterfaces: 11
+    thresholdInEnums: 11
+    thresholdInObjects: 11
+
+coroutines:
+  active: true
+  GlobalCoroutineUsage:
+    active: true
+  RedundantSuspendModifier:
+    active: true
+
+empty-blocks:
+  active: true
+  EmptyCatchBlock:
+    active: true
+    allowedExceptionNameRegex: '^(_|ignore|expected)'
+
+exceptions:
+  active: true
+  ExceptionRaisedInUnexpectedLocation:
+    active: true
+  SwallowedException:
+    active: true
+  TooGenericExceptionCaught:
+    active: true
+  TooGenericExceptionThrown:
+    active: true
+
+formatting:
+  active: true
+  android: false
+  autoCorrect: true
+  indentation:
+    active: true
+    indentSize: 4
+  ArgumentListWrapping:
+    active: false
+  MaximumLineLength:
+    active: false
+
+naming:
+  active: true
+  ClassNaming:
+    active: true
+    classPattern: '[A-Z][a-zA-Z0-9]*'
+  FunctionNaming:
+    active: true
+    functionPattern: '[a-z][a-zA-Z0-9]*'
+  FunctionParameterNaming:
+    active: true
+    parameterPattern: '[a-z][a-zA-Z0-9]*'
+  InvalidPackageDeclaration:
+    active: true
+  NoNameShadowing:
+    active: true
+  ObjectPropertyNaming:
+    active: true
+    constantPattern: '[A-Z][A-Z0-9]*(_[A-Z0-9]+)*'
+    propertyPattern: '[a-z][a-zA-Z0-9]*'
+  PackageNaming:
+    active: true
+    packagePattern: '^[a-z]+(\.[a-z][a-z0-9]*)*$'
+  TopLevelPropertyNaming:
+    active: true
+    constantPattern: '[A-Z][A-Z0-9]*(_[A-Z0-9]+)*'
+    propertyPattern: '[a-z][a-zA-Z0-9]*'
+  VariableNaming:
+    active: true
+    variablePattern: '[a-z][a-zA-Z0-9]*'
+
+performance:
+  active: true
+  SpreadOperator:
+    active: true
+  UnnecessaryTemporaryInstantiation:
+    active: true
+
+potential-bugs:
+  active: true
+  CastToNullableType:
+    active: true
+  Deprecation:
+    active: true
+  EqualsWithHashCodeExist:
+    active: true
+  ExplicitGarbageCollectionCall:
+    active: true
+  HasPlatformType:
+    active: true
+  ImplicitDefaultLocale:
+    active: true
+  InvalidRange:
+    active: true
+  IteratorHasNextCallsNextMethod:
+    active: true
+  MapGetWithNotNullAssertionOperator:
+    active: true
+  MissingPackageDeclaration:
+    active: true
+  NullCheckOnMutableProperty:
+    active: true
+  NullableToStringCall:
+    active: true
+  PropertyUsedBeforeDeclaration:
+    active: true
+  UnconditionalJumpStatementInLoop:
+    active: true
+  UnnecessaryNotNullOperator:
+    active: true
+  UnnecessarySafeCall:
+    active: true
+  UnreachableCode:
+    active: true
+  UnsafeCallOnNullableType:
+    active: true
+
+style:
+  active: true
+  CollapsibleIfStatements:
+    active: true
+  DataClassShouldBeImmutable:
+    active: false
+  DataClassContainsFunctions:
+    active: false
+  DestructuringDeclarationWithTooManyEntries:
+    active: true
+    maxDestructuringEntries: 3
+  EqualsNullCall:
+    active: true
+  ExplicitItLambdaParameter:
+    active: true
+  ForbiddenComment:
+    active: true
+    comments: ['FIXME:', 'STOPSHIP:']
+  FunctionOnlyReturningConstant:
+    active: true
+  LibraryCodeMustSpecifyReturnType:
+    active: false
+  LoopWithTooManyJumpStatements:
+    active: true
+    maxJumpCount: 5
+  MagicNumber:
+    active: false
+  MaxLineLength:
+    active: false
+  MayBeConst:
+    active: true
+  ModifierOrder:
+    active: true
+  NestedClassesVisibility:
+    active: true
+  NewLineAtEndOfFile:
+    active: false
+  NoTabs:
+    active: true
+  ObjectLiteralToLambda:
+    active: true
+  OptionalAbstractKeyword:
+    active: true
+  OptionalUnit:
+    active: true
+  PreferToOverPairSyntax:
+    active: true
+  ProtectedMemberInFinalClass:
+    active: true
+  RedundantExplicitType:
+    active: true
+  RedundantHigherOrderMapUsage:
+    active: true
+  RedundantVisibilityModifierRule:
+    active: true
+  SafeCast:
+    active: true
+  SpacingBetweenPackageAndImports:
+    active: false
+  UnnecessaryAbstractClass:
+    active: true
+  UnnecessaryApply:
+    active: true
+  UnnecessaryBackticks:
+    active: true
+  UnnecessaryFilter:
+    active: true
+  UnnecessaryInheritance:
+    active: true
+  UnnecessaryInnerClass:
+    active: true
+  UnnecessaryLet:
+    active: true
+  UnusedImports:
+    active: true
+  UnusedParameter:
+    active: false
+  UnusedPrivateClass:
+    active: true
+  UnusedPrivateMember:
+    active: true
+  UseCheckNotNull:
+    active: true
+  UseDataClass:
+    active: true
+  UseEmptyCounterpart:
+    active: true
+  UseIfEmptyOrIfBlank:
+    active: true
+  UseOrEmpty:
+    active: true
+  UseRequire:
+    active: true
+  UtilityClassWithPublicConstructor:
+    active: true
+  VarCouldBeVal:
+    active: true
+  WildcardImport:
+    active: true

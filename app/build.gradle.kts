@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.ksp)
     id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
     id("jacoco")
+    id("io.gitlab.arturbosch.detekt") version "1.23.8"
 }
 
 ktlint {
@@ -12,6 +13,16 @@ ktlint {
         exclude("**/generated/**")
     }
     android.set(true)
+}
+
+detekt {
+    config.setFrom(files("$rootDir/detekt.yml"))
+    buildUponDefaultConfig = true
+    parallel = true
+}
+
+dependencies {
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.8")
 }
 
 android {

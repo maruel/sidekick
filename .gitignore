@@ -9,5 +9,6 @@
 /.kotlin/
 /app/build/
 /build/
+/detekt-results.txt
 /local.properties
 *.iml
