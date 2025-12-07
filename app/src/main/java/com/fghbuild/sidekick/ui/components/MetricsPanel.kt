@@ -16,6 +16,7 @@ fun metricsPanel(
     runData: RunData,
     heartRateData: HeartRateData,
     isRunning: Boolean,
+    onHeartRateLongPress: () -> Unit = {},
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -29,6 +30,7 @@ fun metricsPanel(
             minValue = if (heartRateData.measurements.isNotEmpty()) "${heartRateData.measurements.minOrNull() ?: 0}" else null,
             maxValue = if (heartRateData.measurements.isNotEmpty()) "${heartRateData.measurements.maxOrNull() ?: 0}" else null,
             modifier = Modifier.weight(1f),
+            onLongPress = onHeartRateLongPress,
         )
         metricCard(
             label = "Pace",

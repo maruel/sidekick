@@ -110,7 +110,7 @@ class MultipleRunsAndHistoryTest {
             assertEquals(3, allRuns.size)
 
             composeTestRule.setContent {
-                historyScreen(runs = allRuns)
+                historyScreen(runs = allRuns, onDeleteRun = {})
             }
 
             composeTestRule.onNodeWithText("Run History").assertIsDisplayed()
@@ -187,7 +187,7 @@ class MultipleRunsAndHistoryTest {
             assertEquals(distances.size, allRuns.size)
 
             composeTestRule.setContent {
-                historyScreen(runs = allRuns)
+                historyScreen(runs = allRuns, onDeleteRun = {})
             }
 
             composeTestRule.onNodeWithText("Run History").assertIsDisplayed()
@@ -234,7 +234,7 @@ class MultipleRunsAndHistoryTest {
             }
 
             composeTestRule.setContent {
-                historyScreen(runs = allRuns)
+                historyScreen(runs = allRuns, onDeleteRun = {})
             }
 
             composeTestRule.onNodeWithText("Run History").assertIsDisplayed()
@@ -286,7 +286,7 @@ class MultipleRunsAndHistoryTest {
             assertEquals(0, allRuns.size)
 
             composeTestRule.setContent {
-                historyScreen(runs = allRuns)
+                historyScreen(runs = allRuns, onDeleteRun = {})
             }
 
             composeTestRule.onNodeWithText("Run History").assertIsDisplayed()
@@ -352,7 +352,7 @@ class MultipleRunsAndHistoryTest {
             assertEquals(2, allRuns.size)
 
             composeTestRule.setContent {
-                historyScreen(runs = allRuns)
+                historyScreen(runs = allRuns, onDeleteRun = {})
             }
 
             composeTestRule.onNodeWithText("Run History").assertIsDisplayed()
