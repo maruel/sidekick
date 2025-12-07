@@ -74,8 +74,8 @@ private fun paceGraphCanvas(
     zones: List<PaceZone>,
     modifier: Modifier = Modifier,
 ) {
-    val displayMin = PaceUtils.getGraphDisplayMin()
-    val displayMax = PaceUtils.getGraphDisplayMax()
+    val displayMin = PaceUtils.GRAPH_DISPLAY_MIN
+    val displayMax = PaceUtils.GRAPH_DISPLAY_MAX
     val textMeasurer = rememberTextMeasurer()
     val primaryColor = MaterialTheme.colorScheme.primary
 

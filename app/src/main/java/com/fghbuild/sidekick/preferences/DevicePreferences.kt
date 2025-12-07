@@ -7,7 +7,7 @@ import java.util.Calendar
 class DevicePreferences(context: Context) {
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("sidekick_prefs", Context.MODE_PRIVATE)
-            ?: throw IllegalStateException("Unable to initialize SharedPreferences for Sidekick")
+            ?: error("Unable to initialize SharedPreferences for Sidekick")
 
     companion object {
         private const val LAST_HRM_DEVICE_ADDRESS = "last_hrm_device_address"
@@ -59,7 +59,7 @@ class DevicePreferences(context: Context) {
             // Check if all required onboarding values are set
             // Currently requires birth year; extend this method when adding new questions
             getBirthYear() != null
-        } catch (e: Exception) {
+        } catch (_: RuntimeException) {
             // If SharedPreferences access fails, consider onboarding incomplete
             // This prevents crashes if SharedPreferences is corrupted or unavailable
             false

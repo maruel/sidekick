@@ -76,15 +76,8 @@ object PaceUtils {
         return getPaceZones().find { pace in it.maxPace..it.minPace }
     }
 
-    fun getGraphDisplayMin(): Double {
-        // Slowest pace to display (10.5 min/km)
-        return 10.5
-    }
-
-    fun getGraphDisplayMax(): Double {
-        // Fastest pace to display (1.5 min/km)
-        return 1.5
-    }
+    const val GRAPH_DISPLAY_MIN: Double = 10.5 // Slowest pace to display (10.5 min/km)
+    const val GRAPH_DISPLAY_MAX: Double = 1.5 // Fastest pace to display (1.5 min/km)
 
     fun formatPace(paceMinPerKm: Double): String {
         if (paceMinPerKm <= 0 || !paceMinPerKm.isFinite()) {

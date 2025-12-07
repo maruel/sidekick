@@ -62,8 +62,11 @@ class VoiceCommandListener(private val context: Context) : RecognitionListener, 
                 }
             speechRecognizer.setRecognitionListener(this)
             speechRecognizer.startListening(intent)
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (_: SecurityException) {
+            // Permission was revoked at runtime
+            _isListening.value = false
+        } catch (_: IllegalArgumentException) {
+            // Invalid intent configuration
             _isListening.value = false
         }
     }

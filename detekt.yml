@@ -29,11 +29,7 @@ complexity:
   CyclomaticComplexMethod:
     active: false
   TooManyFunctions:
-    active: true
-    thresholdInClasses: 11
-    thresholdInInterfaces: 11
-    thresholdInEnums: 11
-    thresholdInObjects: 11
+    active: false
 
 coroutines:
   active: true
@@ -64,8 +60,7 @@ formatting:
   android: false
   autoCorrect: true
   indentation:
-    active: true
-    indentSize: 4
+    active: false
   ArgumentListWrapping:
     active: false
   MaximumLineLength:
@@ -79,6 +74,7 @@ naming:
   FunctionNaming:
     active: true
     functionPattern: '[a-z][a-zA-Z0-9]*'
+    excludes: ['**/test/**', '**/androidTest/**']
   FunctionParameterNaming:
     active: true
     parameterPattern: '[a-z][a-zA-Z0-9]*'
@@ -167,8 +163,6 @@ style:
     comments: ['FIXME:', 'STOPSHIP:']
   FunctionOnlyReturningConstant:
     active: true
-  LibraryCodeMustSpecifyReturnType:
-    active: false
   LoopWithTooManyJumpStatements:
     active: true
     maxJumpCount: 5

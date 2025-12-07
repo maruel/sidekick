@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.fghbuild.sidekick.data.HeartRateData
 import com.fghbuild.sidekick.data.HrmDevice
 import com.fghbuild.sidekick.data.RunData
+import java.util.Locale
 
 @Composable
 fun metricsPanel(
@@ -52,7 +53,7 @@ fun metricsPanel(
     ) {
         metricCard(
             label = "Distance",
-            value = if (isRunning) String.format("%.2f km", runData.distanceMeters / 1000.0) else "--",
+            value = if (isRunning) String.format(Locale.getDefault(), "%.2f km", runData.distanceMeters / 1000.0) else "--",
             emoji = "🛣️",
             modifier = Modifier.weight(1f),
         )
@@ -69,7 +70,7 @@ private fun formatPace(paceMinPerKm: Double): String {
     return if (paceMinPerKm.isFinite() && paceMinPerKm > 0) {
         val minutes = paceMinPerKm.toInt()
         val seconds = ((paceMinPerKm - minutes) * 60).toInt()
-        String.format("%d:%02d", minutes, seconds)
+        String.format(Locale.getDefault(), "%d:%02d", minutes, seconds)
     } else {
         "0:00"
     }
@@ -108,5 +109,5 @@ private fun formatDuration(milliseconds: Long): String {
     val hours = totalSeconds / 3600
     val minutes = (totalSeconds % 3600) / 60
     val seconds = totalSeconds % 60
-    return String.format("%02d:%02d:%02d", hours, minutes, seconds)
+    return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds)
 }

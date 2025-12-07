@@ -5,6 +5,7 @@ import android.speech.tts.TextToSpeech
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.util.Locale
 
 class AnnouncementManager(context: Context) : TextToSpeech.OnInitListener {
     private val textToSpeech = TextToSpeech(context, this)
@@ -21,7 +22,7 @@ class AnnouncementManager(context: Context) : TextToSpeech.OnInitListener {
     fun speakDistance(distanceKm: Double) {
         if (!_isReady.value) return
 
-        val distance = String.format("%.1f", distanceKm)
+        val distance = String.format(Locale.getDefault(), "%.1f", distanceKm)
         val text = "Distance: $distance kilometers"
         speak(text)
     }

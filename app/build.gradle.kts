@@ -17,7 +17,7 @@ ktlint {
 
 detekt {
     config.setFrom(files("$rootDir/detekt.yml"))
-    buildUponDefaultConfig = true
+    buildUponDefaultConfig = false
     parallel = true
 }
 

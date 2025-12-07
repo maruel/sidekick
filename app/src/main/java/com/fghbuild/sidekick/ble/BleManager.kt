@@ -122,8 +122,11 @@ class BleManager(private val context: Context) {
                 }
 
             bluetoothLeScanner?.startScan(filters, settings, scanCallback!!)
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (_: SecurityException) {
+            // Permission was revoked at runtime
+            _isScanning.value = false
+        } catch (_: IllegalArgumentException) {
+            // Invalid scan filter or settings
             _isScanning.value = false
         }
     }
@@ -140,8 +143,8 @@ class BleManager(private val context: Context) {
             ) {
                 scanCallback?.let { bluetoothLeScanner?.stopScan(it) }
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (_: SecurityException) {
+            // Permission was revoked; scanning will be set to false below regardless
         }
 
         _isScanning.value = false
@@ -162,8 +165,10 @@ class BleManager(private val context: Context) {
                 bluetoothAdapter?.getRemoteDevice(device.address)
             bluetoothDevice?.connectGatt(context, false, gattCallback)
             _connectedDevice.value = device
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (_: SecurityException) {
+            // Permission was revoked during connection attempt
+        } catch (_: IllegalArgumentException) {
+            // Invalid device address provided
         }
     }
 
@@ -177,8 +182,8 @@ class BleManager(private val context: Context) {
             ) {
                 bluetoothGatt?.disconnect()
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (_: SecurityException) {
+            // Permission was revoked; disconnect will be retried or ignored gracefully
         }
     }
 
@@ -200,8 +205,8 @@ class BleManager(private val context: Context) {
                         ) {
                             gatt.discoverServices()
                         }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+                    } catch (_: SecurityException) {
+                        // Permission was revoked after connection was established
                     }
                 } else if (newState == BluetoothGatt.STATE_DISCONNECTED) {
                     bluetoothGatt = null
@@ -235,8 +240,8 @@ class BleManager(private val context: Context) {
                                     gatt.writeDescriptor(desc)
                                 }
                             }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
+                        } catch (_: SecurityException) {
+                            // Permission was revoked during characteristic setup
                         }
                     }
                 }

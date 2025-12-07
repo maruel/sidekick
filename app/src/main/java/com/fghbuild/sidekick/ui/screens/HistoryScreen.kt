@@ -155,7 +155,7 @@ private fun formatDate(timestamp: Long): String {
 }
 
 private fun formatDistance(meters: Double): String {
-    return String.format("%.2f km", meters / 1000.0)
+    return String.format(Locale.getDefault(), "%.2f km", meters / 1000.0)
 }
 
 private fun formatDuration(millis: Long): String {
@@ -163,14 +163,14 @@ private fun formatDuration(millis: Long): String {
     val hours = totalSeconds / 3600
     val minutes = (totalSeconds % 3600) / 60
     val seconds = totalSeconds % 60
-    return String.format("%02d:%02d:%02d", hours, minutes, seconds)
+    return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds)
 }
 
 private fun formatPace(paceMinPerKm: Double): String {
     return if (paceMinPerKm.isFinite() && paceMinPerKm > 0) {
         val minutes = paceMinPerKm.toInt()
         val seconds = ((paceMinPerKm - minutes) * 60).toInt()
-        String.format("%d:%02d /km", minutes, seconds)
+        String.format(Locale.getDefault(), "%d:%02d /km", minutes, seconds)
     } else {
         "0:00 /km"
     }
