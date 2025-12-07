@@ -20,9 +20,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.fghbuild.sidekick.R
 import java.util.Calendar
 
 @Composable
@@ -44,20 +46,20 @@ fun onboardingScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = "Welcome to Sidekick",
+            text = stringResource(R.string.onboarding_welcome),
             fontSize = 32.sp,
             style = MaterialTheme.typography.headlineLarge,
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "Let's get to know you",
+            text = stringResource(R.string.onboarding_subtitle),
             style = MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(
-            text = "To calculate your personalized heart rate zones, we need to know your birth year.",
+            text = stringResource(R.string.onboarding_description),
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(horizontal = 16.dp),
         )
@@ -71,7 +73,7 @@ fun onboardingScreen(
                     isError = false
                 }
             },
-            label = { Text("Birth Year") },
+            label = { Text(stringResource(R.string.onboarding_birth_year)) },
             placeholder = { Text("e.g., ${currentYear - 30}") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             isError = isError,
@@ -85,7 +87,7 @@ fun onboardingScreen(
 
         if (isError) {
             Text(
-                text = "Please enter a valid year between 1900 and $currentYear",
+                text = stringResource(R.string.onboarding_invalid_year, currentYear),
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.padding(top = 8.dp, start = 16.dp),
@@ -105,7 +107,7 @@ fun onboardingScreen(
             },
             modifier = Modifier.fillMaxWidth(0.6f),
         ) {
-            Text("Get Started")
+            Text(stringResource(R.string.onboarding_get_started))
         }
     }
 }

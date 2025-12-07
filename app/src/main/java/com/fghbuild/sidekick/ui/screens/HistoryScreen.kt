@@ -20,9 +20,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.fghbuild.sidekick.R
 import com.fghbuild.sidekick.database.RunEntity
+import com.fghbuild.sidekick.util.PaceUtils
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -42,7 +45,7 @@ fun historyScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = "Run History",
+            text = stringResource(R.string.history_title),
             fontSize = 28.sp,
         )
 
@@ -50,7 +53,7 @@ fun historyScreen(
 
         if (runs.isEmpty()) {
             Text(
-                text = "No runs recorded yet",
+                text = stringResource(R.string.history_empty),
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -99,7 +102,7 @@ private fun runHistoryCard(
                 IconButton(onClick = onDelete) {
                     Icon(
                         Icons.Default.Delete,
-                        contentDescription = "Delete run",
+                        contentDescription = stringResource(R.string.content_description_delete_run),
                         tint = MaterialTheme.colorScheme.error,
                     )
                 }
@@ -111,9 +114,15 @@ private fun runHistoryCard(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                statItem(label = "Distance", value = formatDistance(run.distanceMeters))
-                statItem(label = "Duration", value = formatDuration(run.durationMillis))
-                statItem(label = "Pace", value = formatPace(run.averagePaceMinPerKm))
+                statItem(
+                    label = stringResource(R.string.history_distance),
+                    value = stringResource(R.string.format_distance, run.distanceMeters / 1000.0),
+                )
+                statItem(
+                    label = stringResource(R.string.history_duration),
+                    value = stringResource(R.string.format_duration, formatDurationValues(run.durationMillis)),
+                )
+                statItem(label = stringResource(R.string.history_pace), value = PaceUtils.formatPace(run.averagePaceMinPerKm))
             }
 
             if (run.averageHeartRate > 0) {
@@ -122,9 +131,18 @@ private fun runHistoryCard(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    statItem(label = "Avg HR", value = "${run.averageHeartRate} bpm")
-                    statItem(label = "Max HR", value = "${run.maxHeartRate} bpm")
-                    statItem(label = "Min HR", value = "${run.minHeartRate} bpm")
+                    statItem(
+                        label = stringResource(R.string.history_avg_hr),
+                        value = "${run.averageHeartRate} ${stringResource(R.string.unit_bpm)}",
+                    )
+                    statItem(
+                        label = stringResource(R.string.history_max_hr),
+                        value = "${run.maxHeartRate} ${stringResource(R.string.unit_bpm)}",
+                    )
+                    statItem(
+                        label = stringResource(R.string.history_min_hr),
+                        value = "${run.minHeartRate} ${stringResource(R.string.unit_bpm)}",
+                    )
                 }
             }
         }
@@ -154,24 +172,10 @@ private fun formatDate(timestamp: Long): String {
     return dateFormat.format(Date(timestamp))
 }
 
-private fun formatDistance(meters: Double): String {
-    return String.format(Locale.getDefault(), "%.2f km", meters / 1000.0)
-}
-
-private fun formatDuration(millis: Long): String {
+private fun formatDurationValues(millis: Long): String {
     val totalSeconds = millis / 1000
     val hours = totalSeconds / 3600
     val minutes = (totalSeconds % 3600) / 60
     val seconds = totalSeconds % 60
-    return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds)
-}
-
-private fun formatPace(paceMinPerKm: Double): String {
-    return if (paceMinPerKm.isFinite() && paceMinPerKm > 0) {
-        val minutes = paceMinPerKm.toInt()
-        val seconds = ((paceMinPerKm - minutes) * 60).toInt()
-        String.format(Locale.getDefault(), "%d:%02d /km", minutes, seconds)
-    } else {
-        "0:00 /km"
-    }
+    return "$hours $minutes $seconds"
 }

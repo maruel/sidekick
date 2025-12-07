@@ -1,0 +1,90 @@
+<resources>
+    <string name="app_name">Sidekick</string>
+
+    <!-- Announcements -->
+    <string name="announcement_distance">Distance: %.1f kilomètres</string>
+    <string name="announcement_pace">Allure: %d minutes %d secondes par kilomètre</string>
+    <string name="announcement_heart_rate">Fréquence cardiaque: %d battements par minute</string>
+    <string name="announcement_average_heart_rate">Fréquence cardiaque moyenne: %d battements par minute</string>
+
+    <!-- Navigation -->
+    <string name="nav_run">Courir</string>
+    <string name="nav_history">Historique</string>
+
+    <!-- Home Screen -->
+    <string name="home_start_run">Commencer une course</string>
+    <string name="home_connect_hr_monitor">Connecter le moniteur de fréquence cardiaque</string>
+    <string name="home_device_disconnected">Appareil déconnecté</string>
+    <string name="content_description_start">Démarrer</string>
+
+    <!-- History Screen -->
+    <string name="history_title">Historique des courses</string>
+    <string name="history_empty">Aucune course enregistrée</string>
+    <string name="history_distance">Distance</string>
+    <string name="history_duration">Durée</string>
+    <string name="history_pace">Allure</string>
+    <string name="history_avg_hr">FC moy</string>
+    <string name="history_max_hr">FC max</string>
+    <string name="history_min_hr">FC min</string>
+    <string name="content_description_delete_run">Supprimer la course</string>
+
+    <!-- Run In Progress Screen -->
+    <string name="run_resume">Reprendre</string>
+    <string name="run_pause">Pause</string>
+    <string name="run_stop">Arrêter</string>
+
+    <!-- Onboarding Screen -->
+    <string name="onboarding_welcome">Bienvenue dans Sidekick</string>
+    <string name="onboarding_subtitle">Nous apprenons à vous connaître</string>
+    <string name="onboarding_description">Pour calculer vos zones de fréquence cardiaque personnalisées, nous avons besoin de connaître votre année de naissance.</string>
+    <string name="onboarding_birth_year">Année de naissance</string>
+    <string name="onboarding_invalid_year">Veuillez entrer une année valide entre 1900 et %d</string>
+    <string name="onboarding_get_started">Commencer</string>
+
+    <!-- Device Pairing Dialog -->
+    <string name="device_heart_rate_monitor">Moniteur de fréquence cardiaque</string>
+    <string name="content_description_close">Fermer</string>
+    <string name="device_connected">Connecté</string>
+    <string name="device_disconnect">Déconnecter</string>
+    <string name="device_available_devices">Appareils disponibles</string>
+    <string name="device_scanning">Recherche des appareils...</string>
+    <string name="device_searching">Recherche des appareils...</string>
+    <string name="device_no_devices_found">Aucun appareil trouvé. Appuyez sur Démarrer l\'analyse pour commencer.</string>
+    <string name="device_connect">Connecter</string>
+    <string name="device_signal">Signal: </string>
+
+    <!-- Metrics Panel -->
+    <string name="metrics_heart_rate">Fréquence cardiaque</string>
+    <string name="metrics_pace">Allure</string>
+    <string name="metrics_distance">Distance</string>
+    <string name="metrics_duration">Durée</string>
+
+    <!-- Metric Card -->
+    <string name="metric_min">min: </string>
+    <string name="metric_avg">moy: </string>
+    <string name="metric_max">max: </string>
+
+    <!-- GPS Accuracy Indicator -->
+    <string name="gps_accuracy_label">Précision GPS</string>
+    <string name="gps_accuracy_format">Précision GPS: ±%.1fm</string>
+    <string name="gps_accuracy_waiting">Précision GPS: En attente du signal...</string>
+
+    <!-- Route Map -->
+    <string name="route_no_data">Aucune donnée d\'itinéraire pour l\'instant</string>
+
+    <!-- Units -->
+    <string name="unit_bpm">bpm</string>
+    <string name="unit_km">km</string>
+    <string name="unit_pace_suffix">/km</string>
+
+    <!-- Format strings -->
+    <string name="format_distance">%.2f km</string>
+    <string name="format_pace">%s</string>
+    <string name="format_duration" formatted="false">%02d:%02d:%02d</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_name">Suivi de la course</string>
+    <string name="notification_channel_description">Notifications de suivi de course active</string>
+    <string name="notification_title">Course en cours</string>
+    <string name="notification_text" formatted="false">%.2f km • %s /km • %s</string>
+</resources>

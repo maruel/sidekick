@@ -20,7 +20,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.fghbuild.sidekick.R
 import com.fghbuild.sidekick.data.HeartRateData
 import com.fghbuild.sidekick.data.HrmDevice
 import com.fghbuild.sidekick.data.RunData
@@ -70,10 +73,11 @@ fun homeScreen(
         )
     }
 
+    val context = LocalContext.current
     LaunchedEffect(showDisconnectToast.value) {
         if (showDisconnectToast.value) {
             scope.launch {
-                snackbarHostState.showSnackbar("Device disconnected")
+                snackbarHostState.showSnackbar(context.getString(R.string.home_device_disconnected))
                 showDisconnectToast.value = false
             }
         }
@@ -84,10 +88,10 @@ fun homeScreen(
         Button(onClick = onStartRun) {
             Icon(
                 Icons.Default.PlayArrow,
-                contentDescription = "Start",
+                contentDescription = stringResource(R.string.content_description_start),
                 modifier = Modifier.padding(end = 8.dp),
             )
-            Text("Start Run")
+            Text(stringResource(R.string.home_start_run))
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -113,7 +117,7 @@ fun homeScreen(
         if (connectedDevice == null) {
             Spacer(modifier = Modifier.height(24.dp))
             Button(onClick = { showPairingDialog.value = true }) {
-                Text("Connect Heart Rate Monitor")
+                Text(stringResource(R.string.home_connect_hr_monitor))
             }
             Spacer(modifier = Modifier.height(16.dp))
         }

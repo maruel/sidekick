@@ -7,11 +7,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.fghbuild.sidekick.R
 import com.fghbuild.sidekick.data.HeartRateData
 import com.fghbuild.sidekick.data.HrmDevice
 import com.fghbuild.sidekick.data.RunData
-import java.util.Locale
+import com.fghbuild.sidekick.util.PaceUtils
 
 @Composable
 fun metricsPanel(
@@ -25,8 +27,8 @@ fun metricsPanel(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         metricCard(
-            label = "Heart Rate",
-            value = if (heartRateData.currentBpm > 0) "${heartRateData.currentBpm} bpm" else "--",
+            label = stringResource(R.string.metrics_heart_rate),
+            value = if (heartRateData.currentBpm > 0) "${heartRateData.currentBpm} ${stringResource(R.string.unit_bpm)}" else "--",
             emoji = "❤️",
             averageValue = if (heartRateData.averageBpm > 0) "${heartRateData.averageBpm}" else null,
             minValue = if (heartRateData.measurements.isNotEmpty()) "${heartRateData.measurements.minOrNull() ?: 0}" else null,
@@ -35,12 +37,12 @@ fun metricsPanel(
             onLongPress = onHeartRateLongPress,
         )
         metricCard(
-            label = "Pace",
-            value = if (isRunning) "${formatPace(runData.paceMinPerKm)}/km" else "--",
+            label = stringResource(R.string.metrics_pace),
+            value = if (isRunning) "${PaceUtils.formatPace(runData.paceMinPerKm)}${stringResource(R.string.unit_pace_suffix)}" else "--",
             emoji = "⚡",
-            averageValue = if (runData.paceHistory.isNotEmpty()) formatPace(runData.paceHistory.average()) else null,
-            minValue = if (runData.paceHistory.isNotEmpty()) formatPace(runData.paceHistory.minOrNull() ?: 0.0) else null,
-            maxValue = if (runData.paceHistory.isNotEmpty()) formatPace(runData.paceHistory.maxOrNull() ?: 0.0) else null,
+            averageValue = if (runData.paceHistory.isNotEmpty()) PaceUtils.formatPace(runData.paceHistory.average()) else null,
+            minValue = if (runData.paceHistory.isNotEmpty()) PaceUtils.formatPace(runData.paceHistory.minOrNull() ?: 0.0) else null,
+            maxValue = if (runData.paceHistory.isNotEmpty()) PaceUtils.formatPace(runData.paceHistory.maxOrNull() ?: 0.0) else null,
             modifier = Modifier.weight(1f),
         )
     }
@@ -52,27 +54,17 @@ fun metricsPanel(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         metricCard(
-            label = "Distance",
-            value = if (isRunning) String.format(Locale.getDefault(), "%.2f km", runData.distanceMeters / 1000.0) else "--",
+            label = stringResource(R.string.metrics_distance),
+            value = if (isRunning) stringResource(R.string.format_distance, runData.distanceMeters / 1000.0) else "--",
             emoji = "🛣️",
             modifier = Modifier.weight(1f),
         )
         metricCard(
-            label = "Duration",
+            label = stringResource(R.string.metrics_duration),
             value = if (isRunning) formatDuration(runData.durationMillis) else "--",
             emoji = "⏱️",
             modifier = Modifier.weight(1f),
         )
-    }
-}
-
-private fun formatPace(paceMinPerKm: Double): String {
-    return if (paceMinPerKm.isFinite() && paceMinPerKm > 0) {
-        val minutes = paceMinPerKm.toInt()
-        val seconds = ((paceMinPerKm - minutes) * 60).toInt()
-        String.format(Locale.getDefault(), "%d:%02d", minutes, seconds)
-    } else {
-        "0:00"
     }
 }
 
@@ -104,10 +96,11 @@ fun mainMetricsPanel(
     }
 }
 
+@Composable
 private fun formatDuration(milliseconds: Long): String {
     val totalSeconds = milliseconds / 1000
     val hours = totalSeconds / 3600
     val minutes = (totalSeconds % 3600) / 60
     val seconds = totalSeconds % 60
-    return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds)
+    return stringResource(R.string.format_duration, hours, minutes, seconds)
 }

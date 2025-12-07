@@ -61,19 +61,19 @@ class PaceUtilsTest {
     @Test
     fun formatPace_zeroPace_returnsZero() {
         val formatted = PaceUtils.formatPace(0.0)
-        assertEquals("0:00", formatted)
+        assertEquals("--", formatted)
     }
 
     @Test
     fun formatPace_negativePace_returnsZero() {
         val formatted = PaceUtils.formatPace(-5.0)
-        assertEquals("0:00", formatted)
+        assertEquals("--", formatted)
     }
 
     @Test
     fun formatPace_infinitePace_returnsZero() {
         val formatted = PaceUtils.formatPace(Double.POSITIVE_INFINITY)
-        assertEquals("0:00", formatted)
+        assertEquals("--", formatted)
     }
 
     @Test

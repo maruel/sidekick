@@ -80,8 +80,8 @@ object PaceUtils {
     const val GRAPH_DISPLAY_MAX: Double = 1.5 // Fastest pace to display (1.5 min/km)
 
     fun formatPace(paceMinPerKm: Double): String {
-        if (paceMinPerKm <= 0 || !paceMinPerKm.isFinite()) {
-            return "0:00"
+        if (paceMinPerKm <= 0 || !paceMinPerKm.isFinite() || paceMinPerKm > 30.0) {
+            return "--"
         }
         val minutes = paceMinPerKm.toInt()
         val seconds = ((paceMinPerKm - minutes) * 60).toInt()

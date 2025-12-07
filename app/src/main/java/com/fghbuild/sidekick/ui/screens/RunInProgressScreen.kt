@@ -19,7 +19,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.fghbuild.sidekick.R
 import com.fghbuild.sidekick.data.HeartRateData
 import com.fghbuild.sidekick.data.HrmDevice
 import com.fghbuild.sidekick.data.RunData
@@ -52,28 +54,28 @@ fun runInProgressScreen(
                 Button(onClick = onResume) {
                     Icon(
                         Icons.Default.PlayArrow,
-                        contentDescription = "Resume",
+                        contentDescription = stringResource(R.string.run_resume),
                         modifier = Modifier.padding(end = 8.dp),
                     )
-                    Text("Resume")
+                    Text(stringResource(R.string.run_resume))
                 }
             } else {
                 Button(onClick = onPause) {
                     Icon(
                         Icons.Default.Pause,
-                        contentDescription = "Pause",
+                        contentDescription = stringResource(R.string.run_pause),
                         modifier = Modifier.padding(end = 8.dp),
                     )
-                    Text("Pause")
+                    Text(stringResource(R.string.run_pause))
                 }
             }
             Button(onClick = onStop) {
                 Icon(
                     Icons.Default.Close,
-                    contentDescription = "Stop",
+                    contentDescription = stringResource(R.string.run_stop),
                     modifier = Modifier.padding(end = 8.dp),
                 )
-                Text("Stop")
+                Text(stringResource(R.string.run_stop))
             }
         }
 

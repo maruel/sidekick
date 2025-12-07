@@ -1,3 +1,90 @@
 <resources>
     <string name="app_name">Sidekick</string>
+
+    <!-- Announcements -->
+    <string name="announcement_distance">Distance: %.1f kilometers</string>
+    <string name="announcement_pace" formatted="false">Pace: %d minutes %d seconds per kilometer</string>
+    <string name="announcement_heart_rate">Heart rate: %d beats per minute</string>
+    <string name="announcement_average_heart_rate">Average heart rate: %d beats per minute</string>
+
+    <!-- Navigation -->
+    <string name="nav_run">Run</string>
+    <string name="nav_history">History</string>
+
+    <!-- Home Screen -->
+    <string name="home_start_run">Start Run</string>
+    <string name="home_connect_hr_monitor">Connect Heart Rate Monitor</string>
+    <string name="home_device_disconnected">Device disconnected</string>
+    <string name="content_description_start">Start</string>
+
+    <!-- History Screen -->
+    <string name="history_title">Run History</string>
+    <string name="history_empty">No runs recorded yet</string>
+    <string name="history_distance">Distance</string>
+    <string name="history_duration">Duration</string>
+    <string name="history_pace">Pace</string>
+    <string name="history_avg_hr">Avg HR</string>
+    <string name="history_max_hr">Max HR</string>
+    <string name="history_min_hr">Min HR</string>
+    <string name="content_description_delete_run">Delete run</string>
+
+    <!-- Run In Progress Screen -->
+    <string name="run_resume">Resume</string>
+    <string name="run_pause">Pause</string>
+    <string name="run_stop">Stop</string>
+
+    <!-- Onboarding Screen -->
+    <string name="onboarding_welcome">Welcome to Sidekick</string>
+    <string name="onboarding_subtitle">Let\'s get to know you</string>
+    <string name="onboarding_description">To calculate your personalized heart rate zones, we need to know your birth year.</string>
+    <string name="onboarding_birth_year">Birth Year</string>
+    <string name="onboarding_invalid_year">Please enter a valid year between 1900 and %d</string>
+    <string name="onboarding_get_started">Get Started</string>
+
+    <!-- Device Pairing Dialog -->
+    <string name="device_heart_rate_monitor">Heart Rate Monitor</string>
+    <string name="content_description_close">Close</string>
+    <string name="device_connected">Connected</string>
+    <string name="device_disconnect">Disconnect</string>
+    <string name="device_available_devices">Available Devices</string>
+    <string name="device_scanning">Scanning for devices...</string>
+    <string name="device_searching">Searching for devices...</string>
+    <string name="device_no_devices_found">No devices found. Tap Start Scanning to begin.</string>
+    <string name="device_connect">Connect</string>
+    <string name="device_signal">Signal: </string>
+
+    <!-- Metrics Panel -->
+    <string name="metrics_heart_rate">Heart Rate</string>
+    <string name="metrics_pace">Pace</string>
+    <string name="metrics_distance">Distance</string>
+    <string name="metrics_duration">Duration</string>
+
+    <!-- Metric Card -->
+    <string name="metric_min">min: </string>
+    <string name="metric_avg">avg: </string>
+    <string name="metric_max">max: </string>
+
+    <!-- GPS Accuracy Indicator -->
+    <string name="gps_accuracy_label">GPS Accuracy</string>
+    <string name="gps_accuracy_format">GPS Accuracy: ±%.1fm</string>
+    <string name="gps_accuracy_waiting">GPS Accuracy: Waiting for signal...</string>
+
+    <!-- Route Map -->
+    <string name="route_no_data">No route data yet</string>
+
+    <!-- Units -->
+    <string name="unit_bpm">bpm</string>
+    <string name="unit_km">km</string>
+    <string name="unit_pace_suffix">/km</string>
+
+    <!-- Format strings -->
+    <string name="format_distance">%.2f km</string>
+    <string name="format_pace">%s</string>
+    <string name="format_duration" formatted="false">%02d:%02d:%02d</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_name">Run Tracking</string>
+    <string name="notification_channel_description">Notifications for active run tracking</string>
+    <string name="notification_title">Run in Progress</string>
+    <string name="notification_text" formatted="false">%.2f km • %s /km • %s</string>
 </resources>

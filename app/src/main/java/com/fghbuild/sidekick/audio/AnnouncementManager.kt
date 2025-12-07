@@ -5,9 +5,8 @@ import android.speech.tts.TextToSpeech
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import java.util.Locale
 
-class AnnouncementManager(context: Context) : TextToSpeech.OnInitListener {
+class AnnouncementManager(private val context: Context) : TextToSpeech.OnInitListener {
     private val textToSpeech = TextToSpeech(context, this)
 
     private val _isReady = MutableStateFlow(false)
@@ -21,37 +20,27 @@ class AnnouncementManager(context: Context) : TextToSpeech.OnInitListener {
 
     fun speakDistance(distanceKm: Double) {
         if (!_isReady.value) return
-
-        val distance = String.format(Locale.getDefault(), "%.1f", distanceKm)
-        val text = "Distance: $distance kilometers"
-        speak(text)
+        speak(context.getString(com.fghbuild.sidekick.R.string.announcement_distance, distanceKm))
     }
 
     fun speakPace(paceMinPerKm: Double) {
         if (!_isReady.value) return
-
         val minutes = paceMinPerKm.toInt()
         val seconds = ((paceMinPerKm - minutes) * 60).toInt()
-        val text = "Pace: $minutes minutes $seconds seconds per kilometer"
-        speak(text)
+        speak(context.getString(com.fghbuild.sidekick.R.string.announcement_pace, minutes, seconds))
     }
 
     fun speakHeartRate(bpm: Int) {
         if (!_isReady.value) return
-
-        val text = "Heart rate: $bpm beats per minute"
-        speak(text)
+        speak(context.getString(com.fghbuild.sidekick.R.string.announcement_heart_rate, bpm))
     }
 
     fun speakAverageHeartRate(bpm: Int) {
         if (!_isReady.value) return
-
-        val text = "Average heart rate: $bpm beats per minute"
-        speak(text)
+        speak(context.getString(com.fghbuild.sidekick.R.string.announcement_average_heart_rate, bpm))
     }
 
     private fun speak(text: String) {
-        @Suppress("DEPRECATION")
         textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null)
     }
 

@@ -32,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.core.app.ActivityCompat
 import com.fghbuild.sidekick.audio.AnnouncementManager
@@ -271,10 +272,10 @@ fun sidekickApp() {
                         icon = {
                             Icon(
                                 it.icon,
-                                contentDescription = it.label,
+                                contentDescription = stringResource(it.labelResId),
                             )
                         },
-                        label = { Text(it.label) },
+                        label = { Text(stringResource(it.labelResId)) },
                         selected = it == currentDestination,
                         onClick = { currentDestination = it },
                     )
@@ -371,9 +372,9 @@ fun sidekickApp() {
 }
 
 enum class AppDestinations(
-    val label: String,
+    val labelResId: Int,
     val icon: ImageVector,
 ) {
-    RUN("Run", Icons.Default.PlayArrow),
-    HISTORY("History", Icons.AutoMirrored.Filled.List),
+    RUN(R.string.nav_run, Icons.Default.PlayArrow),
+    HISTORY(R.string.nav_history, Icons.AutoMirrored.Filled.List),
 }

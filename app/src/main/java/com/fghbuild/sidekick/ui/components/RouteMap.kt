@@ -12,8 +12,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.fghbuild.sidekick.R
 import com.fghbuild.sidekick.data.RoutePoint
 
 @Composable
@@ -34,7 +36,7 @@ fun routeMap(
     ) {
         if (routePoints.isEmpty()) {
             Text(
-                "No route data yet",
+                stringResource(R.string.route_no_data),
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

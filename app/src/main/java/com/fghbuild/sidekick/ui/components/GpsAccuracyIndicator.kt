@@ -11,9 +11,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import java.util.Locale
+import com.fghbuild.sidekick.R
 
 @Composable
 fun gpsAccuracyIndicator(
@@ -29,16 +30,16 @@ fun gpsAccuracyIndicator(
     ) {
         Icon(
             Icons.Default.LocationOn,
-            contentDescription = "GPS Accuracy",
+            contentDescription = stringResource(R.string.gps_accuracy_label),
             modifier = Modifier.padding(end = 4.dp),
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Text(
             text =
                 if (accuracyMeters > 0) {
-                    "GPS Accuracy: ±${String.format(Locale.getDefault(), "%.1f", accuracyMeters)}m"
+                    stringResource(R.string.gps_accuracy_format, accuracyMeters)
                 } else {
-                    "GPS Accuracy: Waiting for signal..."
+                    stringResource(R.string.gps_accuracy_waiting)
                 },
             style =
                 MaterialTheme.typography.labelSmall.copy(

@@ -25,9 +25,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.fghbuild.sidekick.R
 import com.fghbuild.sidekick.data.HrmDevice
 
 @Composable
@@ -61,7 +63,7 @@ private fun deviceListItem(
                 )
                 if (device.rssi != 0) {
                     Text(
-                        text = "Signal: ${device.rssi} dBm",
+                        text = stringResource(R.string.device_signal) + "${device.rssi} dBm",
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -71,7 +73,7 @@ private fun deviceListItem(
                 onClick = onSelect,
                 modifier = Modifier.padding(start = 8.dp),
             ) {
-                Text("Connect")
+                Text(stringResource(R.string.device_connect))
             }
         }
     }
@@ -122,7 +124,7 @@ fun devicePairingDialog(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
-                        text = "Heart Rate Monitor",
+                        text = stringResource(R.string.device_heart_rate_monitor),
                         style = MaterialTheme.typography.headlineSmall,
                     )
                     IconButton(
@@ -131,7 +133,7 @@ fun devicePairingDialog(
                             onDismiss()
                         },
                     ) {
-                        Icon(Icons.Default.Close, contentDescription = "Close")
+                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.content_description_close))
                     }
                 }
 
@@ -158,12 +160,12 @@ fun devicePairingDialog(
                                 ) {
                                     Icon(
                                         Icons.Default.Check,
-                                        contentDescription = "Connected",
+                                        contentDescription = stringResource(R.string.device_connected),
                                         tint = MaterialTheme.colorScheme.primary,
                                     )
                                     Spacer(modifier = Modifier.padding(8.dp))
                                     Text(
-                                        text = "Connected",
+                                        text = stringResource(R.string.device_connected),
                                         style = MaterialTheme.typography.labelSmall,
                                         color = MaterialTheme.colorScheme.primary,
                                     )
@@ -187,7 +189,7 @@ fun devicePairingDialog(
                                         contentColor = MaterialTheme.colorScheme.error,
                                     ),
                             ) {
-                                Text("Disconnect")
+                                Text(stringResource(R.string.device_disconnect))
                             }
                         }
                     }
@@ -195,7 +197,7 @@ fun devicePairingDialog(
                 } else {
                     // Scanning section
                     Text(
-                        text = "Available Devices",
+                        text = stringResource(R.string.device_available_devices),
                         style = MaterialTheme.typography.titleMedium,
                     )
                     Spacer(modifier = Modifier.height(12.dp))
@@ -216,7 +218,7 @@ fun devicePairingDialog(
                                 CircularProgressIndicator(
                                     modifier = Modifier.padding(0.dp),
                                 )
-                                Text("Scanning for devices...")
+                                Text(stringResource(R.string.device_scanning))
                             }
                         }
                     }
@@ -235,9 +237,9 @@ fun devicePairingDialog(
                             Text(
                                 text =
                                     if (isScanning) {
-                                        "Searching for devices..."
+                                        stringResource(R.string.device_searching)
                                     } else {
-                                        "No devices found. Tap Start Scanning to begin."
+                                        stringResource(R.string.device_no_devices_found)
                                     },
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
