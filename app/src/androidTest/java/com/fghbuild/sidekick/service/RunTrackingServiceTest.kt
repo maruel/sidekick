@@ -28,7 +28,6 @@ class RunTrackingServiceTest {
 
         assertNotNull(notification)
         // Verify notification was created successfully
-        assertTrue(notification != null)
     }
 
     @Test
@@ -60,7 +59,6 @@ class RunTrackingServiceTest {
 
         assertNotNull(notification)
         // Verify notification was created with metrics
-        assertTrue(notification != null)
     }
 
     @Test
@@ -68,7 +66,8 @@ class RunTrackingServiceTest {
         // Verify the throttle is set to 2 seconds (2000ms)
         val expectedThrottle = 2000L
         // This test documents the expected throttle behavior
-        assertTrue(expectedThrottle == 2000L)
+        // The constant is defined in RunTrackingService as NOTIFICATION_UPDATE_THROTTLE_MS = 2000L
+        // This ensures the service doesn't update notifications too frequently
     }
 
     @Test
@@ -86,7 +85,6 @@ class RunTrackingServiceTest {
         assertNotNull(notification)
         // Notification should be created without throwing
         // and should be marked silent
-        assertTrue(true) // If we got here, silent creation succeeded
     }
 
     @Test
@@ -131,7 +129,6 @@ class RunTrackingServiceTest {
 
         assertNotNull(notification)
         // Should handle gracefully with zeros
-        assertTrue(notification != null)
     }
 
     @Test
@@ -147,6 +144,5 @@ class RunTrackingServiceTest {
 
         assertNotNull(notification)
         // Should handle large values
-        assertTrue(notification != null)
     }
 }

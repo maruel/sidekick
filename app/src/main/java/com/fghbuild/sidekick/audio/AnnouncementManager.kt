@@ -41,7 +41,7 @@ class AnnouncementManager(private val context: Context) : TextToSpeech.OnInitLis
     }
 
     private fun speak(text: String) {
-        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null)
+        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, "")
     }
 
     fun stop() {
