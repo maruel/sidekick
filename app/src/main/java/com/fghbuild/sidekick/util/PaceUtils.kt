@@ -1,5 +1,7 @@
 package com.fghbuild.sidekick.util
 
+import com.fghbuild.sidekick.data.PaceWithTime
+
 data class PaceZone(
     val zone: Int,
     val name: String,
@@ -30,6 +32,19 @@ object PaceUtils {
 
     fun calculateMinPace(paceHistory: List<Double>): Double {
         return paceHistory.minOrNull() ?: 0.0
+    }
+
+    fun calculateAveragePaceWithTime(paceHistory: List<PaceWithTime>): Double {
+        if (paceHistory.isEmpty()) return 0.0
+        return paceHistory.map { it.pace }.average()
+    }
+
+    fun calculateMaxPaceWithTime(paceHistory: List<PaceWithTime>): Double {
+        return paceHistory.map { it.pace }.maxOrNull() ?: 0.0
+    }
+
+    fun calculateMinPaceWithTime(paceHistory: List<PaceWithTime>): Double {
+        return paceHistory.map { it.pace }.minOrNull() ?: 0.0
     }
 
     fun getPaceZones(): List<PaceZone> {

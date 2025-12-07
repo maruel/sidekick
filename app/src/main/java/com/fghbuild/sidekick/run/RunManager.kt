@@ -2,6 +2,8 @@ package com.fghbuild.sidekick.run
 
 import android.location.Location
 import com.fghbuild.sidekick.data.HeartRateData
+import com.fghbuild.sidekick.data.HeartRateWithTime
+import com.fghbuild.sidekick.data.PaceWithTime
 import com.fghbuild.sidekick.data.RoutePoint
 import com.fghbuild.sidekick.data.RunData
 import com.fghbuild.sidekick.database.GpsCalibrationDao
@@ -98,7 +100,8 @@ class RunManager(
         // Track pace history (only record meaningful pace values)
         val paceHistory =
             if (distanceMeters > 0 && paceMinPerKm > 0.0) {
-                currentData.paceHistory + paceMinPerKm
+                val locationTimestamp = if (locationTime > 0) locationTime else System.currentTimeMillis()
+                currentData.paceHistory + PaceWithTime(pace = paceMinPerKm, timestamp = locationTimestamp)
             } else {
                 currentData.paceHistory
             }
@@ -114,6 +117,25 @@ class RunManager(
 
     fun updateRoutePoints(points: List<RoutePoint>) {
         _runData.value = _runData.value.copy(routePoints = points)
+    }
+
+    fun updateHeartRate(bpm: Int) {
+        val currentData = _runData.value
+        if (!currentData.isRunning || bpm <= 0) {
+            return
+        }
+
+        val heartRateHistory =
+            currentData.heartRateHistory +
+                HeartRateWithTime(
+                    bpm = bpm,
+                    timestamp = System.currentTimeMillis(),
+                )
+
+        _runData.value =
+            currentData.copy(
+                heartRateHistory = heartRateHistory,
+            )
     }
 
     suspend fun initializeRunSession(

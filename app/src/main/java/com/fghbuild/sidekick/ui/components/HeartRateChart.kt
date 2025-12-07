@@ -20,16 +20,19 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import com.fghbuild.sidekick.data.HeartRateWithTime
 import com.fghbuild.sidekick.util.HeartRateUtils
 import com.fghbuild.sidekick.util.HeartRateZone
 
 @Composable
 fun heartRateChart(
-    measurements: List<Int>,
+    heartRateHistory: List<HeartRateWithTime>,
     age: Int = 0,
     modifier: Modifier = Modifier,
 ) {
-    val last5Minutes = measurements.takeLast(300) // 5 minutes at 1 Hz = 300 samples
+    val currentTime = System.currentTimeMillis()
+    val fiveMinutesInMillis = 5 * 60 * 1000L // 5 minutes in milliseconds
+    val last5Minutes = heartRateHistory.filter { currentTime - it.timestamp <= fiveMinutesInMillis }
 
     Column(
         modifier =
@@ -76,7 +79,7 @@ fun heartRateChart(
 
 @Composable
 private fun heartRateGraphCanvas(
-    measurements: List<Int>,
+    measurements: List<HeartRateWithTime>,
     age: Int,
     zones: List<HeartRateZone>,
     modifier: Modifier = Modifier,
@@ -145,17 +148,38 @@ private fun heartRateGraphCanvas(
 
         // Draw the line and points only if there's data
         if (measurements.size > 1) {
-            val xStep = width / (measurements.size - 1)
+            // Calculate the time range for the x-axis scaling
+            val timestamps = measurements.map { it.timestamp }
+            val minTimestamp = timestamps.minOrNull() ?: 0L
+            val maxTimestamp = timestamps.maxOrNull() ?: 0L
+            val timeRange = maxTimestamp - minTimestamp
 
             // Draw the line connecting all points
             for (i in 0 until measurements.size - 1) {
-                val x1 = i * xStep
-                val y1 = (height * (1 - (measurements[i].toFloat() - displayMin) / (displayMax - displayMin))).coerceIn(0f, height)
-                val x2 = (i + 1) * xStep
-                val y2 = (height * (1 - (measurements[i + 1].toFloat() - displayMin) / (displayMax - displayMin))).coerceIn(0f, height)
+                val currentPoint = measurements[i]
+                val nextPoint = measurements[i + 1]
+
+                // Calculate x positions based on timestamps
+                val x1 =
+                    if (timeRange > 0) {
+                        (width * (currentPoint.timestamp - minTimestamp).toDouble()) / timeRange.toDouble()
+                    } else {
+                        0f
+                    }
+
+                val y1 = (height * (1 - (currentPoint.bpm.toFloat() - displayMin) / (displayMax - displayMin))).coerceIn(0f, height)
+
+                val x2 =
+                    if (timeRange > 0) {
+                        (width * (nextPoint.timestamp - minTimestamp).toDouble()) / timeRange.toDouble()
+                    } else {
+                        0f
+                    }
+
+                val y2 = (height * (1 - (nextPoint.bpm.toFloat() - displayMin) / (displayMax - displayMin))).coerceIn(0f, height)
 
                 val pointColor =
-                    HeartRateUtils.getZoneForBpm(measurements[i], age)?.let { zone ->
+                    HeartRateUtils.getZoneForBpm(currentPoint.bpm, age)?.let { zone ->
                         when (zone.zone) {
                             1 -> Color(0xFF4CAF50)
                             2 -> Color(0xFF8BC34A)
@@ -168,19 +192,25 @@ private fun heartRateGraphCanvas(
 
                 drawLine(
                     color = pointColor,
-                    start = Offset(x1, y1),
-                    end = Offset(x2, y2),
+                    start = Offset(x1.toFloat(), y1),
+                    end = Offset(x2.toFloat(), y2),
                     strokeWidth = 2f,
                 )
             }
 
             // Draw points for each measurement
-            for (i in measurements.indices) {
-                val x = i * xStep
-                val y = (height * (1 - (measurements[i].toFloat() - displayMin) / (displayMax - displayMin))).coerceIn(0f, height)
+            for (point in measurements) {
+                val x =
+                    if (timeRange > 0) {
+                        (width * (point.timestamp - minTimestamp).toDouble()) / timeRange.toDouble()
+                    } else {
+                        0f
+                    }
+
+                val y = (height * (1 - (point.bpm.toFloat() - displayMin) / (displayMax - displayMin))).coerceIn(0f, height)
 
                 val pointColor =
-                    HeartRateUtils.getZoneForBpm(measurements[i], age)?.let { zone ->
+                    HeartRateUtils.getZoneForBpm(point.bpm, age)?.let { zone ->
                         when (zone.zone) {
                             1 -> Color(0xFF4CAF50)
                             2 -> Color(0xFF8BC34A)
@@ -194,7 +224,7 @@ private fun heartRateGraphCanvas(
                 drawCircle(
                     color = pointColor,
                     radius = 3f,
-                    center = Offset(x, y),
+                    center = Offset(x.toFloat(), y),
                 )
             }
         }

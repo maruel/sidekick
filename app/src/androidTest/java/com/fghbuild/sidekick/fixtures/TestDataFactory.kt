@@ -1,6 +1,8 @@
 package com.fghbuild.sidekick.fixtures
 
 import com.fghbuild.sidekick.data.HeartRateData
+import com.fghbuild.sidekick.data.HeartRateWithTime
+import com.fghbuild.sidekick.data.PaceWithTime
 import com.fghbuild.sidekick.data.RoutePoint
 import com.fghbuild.sidekick.data.RunData
 import com.fghbuild.sidekick.database.RoutePointEntity
@@ -143,14 +145,29 @@ object TestDataFactory {
         val route = createTestRoute(distanceKm)
         val durationMinutes = (durationMillis / (60 * 1000)).toInt()
         val paceHistory =
-            List(durationMinutes.coerceAtLeast(1)) { 9.0 + (Math.random() * 2.0 - 1.0) } // 8-10 min/km
+            List(durationMinutes.coerceAtLeast(1)) { i ->
+                val pace = 9.0 + (Math.random() * 2.0 - 1.0) // 8-10 min/km
+                val timestamp = System.currentTimeMillis() - (durationMinutes - i) * 60 * 1000L // 1 minute intervals
+                PaceWithTime(pace = pace, timestamp = timestamp)
+            } // 8-10 min/km
+
+        // Create heart rate history with realistic values for the duration
+        val heartRateHistory =
+            List(durationMinutes.coerceAtLeast(1) * 60) { i -> // ~1 measurement per second for duration
+                val baseHR = 140 // base heart rate during run
+                val variation = (Math.random() * 30).toInt() - 15 // -15 to +15 variation
+                val bpm = (baseHR + variation).coerceIn(100, 180) // realistic range
+                val timestamp = System.currentTimeMillis() - (durationMinutes * 60 - i) * 1000L // 1 second intervals
+                HeartRateWithTime(bpm = bpm, timestamp = timestamp)
+            }
 
         return RunData(
             distanceMeters = distanceKm * 1000,
-            paceMinPerKm = paceHistory.average(),
+            paceMinPerKm = paceHistory.map { it.pace }.average(),
             durationMillis = durationMillis,
             routePoints = route,
             paceHistory = paceHistory,
+            heartRateHistory = heartRateHistory,
             isRunning = false,
             isPaused = isPaused,
         )

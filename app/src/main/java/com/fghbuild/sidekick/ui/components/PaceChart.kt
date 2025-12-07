@@ -20,15 +20,18 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import com.fghbuild.sidekick.data.PaceWithTime
 import com.fghbuild.sidekick.util.PaceUtils
 import com.fghbuild.sidekick.util.PaceZone
 
 @Composable
 fun paceChart(
-    paceHistory: List<Double>,
+    paceHistory: List<PaceWithTime>,
     modifier: Modifier = Modifier,
 ) {
-    val last5Minutes = paceHistory.takeLast(300) // 5 minutes at 1 Hz = 300 samples
+    val currentTime = System.currentTimeMillis()
+    val fiveMinutesInMillis = 5 * 60 * 1000L // 5 minutes in milliseconds
+    val last5Minutes = paceHistory.filter { currentTime - it.timestamp <= fiveMinutesInMillis }
 
     Column(
         modifier =
@@ -71,7 +74,7 @@ fun paceChart(
 
 @Composable
 private fun paceGraphCanvas(
-    paceHistory: List<Double>,
+    paceHistory: List<PaceWithTime>,
     zones: List<PaceZone>,
     modifier: Modifier = Modifier,
 ) {
@@ -138,23 +141,44 @@ private fun paceGraphCanvas(
 
         // Draw the line and points only if there's data
         if (paceHistory.size > 1) {
-            val xStep = width / (paceHistory.size - 1)
+            // Calculate the time range for the x-axis scaling
+            val timestamps = paceHistory.map { it.timestamp }
+            val minTimestamp = timestamps.minOrNull() ?: 0L
+            val maxTimestamp = timestamps.maxOrNull() ?: 0L
+            val timeRange = maxTimestamp - minTimestamp
 
             // Draw the line connecting all points
             for (i in 0 until paceHistory.size - 1) {
-                val x1 = (i * xStep).toFloat()
+                val currentPoint = paceHistory[i]
+                val nextPoint = paceHistory[i + 1]
+
+                // Calculate x positions based on timestamps
+                val x1 =
+                    if (timeRange > 0) {
+                        (width * (currentPoint.timestamp - minTimestamp).toDouble()) / timeRange.toDouble()
+                    } else {
+                        0f
+                    }
+
                 val y1 =
-                    (height * ((paceHistory[i] - displayMin) / (displayMax - displayMin)))
+                    (height * ((currentPoint.pace - displayMin) / (displayMax - displayMin)))
                         .toFloat()
                         .coerceIn(0f, height)
-                val x2 = ((i + 1) * xStep).toFloat()
+
+                val x2 =
+                    if (timeRange > 0) {
+                        (width * (nextPoint.timestamp - minTimestamp).toDouble()) / timeRange.toDouble()
+                    } else {
+                        0f
+                    }
+
                 val y2 =
-                    (height * ((paceHistory[i + 1] - displayMin) / (displayMax - displayMin)))
+                    (height * ((nextPoint.pace - displayMin) / (displayMax - displayMin)))
                         .toFloat()
                         .coerceIn(0f, height)
 
                 val pointColor =
-                    PaceUtils.getZoneForPace(paceHistory[i])?.let { zone ->
+                    PaceUtils.getZoneForPace(currentPoint.pace)?.let { zone ->
                         when (zone.zone) {
                             1 -> Color(0xFFF44336)
                             2 -> Color(0xFFFF9800)
@@ -167,22 +191,28 @@ private fun paceGraphCanvas(
 
                 drawLine(
                     color = pointColor,
-                    start = Offset(x1, y1),
-                    end = Offset(x2, y2),
+                    start = Offset(x1.toFloat(), y1),
+                    end = Offset(x2.toFloat(), y2),
                     strokeWidth = 2f,
                 )
             }
 
             // Draw points for each measurement
-            for (i in paceHistory.indices) {
-                val x = (i * xStep).toFloat()
+            for (point in paceHistory) {
+                val x =
+                    if (timeRange > 0) {
+                        (width * (point.timestamp - minTimestamp).toDouble()) / timeRange.toDouble()
+                    } else {
+                        0f
+                    }
+
                 val y =
-                    (height * ((paceHistory[i] - displayMin) / (displayMax - displayMin)))
+                    (height * ((point.pace - displayMin) / (displayMax - displayMin)))
                         .toFloat()
                         .coerceIn(0f, height)
 
                 val pointColor =
-                    PaceUtils.getZoneForPace(paceHistory[i])?.let { zone ->
+                    PaceUtils.getZoneForPace(point.pace)?.let { zone ->
                         when (zone.zone) {
                             1 -> Color(0xFFF44336)
                             2 -> Color(0xFFFF9800)
@@ -196,7 +226,7 @@ private fun paceGraphCanvas(
                 drawCircle(
                     color = pointColor,
                     radius = 3f,
-                    center = Offset(x, y),
+                    center = Offset(x.toFloat(), y),
                 )
             }
         }

@@ -36,8 +36,8 @@ fun metricsPanel(
             value = if (heartRateData.currentBpm > 0) "${heartRateData.currentBpm} ${stringResource(R.string.unit_bpm)}" else "--",
             emoji = "❤️",
             averageValue = if (heartRateData.averageBpm > 0) "${heartRateData.averageBpm}" else null,
-            minValue = if (heartRateData.measurements.isNotEmpty()) "${heartRateData.measurements.minOrNull() ?: 0}" else null,
-            maxValue = if (heartRateData.measurements.isNotEmpty()) "${heartRateData.measurements.maxOrNull() ?: 0}" else null,
+            minValue = if (runData.heartRateHistory.isNotEmpty()) "${runData.heartRateHistory.map { it.bpm }.minOrNull() ?: 0}" else null,
+            maxValue = if (runData.heartRateHistory.isNotEmpty()) "${runData.heartRateHistory.map { it.bpm }.maxOrNull() ?: 0}" else null,
             modifier = Modifier.weight(1f),
             onLongPress = onHeartRateLongPress,
         )
@@ -45,9 +45,30 @@ fun metricsPanel(
             label = stringResource(R.string.metrics_pace),
             value = if (isRunning) "${PaceUtils.formatPace(runData.paceMinPerKm)}${stringResource(R.string.unit_pace_suffix)}" else "--",
             emoji = "⚡",
-            averageValue = if (runData.paceHistory.isNotEmpty()) PaceUtils.formatPace(runData.paceHistory.average()) else null,
-            minValue = if (runData.paceHistory.isNotEmpty()) PaceUtils.formatPace(runData.paceHistory.minOrNull() ?: 0.0) else null,
-            maxValue = if (runData.paceHistory.isNotEmpty()) PaceUtils.formatPace(runData.paceHistory.maxOrNull() ?: 0.0) else null,
+            averageValue =
+                if (runData.paceHistory.isNotEmpty()) {
+                    PaceUtils.formatPace(
+                        runData.paceHistory.map { it.pace }.average(),
+                    )
+                } else {
+                    null
+                },
+            minValue =
+                if (runData.paceHistory.isNotEmpty()) {
+                    PaceUtils.formatPace(
+                        runData.paceHistory.map { it.pace }.minOrNull() ?: 0.0,
+                    )
+                } else {
+                    null
+                },
+            maxValue =
+                if (runData.paceHistory.isNotEmpty()) {
+                    PaceUtils.formatPace(
+                        runData.paceHistory.map { it.pace }.maxOrNull() ?: 0.0,
+                    )
+                } else {
+                    null
+                },
             modifier = Modifier.weight(1f),
         )
     }
@@ -117,7 +138,7 @@ fun mainMetricsPanel(
     if (connectedDevice != null) {
         Spacer(modifier = Modifier.height(4.dp))
         heartRateChart(
-            measurements = heartRateData.measurements,
+            heartRateHistory = runData.heartRateHistory,
             age = userAge,
             modifier = Modifier.fillMaxWidth(),
         )

@@ -276,8 +276,8 @@ class RunManagerIntegrationTest {
             assertEquals(updateCount - 1, runData.paceHistory.size)
 
             // All pace values should be positive
-            for (pace in runData.paceHistory) {
-                assertTrue(pace >= 0)
+            for (paceWithTime in runData.paceHistory) {
+                assertTrue(paceWithTime.pace >= 0)
             }
         }
     }

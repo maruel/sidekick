@@ -5,7 +5,10 @@ import com.fghbuild.sidekick.audio.IVoiceCommandListener
 import com.fghbuild.sidekick.audio.VoiceCommand
 import com.fghbuild.sidekick.data.HeartRateData
 import com.fghbuild.sidekick.data.RunData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 class RunStateManager(
     private val runManager: RunManager,
@@ -15,9 +18,21 @@ class RunStateManager(
 ) {
     private var lastKilometerAnnouncement = 0.0
     private var lastHeartRateAnnouncement = 0L
+    private val scope = CoroutineScope(Dispatchers.Main)
 
     val runData: StateFlow<RunData> = runManager.runData
     val lastCommand: StateFlow<VoiceCommand> = voiceListener.lastCommand
+
+    init {
+        // Start observing heart rate data to update run manager
+        scope.launch {
+            heartRateData.collect { hrData ->
+                if (hrData.currentBpm > 0) {
+                    runManager.updateHeartRate(hrData.currentBpm)
+                }
+            }
+        }
+    }
 
     fun startRun() {
         lastKilometerAnnouncement = 0.0

@@ -29,7 +29,7 @@ class RunRepository(
     ): Long {
         val averagePace =
             if (runData.paceHistory.isNotEmpty()) {
-                runData.paceHistory.average()
+                runData.paceHistory.map { it.pace }.average()
             } else {
                 0.0
             }
@@ -41,10 +41,24 @@ class RunRepository(
                 distanceMeters = runData.distanceMeters,
                 durationMillis = runData.durationMillis,
                 averagePaceMinPerKm = averagePace,
-                maxHeartRate = heartRateData.measurements.maxOrNull() ?: 0,
+                maxHeartRate =
+                    if (runData.heartRateHistory.isNotEmpty()) {
+                        runData.heartRateHistory.map { it.bpm }.maxOrNull() ?: 0
+                    } else {
+                        heartRateData.measurements.maxOrNull() ?: 0
+                    },
                 minHeartRate =
-                    heartRateData.measurements.minOrNull() ?: 0,
-                averageHeartRate = heartRateData.averageBpm,
+                    if (runData.heartRateHistory.isNotEmpty()) {
+                        runData.heartRateHistory.map { it.bpm }.minOrNull() ?: 0
+                    } else {
+                        heartRateData.measurements.minOrNull() ?: 0
+                    },
+                averageHeartRate =
+                    if (runData.heartRateHistory.isNotEmpty()) {
+                        runData.heartRateHistory.map { it.bpm }.average().toInt()
+                    } else {
+                        heartRateData.averageBpm
+                    },
             )
 
         val runId = runDao.insertRun(runEntity)
