@@ -216,6 +216,7 @@ fun sidekickApp() {
                 distanceKm = distanceKm,
                 paceMinPerKm = runData.paceMinPerKm,
                 durationSeconds = durationSeconds,
+                currentBpm = heartRateData.currentBpm,
             )
         }
     }

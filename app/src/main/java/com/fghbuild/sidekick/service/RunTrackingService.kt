@@ -57,6 +57,7 @@ class RunTrackingService : Service() {
         distanceKm: Double,
         paceMinPerKm: Double,
         durationSeconds: Long,
+        currentBpm: Int = 0,
     ) {
         if (isInForeground) {
             val currentTime = System.currentTimeMillis()
@@ -66,6 +67,7 @@ class RunTrackingService : Service() {
                         distanceKm = distanceKm,
                         paceMinPerKm = paceMinPerKm,
                         durationSeconds = durationSeconds,
+                        currentBpm = currentBpm,
                     )
                 updateForegroundNotification(notification)
                 lastNotificationUpdateTimeMillis = currentTime

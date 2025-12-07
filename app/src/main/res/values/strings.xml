@@ -87,4 +87,5 @@
     <string name="notification_channel_description">Notifications for active run tracking</string>
     <string name="notification_title">Run in Progress</string>
     <string name="notification_text" formatted="false">%.2f km • %s /km • %s</string>
+    <string name="notification_text_with_bpm" formatted="false">%.2f km • %s /km • %s • %d bpm</string>
 </resources>

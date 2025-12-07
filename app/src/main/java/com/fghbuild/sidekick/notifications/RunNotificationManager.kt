@@ -43,10 +43,22 @@ class RunNotificationManager(private val context: Context) {
         distanceKm: Double,
         paceMinPerKm: Double,
         durationSeconds: Long,
+        currentBpm: Int = 0,
     ): Notification {
         val pace = PaceUtils.formatPace(paceMinPerKm)
         val duration = formatDuration(durationSeconds)
-        val text = context.getString(R.string.notification_text, distanceKm, pace, duration)
+        val text =
+            if (currentBpm > 0) {
+                context.getString(
+                    R.string.notification_text_with_bpm,
+                    distanceKm,
+                    pace,
+                    duration,
+                    currentBpm,
+                )
+            } else {
+                context.getString(R.string.notification_text, distanceKm, pace, duration)
+            }
 
         val intent =
             Intent(context, MainActivity::class.java).apply {
