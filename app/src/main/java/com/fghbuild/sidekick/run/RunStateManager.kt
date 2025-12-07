@@ -3,6 +3,7 @@ package com.fghbuild.sidekick.run
 import com.fghbuild.sidekick.audio.AnnouncementManager
 import com.fghbuild.sidekick.audio.IVoiceCommandListener
 import com.fghbuild.sidekick.audio.VoiceCommand
+import com.fghbuild.sidekick.data.HeartRateData
 import com.fghbuild.sidekick.data.RunData
 import kotlinx.coroutines.flow.StateFlow
 
@@ -10,16 +11,17 @@ class RunStateManager(
     private val runManager: RunManager,
     private val announcements: AnnouncementManager,
     private val voiceListener: IVoiceCommandListener,
+    private val heartRateData: StateFlow<HeartRateData> = runManager.defaultHeartRateData,
 ) {
     private var lastKilometerAnnouncement = 0.0
-    private var lastMinuteAnnouncement = 0L
+    private var lastHeartRateAnnouncement = 0L
 
     val runData: StateFlow<RunData> = runManager.runData
     val lastCommand: StateFlow<VoiceCommand> = voiceListener.lastCommand
 
     fun startRun() {
         lastKilometerAnnouncement = 0.0
-        lastMinuteAnnouncement = System.currentTimeMillis()
+        lastHeartRateAnnouncement = System.currentTimeMillis()
         runManager.startRun()
         voiceListener.startListening()
     }
@@ -31,7 +33,7 @@ class RunStateManager(
 
     fun resumeRun() {
         runManager.resumeRun()
-        lastMinuteAnnouncement = System.currentTimeMillis()
+        lastHeartRateAnnouncement = System.currentTimeMillis()
     }
 
     fun stopRun() {
@@ -51,11 +53,14 @@ class RunStateManager(
             lastKilometerAnnouncement = (currentKm.toInt()).toDouble()
         }
 
-        // Announce average heart rate every minute
+        // Announce heart rate every 30 seconds when HRM is connected
         val currentTime = System.currentTimeMillis()
-        if (currentTime - lastMinuteAnnouncement >= 60000) {
-            // Announce average heart rate (not implemented here as we need HRM connection)
-            lastMinuteAnnouncement = currentTime
+        if (currentTime - lastHeartRateAnnouncement >= 30000) {
+            val hrData = heartRateData.value
+            if (hrData.currentBpm > 0) {
+                announcements.speakHeartRate(hrData.currentBpm)
+            }
+            lastHeartRateAnnouncement = currentTime
         }
     }
 

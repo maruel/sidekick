@@ -1,6 +1,7 @@
 package com.fghbuild.sidekick.run
 
 import android.location.Location
+import com.fghbuild.sidekick.data.HeartRateData
 import com.fghbuild.sidekick.data.RoutePoint
 import com.fghbuild.sidekick.data.RunData
 import com.fghbuild.sidekick.util.GeoUtils
@@ -12,6 +13,8 @@ import kotlinx.coroutines.flow.asStateFlow
 class RunManager {
     private val _runData = MutableStateFlow(RunData())
     val runData: StateFlow<RunData> = _runData.asStateFlow()
+
+    val defaultHeartRateData: StateFlow<HeartRateData> = MutableStateFlow(HeartRateData()).asStateFlow()
 
     private var startTimeMillis: Long = 0
     private var lastLocation: Location? = null

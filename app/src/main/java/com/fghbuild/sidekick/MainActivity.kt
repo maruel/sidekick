@@ -115,7 +115,7 @@ fun sidekickApp() {
     val voiceCommandListener = remember { VoiceCommandListener(context) }
     val runStateManager =
         remember {
-            RunStateManager(runManager, announcementManager, voiceCommandListener)
+            RunStateManager(runManager, announcementManager, voiceCommandListener, bleManager.heartRateData)
         }
 
     var runStartTime by remember { mutableStateOf(0L) }
@@ -214,6 +214,12 @@ fun sidekickApp() {
     LaunchedEffect(routePoints) {
         if (runData.isRunning) {
             runManager.updateRoutePoints(routePoints)
+        }
+    }
+
+    LaunchedEffect(runData) {
+        if (runData.isRunning) {
+            runStateManager.update()
         }
     }
 
