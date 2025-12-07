@@ -41,7 +41,7 @@ class RunInProgressScreenTest {
 
     @Test
     fun runInProgressScreen_displaysPaceFormatted() {
-        val runData = TestDataFactory.createTestRunData(distanceKm = 5.0, durationMinutes = 45)
+        val runData = TestDataFactory.createTestRunData(distanceKm = 5.0, durationMillis = 45 * 60 * 1000L)
         composeTestRule.setContent {
             runInProgressScreen(runData = runData)
         }
@@ -61,7 +61,7 @@ class RunInProgressScreenTest {
 
     @Test
     fun runInProgressScreen_displaysDurationFormatted() {
-        val runData = TestDataFactory.createTestRunData(distanceKm = 5.0, durationMinutes = 45)
+        val runData = TestDataFactory.createTestRunData(distanceKm = 5.0, durationMillis = 45 * 60 * 1000L)
         composeTestRule.setContent {
             runInProgressScreen(runData = runData)
         }
@@ -91,7 +91,7 @@ class RunInProgressScreenTest {
 
     @Test
     fun runInProgressScreen_rendersRealisticData() {
-        val runData = TestDataFactory.createTestRunData(distanceKm = 10.0, durationMinutes = 90)
+        val runData = TestDataFactory.createTestRunData(distanceKm = 10.0, durationMillis = 90 * 60 * 1000L)
         val heartRateData = TestDataFactory.createHeartRateData(count = 100)
 
         composeTestRule.setContent {

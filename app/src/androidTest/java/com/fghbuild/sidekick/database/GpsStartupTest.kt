@@ -82,16 +82,17 @@ class GpsStartupTest {
             runManager.startRun()
 
             // 2. Create run entity and initialize session
+            val baseTime = System.currentTimeMillis()
+            // 2 minutes to exceed 30 second minimum
             val runEntity =
                 TestDataFactory.createTestRunEntity(
                     distanceMeters = 0.0,
-                    durationMillis = 0L,
-                )
+                    durationMillis = 120000L,
+                ).copy(startTime = baseTime - 120000, endTime = baseTime)
             val runId = runDao.insertRun(runEntity)
             runManager.initializeRunSession(runId, "running")
 
             // 3. Add location updates and accumulate measurements
-            val baseTime = System.currentTimeMillis()
             val locations =
                 listOf(
                     Location("test").apply {
@@ -117,6 +118,30 @@ class GpsStartupTest {
             for (location in locations) {
                 runManager.updateLocation(location)
             }
+
+            // Manually insert measurements for this run since updateLocation only updates state
+            gpsMeasurementDao.insert(
+                GpsMeasurementEntity(
+                    runId = runId,
+                    activity = "running",
+                    timestamp = baseTime,
+                    accuracy = 5f,
+                    bearingAccuracy = 10f,
+                    speed = 1.667f,
+                    bearing = 0f,
+                ),
+            )
+            gpsMeasurementDao.insert(
+                GpsMeasurementEntity(
+                    runId = runId,
+                    activity = "running",
+                    timestamp = baseTime + 60000,
+                    accuracy = 6f,
+                    bearingAccuracy = 10f,
+                    speed = 1.667f,
+                    bearing = 0f,
+                ),
+            )
 
             // 4. Finalize session (should update calibration if >= 30 seconds)
             runManager.finalizeRunSession()
@@ -169,20 +194,39 @@ class GpsStartupTest {
     fun multipleRuns_calibrationMergesProperly() =
         runBlocking {
             // Run 1: Record some measurements
+            val baseTime1 = System.currentTimeMillis()
             runManager.startRun()
-            val run1 = TestDataFactory.createTestRunEntity()
+            val run1 =
+                TestDataFactory.createTestRunEntity(
+                    durationMillis = 120000L,
+                ).copy(startTime = baseTime1 - 120000, endTime = baseTime1)
             val runId1 = runDao.insertRun(run1)
             runManager.initializeRunSession(runId1, "running")
 
-            val baseTime1 = System.currentTimeMillis()
+            // Update location with timestamps to set duration in run state
             for (i in 0..4) {
                 val location =
                     Location("test").apply {
                         latitude = 40.7128 + i * 0.001
                         longitude = -74.0060
+                        time = baseTime1 + (i * 20000L)
                         accuracy = (5 + i).toFloat()
                     }
                 runManager.updateLocation(location)
+            }
+
+            // Ensure run state has proper duration before finalizing
+            val runState1 = runManager.runData.value
+            if (runState1.durationMillis < 30000) {
+                // Force update by simulating a final location with proper timestamp
+                val finalLocation1 =
+                    Location("test").apply {
+                        latitude = 40.7130
+                        longitude = -74.0060
+                        time = baseTime1 + 100000 // 100 seconds in, exceeds 30s minimum
+                        accuracy = 5f
+                    }
+                runManager.updateLocation(finalLocation1)
             }
 
             // Manually insert measurements for this run
@@ -213,12 +257,25 @@ class GpsStartupTest {
             runManager.finalizeRunSession()
 
             // Run 2: Record more measurements and verify calibration merges
+            val baseTime2 = System.currentTimeMillis()
             runManager.startRun()
-            val run2 = TestDataFactory.createTestRunEntity()
+            val run2 =
+                TestDataFactory.createTestRunEntity(
+                    durationMillis = 120000L,
+                ).copy(startTime = baseTime2 - 120000, endTime = baseTime2)
             val runId2 = runDao.insertRun(run2)
             runManager.initializeRunSession(runId2, "running")
 
-            val baseTime2 = System.currentTimeMillis()
+            // Update location to trigger run state duration calculation
+            val location2 =
+                Location("test").apply {
+                    latitude = 40.7150
+                    longitude = -74.0060
+                    time = baseTime2 + 100000
+                    accuracy = 7f
+                }
+            runManager.updateLocation(location2)
+
             gpsMeasurementDao.insert(
                 GpsMeasurementEntity(
                     runId = runId2,

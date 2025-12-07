@@ -137,17 +137,18 @@ object TestDataFactory {
      */
     fun createTestRunData(
         distanceKm: Double = 5.0,
-        durationMinutes: Int = 45,
+        durationMillis: Long = 45 * 60 * 1000L,
         isPaused: Boolean = false,
     ): RunData {
         val route = createTestRoute(distanceKm)
+        val durationMinutes = (durationMillis / (60 * 1000)).toInt()
         val paceHistory =
-            List(durationMinutes) { 9.0 + (Math.random() * 2.0 - 1.0) } // 8-10 min/km
+            List(durationMinutes.coerceAtLeast(1)) { 9.0 + (Math.random() * 2.0 - 1.0) } // 8-10 min/km
 
         return RunData(
             distanceMeters = distanceKm * 1000,
             paceMinPerKm = paceHistory.average(),
-            durationMillis = (durationMinutes * 60 * 1000).toLong(),
+            durationMillis = durationMillis,
             routePoints = route,
             paceHistory = paceHistory,
             isRunning = false,
@@ -161,14 +162,14 @@ object TestDataFactory {
     fun createTestRunEntity(
         id: Long = 0L,
         distanceMeters: Double = 5000.0,
-        durationMinutes: Int = 45,
+        durationMillis: Long = 45 * 60 * 1000L,
         averagePaceMinPerKm: Double = 9.0,
         maxHeartRate: Int = 180,
         minHeartRate: Int = 100,
         averageHeartRate: Int = 150,
     ): RunEntity {
         val now = System.currentTimeMillis()
-        val startTime = now - (durationMinutes * 60 * 1000).toLong()
+        val startTime = now - durationMillis
         val endTime = now
 
         return RunEntity(
@@ -176,7 +177,7 @@ object TestDataFactory {
             startTime = startTime,
             endTime = endTime,
             distanceMeters = distanceMeters,
-            durationMillis = (durationMinutes * 60 * 1000).toLong(),
+            durationMillis = durationMillis,
             averagePaceMinPerKm = averagePaceMinPerKm,
             maxHeartRate = maxHeartRate,
             minHeartRate = minHeartRate,

@@ -186,7 +186,7 @@ class RunRepositoryTest {
             val runData =
                 TestDataFactory.createTestRunData(
                     distanceKm = 5.0,
-                    durationMinutes = 45,
+                    durationMillis = 45 * 60 * 1000L,
                 )
             val heartRateData = TestDataFactory.createHeartRateData(100)
             val now = System.currentTimeMillis()

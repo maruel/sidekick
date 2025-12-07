@@ -47,7 +47,7 @@ class RunDatabaseTest {
             val runEntity =
                 TestDataFactory.createTestRunEntity(
                     distanceMeters = 5000.0,
-                    durationMinutes = 45,
+                    durationMillis = 45 * 60 * 1000L,
                     averagePaceMinPerKm = 9.0,
                     maxHeartRate = 180,
                     minHeartRate = 100,

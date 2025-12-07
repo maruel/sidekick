@@ -57,7 +57,7 @@ class HistoryScreenTest {
     fun historyScreen_runCard_displaysDurationFormatted() {
         val run =
             TestDataFactory.createTestRunEntity(
-                durationMinutes = 60,
+                durationMillis = 60 * 60 * 1000L,
             ) // 1 hour
         composeTestRule.setContent {
             historyScreen(runs = listOf(run))
@@ -169,19 +169,19 @@ class HistoryScreenTest {
                 TestDataFactory.createTestRunEntity(
                     id = 1,
                     distanceMeters = 5000.0,
-                    durationMinutes = 45,
+                    durationMillis = 45 * 60 * 1000L,
                     averageHeartRate = 145,
                 ),
                 TestDataFactory.createTestRunEntity(
                     id = 2,
                     distanceMeters = 10000.0,
-                    durationMinutes = 90,
+                    durationMillis = 90 * 60 * 1000L,
                     averageHeartRate = 150,
                 ),
                 TestDataFactory.createTestRunEntity(
                     id = 3,
                     distanceMeters = 3000.0,
-                    durationMinutes = 25,
+                    durationMillis = 25 * 60 * 1000L,
                     averageHeartRate = 140,
                 ),
             )
@@ -202,7 +202,7 @@ class HistoryScreenTest {
         val run =
             TestDataFactory.createTestRunEntity(
                 distanceMeters = 100.0,
-                durationMinutes = 1,
+                durationMillis = 1 * 60 * 1000L,
             )
         composeTestRule.setContent {
             historyScreen(runs = listOf(run))
