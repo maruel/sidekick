@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.drawText
@@ -34,16 +35,20 @@ fun heartRateChart(
         modifier =
             modifier
                 .fillMaxWidth()
+                .clip(MaterialTheme.shapes.medium)
                 .background(
                     color = MaterialTheme.colorScheme.surfaceContainerHigh,
                     shape = MaterialTheme.shapes.medium,
                 )
-                .padding(16.dp),
+                .padding(4.dp),
         horizontalAlignment = Alignment.Start,
     ) {
         // Draw the graph with zones and labels - heart emoji floats over it
         Box(
-            modifier = Modifier.fillMaxWidth(),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .clip(MaterialTheme.shapes.medium),
         ) {
             heartRateGraphCanvas(
                 measurements = last5Minutes,
@@ -52,8 +57,7 @@ fun heartRateChart(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .height(140.dp)
-                        .padding(bottom = 4.dp),
+                        .height(140.dp),
             )
 
             // Heart emoji floats over graph, below data points
@@ -63,7 +67,7 @@ fun heartRateChart(
                 modifier =
                     Modifier
                         .align(Alignment.TopStart)
-                        .padding(start = 20.dp, top = 4.dp)
+                        .padding(start = 4.dp, top = 4.dp)
                         .zIndex(0.5f),
             )
         }
@@ -87,10 +91,6 @@ private fun heartRateGraphCanvas(
     Canvas(
         modifier =
             modifier
-                .background(
-                    color = MaterialTheme.colorScheme.surface,
-                    shape = MaterialTheme.shapes.small,
-                )
                 .padding(4.dp),
     ) {
         val width = size.width

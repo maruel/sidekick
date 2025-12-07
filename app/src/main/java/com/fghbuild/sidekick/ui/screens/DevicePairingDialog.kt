@@ -45,7 +45,7 @@ private fun deviceListItem(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(12.dp),
+                    .padding(4.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
@@ -71,7 +71,7 @@ private fun deviceListItem(
             }
             Button(
                 onClick = onSelect,
-                modifier = Modifier.padding(start = 8.dp),
+                modifier = Modifier.padding(start = 4.dp),
             ) {
                 Text(stringResource(R.string.device_connect))
             }
@@ -109,13 +109,13 @@ fun devicePairingDialog(
             modifier =
                 modifier
                     .fillMaxWidth(0.9f)
-                    .padding(16.dp),
+                    .padding(4.dp),
         ) {
             Column(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(4.dp),
                 verticalArrangement = Arrangement.Top,
             ) {
                 Row(
@@ -148,7 +148,7 @@ fun devicePairingDialog(
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
-                                    .padding(16.dp),
+                                    .padding(4.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
@@ -163,7 +163,7 @@ fun devicePairingDialog(
                                         contentDescription = stringResource(R.string.device_connected),
                                         tint = MaterialTheme.colorScheme.primary,
                                     )
-                                    Spacer(modifier = Modifier.padding(8.dp))
+                                    Spacer(modifier = Modifier.padding(4.dp))
                                     Text(
                                         text = stringResource(R.string.device_connected),
                                         style = MaterialTheme.typography.labelSmall,
@@ -208,7 +208,7 @@ fun devicePairingDialog(
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
-                                    .padding(16.dp),
+                                    .padding(4.dp),
                             contentAlignment = Alignment.Center,
                         ) {
                             Row(
@@ -231,7 +231,7 @@ fun devicePairingDialog(
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
-                                    .padding(32.dp),
+                                    .padding(4.dp),
                             contentAlignment = Alignment.Center,
                         ) {
                             Text(

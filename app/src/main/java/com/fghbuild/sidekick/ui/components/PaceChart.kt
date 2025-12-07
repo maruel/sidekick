@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.drawText
@@ -33,16 +34,17 @@ fun paceChart(
         modifier =
             modifier
                 .fillMaxWidth()
+                .clip(MaterialTheme.shapes.medium)
                 .background(
                     color = MaterialTheme.colorScheme.surfaceContainerHigh,
                     shape = MaterialTheme.shapes.medium,
                 )
-                .padding(16.dp),
+                .padding(4.dp),
         horizontalAlignment = Alignment.Start,
     ) {
         // Draw the graph with zones and labels - shoe emoji floats over it
         Box(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().clip(MaterialTheme.shapes.small),
         ) {
             paceGraphCanvas(
                 paceHistory = last5Minutes,
@@ -51,7 +53,7 @@ fun paceChart(
                     Modifier
                         .fillMaxWidth()
                         .height(120.dp)
-                        .padding(top = 8.dp, bottom = 8.dp),
+                        .padding(top = 4.dp, bottom = 4.dp),
             )
 
             // Shoe emoji floats over graph, below data points
@@ -61,7 +63,7 @@ fun paceChart(
                 modifier =
                     Modifier
                         .align(Alignment.TopStart)
-                        .padding(start = 20.dp, top = 4.dp)
+                        .padding(start = 4.dp, top = 4.dp)
                         .zIndex(0.5f),
             )
         }
@@ -80,12 +82,7 @@ private fun paceGraphCanvas(
     val primaryColor = MaterialTheme.colorScheme.primary
 
     Canvas(
-        modifier =
-            modifier
-                .background(
-                    color = MaterialTheme.colorScheme.surface,
-                    shape = MaterialTheme.shapes.small,
-                ),
+        modifier = modifier,
     ) {
         val width = size.width
         val height = size.height

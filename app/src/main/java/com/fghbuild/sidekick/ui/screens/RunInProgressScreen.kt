@@ -55,7 +55,7 @@ fun runInProgressScreen(
                     Icon(
                         Icons.Default.PlayArrow,
                         contentDescription = stringResource(R.string.run_resume),
-                        modifier = Modifier.padding(end = 8.dp),
+                        modifier = Modifier.padding(end = 4.dp),
                     )
                     Text(stringResource(R.string.run_resume))
                 }
@@ -64,7 +64,7 @@ fun runInProgressScreen(
                     Icon(
                         Icons.Default.Pause,
                         contentDescription = stringResource(R.string.run_pause),
-                        modifier = Modifier.padding(end = 8.dp),
+                        modifier = Modifier.padding(end = 4.dp),
                     )
                     Text(stringResource(R.string.run_pause))
                 }
@@ -73,13 +73,13 @@ fun runInProgressScreen(
                 Icon(
                     Icons.Default.Close,
                     contentDescription = stringResource(R.string.run_stop),
-                    modifier = Modifier.padding(end = 8.dp),
+                    modifier = Modifier.padding(end = 4.dp),
                 )
                 Text(stringResource(R.string.run_stop))
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         mainMetricsPanel(
             runData = runData,
@@ -89,14 +89,14 @@ fun runInProgressScreen(
             isRunning = true,
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         paceChart(
             paceHistory = runData.paceHistory,
             modifier = Modifier.fillMaxWidth(),
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         routeMap(
             routePoints = runData.routePoints,

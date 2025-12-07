@@ -89,12 +89,12 @@ fun homeScreen(
             Icon(
                 Icons.Default.PlayArrow,
                 contentDescription = stringResource(R.string.content_description_start),
-                modifier = Modifier.padding(end = 8.dp),
+                modifier = Modifier.padding(end = 4.dp),
             )
             Text(stringResource(R.string.home_start_run))
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         // Metric cards and heart rate chart
         mainMetricsPanel(
@@ -115,11 +115,11 @@ fun homeScreen(
 
         // Show button to pair if not connected
         if (connectedDevice == null) {
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Button(onClick = { showPairingDialog.value = true }) {
                 Text(stringResource(R.string.home_connect_hr_monitor))
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(4.dp))
         }
 
         // GPS Accuracy indicator at bottom

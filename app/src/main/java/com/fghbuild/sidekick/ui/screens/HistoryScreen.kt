@@ -40,7 +40,7 @@ fun historyScreen(
         modifier =
             modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(4.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -88,7 +88,7 @@ private fun runHistoryCard(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(4.dp),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),

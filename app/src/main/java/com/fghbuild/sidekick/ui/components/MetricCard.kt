@@ -44,7 +44,7 @@ fun metricCard(
                     onLongClick = onLongPress,
                     onClick = {},
                 )
-                .padding(16.dp),
+                .padding(4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {

@@ -41,7 +41,7 @@ fun onboardingScreen(
         modifier =
             modifier
                 .fillMaxSize()
-                .padding(24.dp),
+                .padding(4.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -50,20 +50,20 @@ fun onboardingScreen(
             fontSize = 32.sp,
             style = MaterialTheme.typography.headlineLarge,
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = stringResource(R.string.onboarding_subtitle),
             style = MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         Text(
             text = stringResource(R.string.onboarding_description),
             style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(horizontal = 16.dp),
+            modifier = Modifier.padding(horizontal = 4.dp),
         )
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         OutlinedTextField(
             value = birthYearInput,
@@ -90,11 +90,11 @@ fun onboardingScreen(
                 text = stringResource(R.string.onboarding_invalid_year, currentYear),
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(top = 8.dp, start = 16.dp),
+                modifier = Modifier.padding(top = 4.dp, start = 4.dp),
             )
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         Button(
             onClick = {

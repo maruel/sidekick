@@ -47,7 +47,7 @@ fun metricsPanel(
         )
     }
 
-    Spacer(modifier = Modifier.height(12.dp))
+    Spacer(modifier = Modifier.height(4.dp))
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -87,7 +87,7 @@ fun mainMetricsPanel(
 
     // Show heart rate chart when device is connected
     if (connectedDevice != null) {
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(4.dp))
         heartRateChart(
             measurements = heartRateData.measurements,
             age = userAge,

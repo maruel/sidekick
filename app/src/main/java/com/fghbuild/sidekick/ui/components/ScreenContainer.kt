@@ -19,7 +19,7 @@ fun screenContainer(
     Column(
         modifier =
             modifier
-                .padding(16.dp)
+                .padding(4.dp)
                 .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
