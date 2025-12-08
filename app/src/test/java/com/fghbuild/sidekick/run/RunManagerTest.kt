@@ -96,6 +96,9 @@ class RunManagerTest {
         every { location.latitude } returns 40.7128
         every { location.longitude } returns -74.0060
         every { location.time } returns 0L
+        every { location.accuracy } returns 10.0f
+        every { location.bearing } returns 0.0f
+        every { location.speed } returns 0.0f
 
         runManager.updateLocation(location)
 
@@ -110,11 +113,17 @@ class RunManagerTest {
         every { location1.latitude } returns 40.7128
         every { location1.longitude } returns -74.0060
         every { location1.time } returns 0L
+        every { location1.accuracy } returns 10.0f
+        every { location1.bearing } returns 0.0f
+        every { location1.speed } returns 0.0f
 
         val location2 = mockk<Location>()
         every { location2.latitude } returns 40.7138
         every { location2.longitude } returns -74.0060
         every { location2.time } returns 0L
+        every { location2.accuracy } returns 10.0f
+        every { location2.bearing } returns 0.0f
+        every { location2.speed } returns 0.0f
 
         runManager.updateLocation(location1)
         runManager.updateLocation(location2)
@@ -131,11 +140,17 @@ class RunManagerTest {
         every { location1.latitude } returns 40.7128
         every { location1.longitude } returns -74.0060
         every { location1.time } returns baseTime
+        every { location1.accuracy } returns 10.0f
+        every { location1.bearing } returns 0.0f
+        every { location1.speed } returns 0.0f
 
         val location2 = mockk<Location>()
         every { location2.latitude } returns 40.7138
         every { location2.longitude } returns -74.0060
         every { location2.time } returns baseTime + 60000L
+        every { location2.accuracy } returns 10.0f
+        every { location2.bearing } returns 0.0f
+        every { location2.speed } returns 0.0f
 
         runManager.updateLocation(location1)
         runManager.updateLocation(location2)
@@ -152,6 +167,9 @@ class RunManagerTest {
         every { location.latitude } returns 40.7128
         every { location.longitude } returns -74.0060
         every { location.time } returns startTime + 5000
+        every { location.accuracy } returns 10.0f
+        every { location.bearing } returns 0.0f
+        every { location.speed } returns 0.0f
 
         runManager.updateLocation(location)
 
@@ -194,6 +212,9 @@ class RunManagerTest {
         every { location1.latitude } returns 40.7128
         every { location1.longitude } returns -74.0060
         every { location1.time } returns 0L
+        every { location1.accuracy } returns 10.0f
+        every { location1.bearing } returns 0.0f
+        every { location1.speed } returns 0.0f
         runManager.updateLocation(location1)
 
         runManager.pauseRun()
@@ -202,6 +223,9 @@ class RunManagerTest {
         every { location2.latitude } returns 40.7138
         every { location2.longitude } returns -74.0060
         every { location2.time } returns 0L
+        every { location2.accuracy } returns 10.0f
+        every { location2.bearing } returns 0.0f
+        every { location2.speed } returns 0.0f
         runManager.updateLocation(location2)
 
         assertEquals(0.0, runManager.runData.value.distanceMeters, 0.001)
@@ -215,11 +239,17 @@ class RunManagerTest {
         every { location1.latitude } returns 40.7128
         every { location1.longitude } returns -74.0060
         every { location1.time } returns 0L
+        every { location1.accuracy } returns 10.0f
+        every { location1.bearing } returns 0.0f
+        every { location1.speed } returns 0.0f
 
         val location2 = mockk<Location>()
         every { location2.latitude } returns 40.7138
         every { location2.longitude } returns -74.0060
         every { location2.time } returns 0L
+        every { location2.accuracy } returns 10.0f
+        every { location2.bearing } returns 0.0f
+        every { location2.speed } returns 0.0f
 
         runManager.updateLocation(location1)
         runManager.updateLocation(location2)
@@ -234,6 +264,9 @@ class RunManagerTest {
         every { location3.latitude } returns 40.7128
         every { location3.longitude } returns -74.0060
         every { location3.time } returns 0L
+        every { location3.accuracy } returns 10.0f
+        every { location3.bearing } returns 0.0f
+        every { location3.speed } returns 0.0f
         runManager.updateLocation(location3)
 
         assertEquals(0.0, runManager.runData.value.distanceMeters, 0.001)
@@ -247,6 +280,9 @@ class RunManagerTest {
         every { location.latitude } returns 40.7128
         every { location.longitude } returns -74.0060
         every { location.time } returns 0L
+        every { location.accuracy } returns 10.0f
+        every { location.bearing } returns 0.0f
+        every { location.speed } returns 0.0f
 
         runManager.updateLocation(location)
 

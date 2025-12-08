@@ -11,6 +11,7 @@ import com.fghbuild.sidekick.database.GpsCalibrationEntity
 import com.fghbuild.sidekick.database.GpsMeasurementDao
 import com.fghbuild.sidekick.util.GeoUtils
 import com.fghbuild.sidekick.util.GpsCalibrationUtils
+import com.fghbuild.sidekick.util.GpsFilteringUtils
 import com.fghbuild.sidekick.util.PaceUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,6 +33,9 @@ class RunManager(
     private var runExplicitlyStarted = false
     private var currentRunId: Long? = null
     private var currentActivity: String = "running"
+    private var currentCalibration: GpsCalibrationEntity? = null
+    private var kalmanFilterState: GpsFilteringUtils.KalmanState? = null
+    private var previousRawRoutePoint: RoutePoint? = null
 
     fun startRun() {
         startTimeMillis = System.currentTimeMillis()
@@ -39,6 +43,9 @@ class RunManager(
         lastLocation = null
         pausedTimeMillis = 0L
         runExplicitlyStarted = true
+        kalmanFilterState = null
+        kalmanFilterState = null
+        previousRawRoutePoint = null
         _runData.value = RunData(isRunning = true)
     }
 
@@ -63,45 +70,101 @@ class RunManager(
         if (!currentData.isRunning) {
             return
         }
-        var distanceMeters = currentData.distanceMeters
 
-        lastLocation?.let {
-            distanceMeters +=
-                GeoUtils.calculateDistanceMeters(
-                    it.latitude,
-                    it.longitude,
-                    location.latitude,
-                    location.longitude,
-                )
+        // 1. Convert Android Location to RoutePoint
+        val newRawRoutePoint =
+            RoutePoint(
+                latitude = location.latitude,
+                longitude = location.longitude,
+                timestamp = location.time,
+                accuracy = location.accuracy,
+                bearing = location.bearing,
+                speed = location.speed,
+            )
+
+        // 2. Validate point before processing
+        if (!GpsFilteringUtils.isPointValid(
+                newRawRoutePoint.latitude,
+                newRawRoutePoint.longitude,
+                newRawRoutePoint.accuracy,
+            )
+        ) {
+            // Optionally, we could log this or update UI with a "GPS signal weak" message
+            return
         }
 
-        // Use location timestamp if available (for test data with realistic timestamps)
-        val locationTime = location.time
+        // Get or create calibration
+        val calibration =
+            currentCalibration ?: GpsCalibrationEntity(
+                activity = currentActivity,
+                avgAccuracyMeters = 10.0,
+                p95AccuracyMeters = 20.0,
+                avgBearingAccuracyDegrees = 10.0,
+                samplesCollected = 0,
+                kalmanProcessNoise = 0.001,
+                kalmanMeasurementNoise = 100.0,
+                lastUpdated = System.currentTimeMillis(),
+            )
+
+        var newFilteredPoint: RoutePoint = newRawRoutePoint
+        if (kalmanFilterState == null) {
+            // First valid point, initialize Kalman filter
+            kalmanFilterState = GpsFilteringUtils.initializeKalmanState(newRawRoutePoint, calibration)
+            newFilteredPoint =
+                newRawRoutePoint.copy(
+                    latitude = kalmanFilterState!!.latitude,
+                    longitude = kalmanFilterState!!.longitude,
+                )
+        } else {
+            // Subsequent points, incrementally filter
+            if (previousRawRoutePoint != null) {
+                val (filtered, newState) =
+                    GpsFilteringUtils.filterPointIncremental(
+                        newRawRoutePoint,
+                        previousRawRoutePoint!!,
+                        kalmanFilterState!!,
+                        calibration,
+                    )
+                newFilteredPoint = filtered
+                kalmanFilterState = newState
+            }
+        }
+        previousRawRoutePoint = newRawRoutePoint
 
         // If run wasn't explicitly started and this is the first location, use its timestamp as start
-        if (!runExplicitlyStarted && lastLocationTimeMillis == 0L && locationTime > 0) {
-            startTimeMillis = locationTime
+        if (!runExplicitlyStarted && lastLocationTimeMillis == 0L && newRawRoutePoint.timestamp > 0) {
+            startTimeMillis = newRawRoutePoint.timestamp
         }
 
-        // Calculate duration using location timestamps when available
         val durationMillis =
-            if (locationTime > 0) {
+            if (newRawRoutePoint.timestamp > 0) {
                 // Use location timestamp but ensure it's not negative (handle race conditions)
-                maxOf(0L, locationTime - startTimeMillis)
+                maxOf(0L, newRawRoutePoint.timestamp - startTimeMillis)
             } else {
                 System.currentTimeMillis() - startTimeMillis
             }
 
+        // Calculate distance using filtered points
+        var distanceMeters = currentData.distanceMeters
+        currentData.filteredRoutePoints.lastOrNull()?.let { lastFilteredPoint ->
+            distanceMeters +=
+                GeoUtils.calculateDistanceMeters(
+                    lastFilteredPoint.latitude,
+                    lastFilteredPoint.longitude,
+                    newFilteredPoint.latitude,
+                    newFilteredPoint.longitude,
+                )
+        }
+
         val paceMinPerKm = PaceUtils.calculatePaceMinPerKm(durationMillis, distanceMeters)
 
-        lastLocation = location
-        lastLocationTimeMillis = locationTime
+        lastLocation = location // Keep lastLocation as raw Android Location for consistency
+        lastLocationTimeMillis = newRawRoutePoint.timestamp
 
         // Track pace history (only record meaningful pace values)
         val paceHistory =
             if (distanceMeters > 0 && paceMinPerKm > 0.0) {
-                val locationTimestamp = if (locationTime > 0) locationTime else System.currentTimeMillis()
-                currentData.paceHistory + PaceWithTime(pace = paceMinPerKm, timestamp = locationTimestamp)
+                currentData.paceHistory + PaceWithTime(pace = paceMinPerKm, timestamp = newRawRoutePoint.timestamp)
             } else {
                 currentData.paceHistory
             }
@@ -111,12 +174,68 @@ class RunManager(
                 distanceMeters = distanceMeters,
                 paceMinPerKm = paceMinPerKm,
                 durationMillis = durationMillis,
+                // Add raw and filtered points
+                routePoints = currentData.routePoints + newRawRoutePoint,
+                filteredRoutePoints = currentData.filteredRoutePoints + newFilteredPoint,
                 paceHistory = paceHistory,
             )
     }
 
     fun updateRoutePoints(points: List<RoutePoint>) {
-        _runData.value = _runData.value.copy(routePoints = points)
+        val currentData = _runData.value
+
+        // Only update if we have new points
+        if (points == currentData.routePoints) {
+            return
+        }
+
+        // Apply full filtering for display purposes, including stationary removal
+        val calibration =
+            currentCalibration ?: GpsCalibrationEntity(
+                activity = currentActivity,
+                avgAccuracyMeters = 10.0,
+                p95AccuracyMeters = 20.0,
+                avgBearingAccuracyDegrees = 10.0,
+                samplesCollected = 0,
+                kalmanProcessNoise = 0.001,
+                kalmanMeasurementNoise = 100.0,
+                lastUpdated = System.currentTimeMillis(),
+            )
+
+        val fullyFilteredPoints = GpsFilteringUtils.filterRoutePointsFully(points, calibration)
+
+        // Recalculate distance using fully filtered points for display
+        var distanceMeters = 0.0
+        for (i in 1 until fullyFilteredPoints.size) {
+            distanceMeters +=
+                GeoUtils.calculateDistanceMeters(
+                    fullyFilteredPoints[i - 1].latitude,
+                    fullyFilteredPoints[i - 1].longitude,
+                    fullyFilteredPoints[i].latitude,
+                    fullyFilteredPoints[i].longitude,
+                )
+        }
+
+        // Recalculate pace using fully filtered points
+        val paceMinPerKm = PaceUtils.calculatePaceMinPerKm(currentData.durationMillis, distanceMeters)
+
+        // Update pace history with recalculated pace
+        val paceHistory =
+            if (distanceMeters > 0 && paceMinPerKm > 0.0) {
+                val locationTime = fullyFilteredPoints.lastOrNull()?.timestamp ?: System.currentTimeMillis()
+                currentData.paceHistory + PaceWithTime(pace = paceMinPerKm, timestamp = locationTime)
+            } else {
+                currentData.paceHistory
+            }
+
+        _runData.value =
+            currentData.copy(
+                routePoints = points,
+                filteredRoutePoints = fullyFilteredPoints,
+                distanceMeters = distanceMeters,
+                paceMinPerKm = paceMinPerKm,
+                paceHistory = paceHistory,
+            )
     }
 
     fun updateHeartRate(bpm: Int) {
@@ -144,6 +263,8 @@ class RunManager(
     ) {
         currentRunId = runId
         currentActivity = activity
+        // Load calibration data for this activity to use in filtering
+        currentCalibration = gpsCalibrationDao.getCalibration(activity)
     }
 
     suspend fun finalizeRunSession() {

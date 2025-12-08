@@ -124,7 +124,7 @@ fun mainMetricsPanel(
             LatLng(it.latitude, it.longitude)
         }
     routeMap(
-        routePoints = runData.routePoints,
+        routePoints = runData.filteredRoutePoints.ifEmpty { runData.routePoints },
         userLocation = userLocation,
         gpsAccuracyMeters = gpsAccuracyMeters,
         modifier = Modifier.fillMaxWidth(),
