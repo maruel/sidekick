@@ -6,6 +6,9 @@ import com.fghbuild.sidekick.database.GpsCalibrationDao
 import com.fghbuild.sidekick.database.GpsMeasurementDao
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestScope
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -18,12 +21,14 @@ class RunManagerTest {
     private lateinit var runManager: RunManager
     private lateinit var gpsMeasurementDao: GpsMeasurementDao
     private lateinit var gpsCalibrationDao: GpsCalibrationDao
+    private lateinit var testScope: TestScope
 
     @BeforeEach
     fun setup() {
         gpsMeasurementDao = mockk(relaxed = true)
         gpsCalibrationDao = mockk(relaxed = true)
-        runManager = RunManager(gpsMeasurementDao, gpsCalibrationDao)
+        testScope = TestScope()
+        runManager = RunManager(gpsMeasurementDao, gpsCalibrationDao, CoroutineScope(StandardTestDispatcher(testScope.testScheduler)))
     }
 
     @Test

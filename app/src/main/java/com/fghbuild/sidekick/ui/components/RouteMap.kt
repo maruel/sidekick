@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -124,10 +123,6 @@ private fun routeMapGoogle(
         rememberCameraPositionState {
             position = CameraPosition.fromLatLngZoom(centerPoint, 15f)
         }
-
-    LaunchedEffect(centerPoint) {
-        cameraPositionState.position = CameraPosition.fromLatLngZoom(centerPoint, 15f)
-    }
 
     val routeColor = MaterialTheme.colorScheme.primary
 

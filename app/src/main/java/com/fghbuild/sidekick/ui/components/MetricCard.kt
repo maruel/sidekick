@@ -32,6 +32,7 @@ fun metricCard(
     minValue: String?,
     maxValue: String?,
     onLongPress: () -> Unit = {},
+    onClick: () -> Unit = {},
 ) {
     Column(
         modifier =
@@ -42,7 +43,7 @@ fun metricCard(
                 )
                 .combinedClickable(
                     onLongClick = onLongPress,
-                    onClick = {},
+                    onClick = onClick,
                 )
                 .padding(4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,

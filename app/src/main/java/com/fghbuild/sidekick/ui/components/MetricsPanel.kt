@@ -26,6 +26,7 @@ fun metricsPanel(
     heartRateData: HeartRateData,
     isRunning: Boolean,
     onHeartRateLongPress: () -> Unit,
+    onHeartRateCardClick: () -> Unit = {},
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -40,6 +41,7 @@ fun metricsPanel(
             maxValue = if (runData.heartRateHistory.isNotEmpty()) "${runData.heartRateHistory.map { it.bpm }.maxOrNull() ?: 0}" else null,
             modifier = Modifier.weight(1f),
             onLongPress = onHeartRateLongPress,
+            onClick = onHeartRateCardClick,
         )
         metricCard(
             label = stringResource(R.string.metrics_pace),
@@ -110,6 +112,7 @@ fun mainMetricsPanel(
     onHeartRateLongPress: () -> Unit,
     currentLocation: StateFlow<Location?>?,
     gpsAccuracyMeters: StateFlow<Float>?,
+    onHeartRateCardClick: () -> Unit = {},
 ) {
     // Route map always visible
     val locationFromFlow =
@@ -138,6 +141,7 @@ fun mainMetricsPanel(
         heartRateData = heartRateData,
         isRunning = isRunning,
         onHeartRateLongPress = onHeartRateLongPress,
+        onHeartRateCardClick = onHeartRateCardClick,
     )
 
     // Show heart rate chart when device is connected

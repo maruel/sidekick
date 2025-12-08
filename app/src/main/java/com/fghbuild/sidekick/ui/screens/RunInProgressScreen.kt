@@ -18,6 +18,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -44,7 +47,15 @@ fun runInProgressScreen(
     userAge: Int,
     gpsAccuracyMeters: StateFlow<Float>?,
     currentLocation: StateFlow<Location?>?,
+    discoveredDevices: List<HrmDevice> = emptyList(),
+    isScanning: Boolean = false,
+    onStartScanning: () -> Unit = {},
+    onStopScanning: () -> Unit = {},
+    onSelectDevice: (HrmDevice) -> Unit = {},
+    onDisconnect: () -> Unit = {},
 ) {
+    var showPairingDialog by remember { mutableStateOf(false) }
+
     screenContainer(modifier = modifier.fillMaxSize()) {
         // Pause/Resume and Stop buttons at top
         Row(
@@ -91,6 +102,11 @@ fun runInProgressScreen(
             onHeartRateLongPress = {},
             currentLocation = currentLocation,
             gpsAccuracyMeters = gpsAccuracyMeters,
+            onHeartRateCardClick = {
+                if (connectedDevice == null) {
+                    showPairingDialog = true
+                }
+            },
         )
 
         Spacer(modifier = Modifier.height(4.dp))
@@ -107,5 +123,21 @@ fun runInProgressScreen(
             val accuracy by accuracyFlow.collectAsState()
             gpsAccuracyIndicator(accuracyMeters = accuracy)
         }
+    }
+
+    if (showPairingDialog) {
+        devicePairingDialog(
+            onDismiss = { showPairingDialog = false },
+            discoveredDevices = discoveredDevices,
+            connectedDevice = connectedDevice,
+            isScanning = isScanning,
+            onStartScanning = onStartScanning,
+            onStopScanning = onStopScanning,
+            onSelectDevice = { device ->
+                onSelectDevice(device)
+                showPairingDialog = false
+            },
+            onDisconnect = onDisconnect,
+        )
     }
 }

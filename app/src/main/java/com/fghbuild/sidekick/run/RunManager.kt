@@ -13,13 +13,19 @@ import com.fghbuild.sidekick.util.GeoUtils
 import com.fghbuild.sidekick.util.GpsCalibrationUtils
 import com.fghbuild.sidekick.util.GpsFilteringUtils
 import com.fghbuild.sidekick.util.PaceUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class RunManager(
     private val gpsMeasurementDao: GpsMeasurementDao,
     private val gpsCalibrationDao: GpsCalibrationDao,
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Main),
 ) {
     private val _runData = MutableStateFlow(RunData())
     val runData: StateFlow<RunData> = _runData.asStateFlow()
@@ -36,6 +42,7 @@ class RunManager(
     private var currentCalibration: GpsCalibrationEntity? = null
     private var kalmanFilterState: GpsFilteringUtils.KalmanState? = null
     private var previousRawRoutePoint: RoutePoint? = null
+    private var tickJob: Job? = null
 
     fun startRun() {
         startTimeMillis = System.currentTimeMillis()
@@ -47,22 +54,26 @@ class RunManager(
         kalmanFilterState = null
         previousRawRoutePoint = null
         _runData.value = RunData(isRunning = true)
+        startTickTimer()
     }
 
     fun pauseRun() {
         pausedTimeMillis = System.currentTimeMillis()
         _runData.value = _runData.value.copy(isRunning = false, isPaused = true)
+        stopTickTimer()
     }
 
     fun resumeRun() {
         if (!_runData.value.isRunning) {
             startTimeMillis += System.currentTimeMillis() - pausedTimeMillis
             _runData.value = _runData.value.copy(isRunning = true, isPaused = false)
+            startTickTimer()
         }
     }
 
     fun stopRun() {
         _runData.value = _runData.value.copy(isRunning = false, isPaused = false)
+        stopTickTimer()
     }
 
     fun updateLocation(location: Location) {
@@ -279,6 +290,34 @@ class RunManager(
             }
         }
         currentRunId = null
+        stopTickTimer()
+    }
+
+    private fun startTickTimer() {
+        stopTickTimer()
+        tickJob =
+            coroutineScope.launch {
+                while (true) {
+                    delay(1000)
+                    updateTick()
+                }
+            }
+    }
+
+    private fun stopTickTimer() {
+        tickJob?.cancel()
+        tickJob = null
+    }
+
+    private fun updateTick() {
+        val currentData = _runData.value
+        if (!currentData.isRunning) {
+            return
+        }
+
+        val durationMillis = System.currentTimeMillis() - startTimeMillis
+
+        _runData.value = currentData.copy(durationMillis = durationMillis)
     }
 
     private suspend fun updateCalibration(measurements: List<com.fghbuild.sidekick.database.GpsMeasurementEntity>) {

@@ -318,6 +318,15 @@ fun sidekickApp() {
                                 userAge = userAge,
                                 gpsAccuracyMeters = locationTracker.currentAccuracyMeters,
                                 currentLocation = locationTracker.currentLocation,
+                                discoveredDevices = discoveredDevices,
+                                isScanning = isScanning,
+                                onStartScanning = { bleManager.startScanning() },
+                                onStopScanning = { bleManager.stopScanning() },
+                                onSelectDevice = { device ->
+                                    bleManager.connectToDevice(device)
+                                    devicePreferences.saveLastHrmDevice(device.address, device.name)
+                                },
+                                onDisconnect = { bleManager.disconnect() },
                             )
                         } else {
                             val userAge = devicePreferences.getCurrentAge()
