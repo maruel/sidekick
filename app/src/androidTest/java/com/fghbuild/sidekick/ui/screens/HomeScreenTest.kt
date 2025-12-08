@@ -15,7 +15,21 @@ class HomeScreenTest {
     @Test
     fun homeScreen_displaysStartButton() {
         composeTestRule.setContent {
-            homeScreen()
+            homeScreen(
+                onStartRun = {},
+                runData = com.fghbuild.sidekick.data.RunData(),
+                heartRateData = com.fghbuild.sidekick.data.HeartRateData(),
+                connectedDevice = null,
+                userAge = 30,
+                discoveredDevices = emptyList(),
+                isScanning = false,
+                onStartScanning = {},
+                onStopScanning = {},
+                onSelectDevice = {},
+                onDisconnect = {},
+                gpsAccuracyMeters = kotlinx.coroutines.flow.MutableStateFlow(5.0f),
+                currentLocation = kotlinx.coroutines.flow.MutableStateFlow(null),
+            )
         }
         composeTestRule.onNodeWithText("Start Run").assertIsDisplayed()
     }
@@ -23,7 +37,21 @@ class HomeScreenTest {
     @Test
     fun homeScreen_notRunning_showsStartButton() {
         composeTestRule.setContent {
-            homeScreen(isRunning = false)
+            homeScreen(
+                onStartRun = {},
+                runData = com.fghbuild.sidekick.data.RunData(),
+                heartRateData = com.fghbuild.sidekick.data.HeartRateData(),
+                connectedDevice = null,
+                userAge = 30,
+                discoveredDevices = emptyList(),
+                isScanning = false,
+                onStartScanning = {},
+                onStopScanning = {},
+                onSelectDevice = {},
+                onDisconnect = {},
+                gpsAccuracyMeters = kotlinx.coroutines.flow.MutableStateFlow(5.0f),
+                currentLocation = kotlinx.coroutines.flow.MutableStateFlow(null),
+            )
         }
         composeTestRule.onNodeWithText("Start Run").assertIsDisplayed()
     }
@@ -31,7 +59,21 @@ class HomeScreenTest {
     @Test
     fun homeScreen_alwaysShowsStartButton() {
         composeTestRule.setContent {
-            homeScreen(isRunning = false)
+            homeScreen(
+                onStartRun = {},
+                runData = com.fghbuild.sidekick.data.RunData(),
+                heartRateData = com.fghbuild.sidekick.data.HeartRateData(),
+                connectedDevice = null,
+                userAge = 30,
+                discoveredDevices = emptyList(),
+                isScanning = false,
+                onStartScanning = {},
+                onStopScanning = {},
+                onSelectDevice = {},
+                onDisconnect = {},
+                gpsAccuracyMeters = kotlinx.coroutines.flow.MutableStateFlow(5.0f),
+                currentLocation = kotlinx.coroutines.flow.MutableStateFlow(null),
+            )
         }
         composeTestRule.onNodeWithText("Start Run").assertIsDisplayed()
     }
@@ -41,8 +83,19 @@ class HomeScreenTest {
         var startClicked = false
         composeTestRule.setContent {
             homeScreen(
-                isRunning = false,
                 onStartRun = { startClicked = true },
+                runData = com.fghbuild.sidekick.data.RunData(),
+                heartRateData = com.fghbuild.sidekick.data.HeartRateData(),
+                connectedDevice = null,
+                userAge = 30,
+                discoveredDevices = emptyList(),
+                isScanning = false,
+                onStartScanning = {},
+                onStopScanning = {},
+                onSelectDevice = {},
+                onDisconnect = {},
+                gpsAccuracyMeters = kotlinx.coroutines.flow.MutableStateFlow(5.0f),
+                currentLocation = kotlinx.coroutines.flow.MutableStateFlow(null),
             )
         }
         composeTestRule.onNodeWithText("Start Run").performClick()

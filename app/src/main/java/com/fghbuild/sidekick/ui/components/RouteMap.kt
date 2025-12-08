@@ -38,8 +38,8 @@ import kotlinx.coroutines.flow.StateFlow
 @Composable
 fun routeMap(
     routePoints: List<RoutePoint>,
-    userLocation: LatLng? = null,
-    gpsAccuracyMeters: StateFlow<Float>? = null,
+    userLocation: LatLng?,
+    gpsAccuracyMeters: StateFlow<Float>?,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -82,7 +82,7 @@ fun routeMap(
     }
 }
 
-private fun createBlueDotBitmap(sizePixels: Int = 48): BitmapDescriptor {
+private fun createBlueDotBitmap(sizePixels: Int): BitmapDescriptor {
     val bitmap = Bitmap.createBitmap(sizePixels, sizePixels, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
     val paint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -101,8 +101,8 @@ private fun createBlueDotBitmap(sizePixels: Int = 48): BitmapDescriptor {
 @Composable
 private fun routeMapGoogle(
     routePoints: List<RoutePoint>,
-    userLocation: LatLng? = null,
-    gpsAccuracyMeters: StateFlow<Float>? = null,
+    userLocation: LatLng?,
+    gpsAccuracyMeters: StateFlow<Float>?,
     modifier: Modifier = Modifier,
 ) {
     // Convert RoutePoint to LatLng
@@ -167,7 +167,7 @@ private fun routeMapGoogle(
             Marker(
                 state = rememberMarkerState(position = it),
                 title = "Current Location",
-                icon = createBlueDotBitmap(),
+                icon = createBlueDotBitmap(48),
             )
         }
     }

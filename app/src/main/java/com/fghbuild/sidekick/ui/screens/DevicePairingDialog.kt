@@ -42,10 +42,7 @@ private fun deviceListItem(
         modifier = modifier.fillMaxWidth(),
     ) {
         Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(4.dp),
+            modifier = Modifier.fillMaxWidth().padding(4.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
@@ -72,9 +69,7 @@ private fun deviceListItem(
             Button(
                 onClick = onSelect,
                 modifier = Modifier.padding(start = 4.dp),
-            ) {
-                Text(stringResource(R.string.device_connect))
-            }
+            ) { Text(stringResource(R.string.device_connect)) }
         }
     }
 }
@@ -82,18 +77,16 @@ private fun deviceListItem(
 @Composable
 fun devicePairingDialog(
     modifier: Modifier = Modifier,
-    discoveredDevices: List<HrmDevice> = emptyList(),
-    connectedDevice: HrmDevice? = null,
-    isScanning: Boolean = false,
-    onStartScanning: () -> Unit = {},
-    onStopScanning: () -> Unit = {},
-    onSelectDevice: (HrmDevice) -> Unit = {},
-    onDisconnect: () -> Unit = {},
-    onDismiss: () -> Unit = {},
+    discoveredDevices: List<HrmDevice>,
+    connectedDevice: HrmDevice?,
+    isScanning: Boolean,
+    onStartScanning: () -> Unit,
+    onStopScanning: () -> Unit,
+    onSelectDevice: (HrmDevice) -> Unit,
+    onDisconnect: () -> Unit,
+    onDismiss: () -> Unit,
 ) {
-    LaunchedEffect(Unit) {
-        onStartScanning()
-    }
+    LaunchedEffect(Unit) { onStartScanning() }
 
     Dialog(
         onDismissRequest = {
@@ -106,16 +99,10 @@ fun devicePairingDialog(
             ),
     ) {
         Card(
-            modifier =
-                modifier
-                    .fillMaxWidth(0.9f)
-                    .padding(4.dp),
+            modifier = modifier.fillMaxWidth(0.9f).padding(4.dp),
         ) {
             Column(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(4.dp),
+                modifier = Modifier.fillMaxWidth().padding(4.dp),
                 verticalArrangement = Arrangement.Top,
             ) {
                 Row(
@@ -133,7 +120,10 @@ fun devicePairingDialog(
                             onDismiss()
                         },
                     ) {
-                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.content_description_close))
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription = stringResource(R.string.content_description_close),
+                        )
                     }
                 }
 
@@ -145,10 +135,7 @@ fun devicePairingDialog(
                         modifier = Modifier.fillMaxWidth(),
                     ) {
                         Row(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(4.dp),
+                            modifier = Modifier.fillMaxWidth().padding(4.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
@@ -188,9 +175,7 @@ fun devicePairingDialog(
                                         containerColor = MaterialTheme.colorScheme.errorContainer,
                                         contentColor = MaterialTheme.colorScheme.error,
                                     ),
-                            ) {
-                                Text(stringResource(R.string.device_disconnect))
-                            }
+                            ) { Text(stringResource(R.string.device_disconnect)) }
                         }
                     }
                     Spacer(modifier = Modifier.height(24.dp))
@@ -205,10 +190,7 @@ fun devicePairingDialog(
                     // Scanning indicator
                     if (isScanning) {
                         Box(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(4.dp),
+                            modifier = Modifier.fillMaxWidth().padding(4.dp),
                             contentAlignment = Alignment.Center,
                         ) {
                             Row(
@@ -228,10 +210,7 @@ fun devicePairingDialog(
                     // Devices list
                     if (discoveredDevices.isEmpty()) {
                         Box(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(4.dp),
+                            modifier = Modifier.fillMaxWidth().padding(4.dp),
                             contentAlignment = Alignment.Center,
                         ) {
                             Text(

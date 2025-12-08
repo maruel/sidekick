@@ -37,21 +37,19 @@ import kotlinx.coroutines.launch
 @Composable
 fun homeScreen(
     modifier: Modifier = Modifier,
-    isRunning: Boolean = false,
-    onStartRun: () -> Unit = {},
-    onStopRun: () -> Unit = {},
-    runData: RunData = RunData(),
-    heartRateData: HeartRateData = HeartRateData(),
-    connectedDevice: HrmDevice? = null,
-    userAge: Int = 30,
-    discoveredDevices: List<HrmDevice> = emptyList(),
-    isScanning: Boolean = false,
-    onStartScanning: () -> Unit = {},
-    onStopScanning: () -> Unit = {},
-    onSelectDevice: (HrmDevice) -> Unit = {},
-    onDisconnect: () -> Unit = {},
-    gpsAccuracyMeters: StateFlow<Float>? = null,
-    currentLocation: StateFlow<Location?>? = null,
+    onStartRun: () -> Unit,
+    runData: RunData,
+    heartRateData: HeartRateData,
+    connectedDevice: HrmDevice?,
+    userAge: Int,
+    discoveredDevices: List<HrmDevice>,
+    isScanning: Boolean,
+    onStartScanning: () -> Unit,
+    onStopScanning: () -> Unit,
+    onSelectDevice: (HrmDevice) -> Unit,
+    onDisconnect: () -> Unit,
+    gpsAccuracyMeters: StateFlow<Float>?,
+    currentLocation: StateFlow<Location?>?,
 ) {
     val showPairingDialog = remember { mutableStateOf(false) }
     val showDisconnectToast = remember { mutableStateOf(false) }
@@ -60,6 +58,7 @@ fun homeScreen(
 
     if (showPairingDialog.value) {
         devicePairingDialog(
+            modifier = Modifier,
             discoveredDevices = discoveredDevices,
             connectedDevice = connectedDevice,
             isScanning = isScanning,
@@ -104,7 +103,7 @@ fun homeScreen(
             heartRateData = heartRateData,
             connectedDevice = connectedDevice,
             userAge = userAge,
-            isRunning = isRunning,
+            isRunning = false,
             onHeartRateLongPress = {
                 if (connectedDevice != null) {
                     onDisconnect()
@@ -129,7 +128,7 @@ fun homeScreen(
         // GPS Accuracy indicator at bottom
         gpsAccuracyMeters?.let { accuracyFlow ->
             val accuracy by accuracyFlow.collectAsState()
-            gpsAccuracyIndicator(accuracyMeters = accuracy)
+            gpsAccuracyIndicator(accuracyMeters = accuracy, modifier = Modifier)
         }
     }
 

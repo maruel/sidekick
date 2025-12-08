@@ -22,7 +22,7 @@ interface GpsMeasurementDao {
     )
     suspend fun getLatestPrewarmup(
         activity: String,
-        limit: Int = 100,
+        limit: Int,
     ): List<GpsMeasurementEntity>
 
     @Query("DELETE FROM gps_measurements WHERE runId IS NULL AND activity = :activity")

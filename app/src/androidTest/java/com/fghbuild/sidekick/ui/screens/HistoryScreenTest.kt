@@ -17,7 +17,7 @@ class HistoryScreenTest {
     @Test
     fun historyScreen_displaysTitle() {
         composeTestRule.setContent {
-            historyScreen()
+            historyScreen(runs = emptyList(), onDeleteRun = {})
         }
         composeTestRule.onNodeWithText("Run History").assertIsDisplayed()
     }
@@ -25,7 +25,7 @@ class HistoryScreenTest {
     @Test
     fun historyScreen_emptyState_displaysNoRunsMessage() {
         composeTestRule.setContent {
-            historyScreen(runs = emptyList())
+            historyScreen(runs = emptyList(), onDeleteRun = {})
         }
         composeTestRule.onNodeWithText("Run History").assertIsDisplayed()
         composeTestRule.onNodeWithText("No runs recorded yet").assertIsDisplayed()
@@ -35,7 +35,7 @@ class HistoryScreenTest {
     fun historyScreen_singleRun_displaysRunData() {
         val run = TestDataFactory.createTestRunEntity(distanceMeters = 5000.0)
         composeTestRule.setContent {
-            historyScreen(runs = listOf(run))
+            historyScreen(runs = listOf(run), onDeleteRun = {})
         }
         composeTestRule.onNodeWithText("Run History").assertIsDisplayed()
         composeTestRule.onNodeWithText("5.00 km", substring = true).assertIsDisplayed() // distance
@@ -48,7 +48,7 @@ class HistoryScreenTest {
                 distanceMeters = 10500.0,
             )
         composeTestRule.setContent {
-            historyScreen(runs = listOf(run))
+            historyScreen(runs = listOf(run), onDeleteRun = {})
         }
         composeTestRule.onNodeWithText("10.50 km", substring = true).assertIsDisplayed()
     }
@@ -60,7 +60,7 @@ class HistoryScreenTest {
                 durationMillis = 60 * 60 * 1000L,
             ) // 1 hour
         composeTestRule.setContent {
-            historyScreen(runs = listOf(run))
+            historyScreen(runs = listOf(run), onDeleteRun = {})
         }
         composeTestRule.onNodeWithText("1:00:00", substring = true).assertIsDisplayed()
     }
@@ -72,7 +72,7 @@ class HistoryScreenTest {
                 averagePaceMinPerKm = 9.5,
             )
         composeTestRule.setContent {
-            historyScreen(runs = listOf(run))
+            historyScreen(runs = listOf(run), onDeleteRun = {})
         }
         composeTestRule.onNodeWithText("/km", substring = true).assertIsDisplayed()
     }
@@ -86,7 +86,7 @@ class HistoryScreenTest {
                 minHeartRate = 110,
             )
         composeTestRule.setContent {
-            historyScreen(runs = listOf(run))
+            historyScreen(runs = listOf(run), onDeleteRun = {})
         }
         composeTestRule.onNodeWithText("150", substring = true).assertIsDisplayed()
         composeTestRule.onNodeWithText("180", substring = true).assertIsDisplayed()
@@ -102,7 +102,7 @@ class HistoryScreenTest {
                 minHeartRate = 0,
             )
         composeTestRule.setContent {
-            historyScreen(runs = listOf(run))
+            historyScreen(runs = listOf(run), onDeleteRun = {})
         }
         composeTestRule.onNodeWithText("Run History").assertIsDisplayed()
         // HR stats should not be displayed
@@ -142,7 +142,7 @@ class HistoryScreenTest {
             ).copy(startTime = now)
 
         composeTestRule.setContent {
-            historyScreen(runs = listOf(run1, run2, run3))
+            historyScreen(runs = listOf(run1, run2, run3), onDeleteRun = {})
         }
 
         composeTestRule.onNodeWithText("Run History").assertIsDisplayed()
@@ -156,7 +156,7 @@ class HistoryScreenTest {
                 distanceMeters = 42195.0,
             ) // Marathon
         composeTestRule.setContent {
-            historyScreen(runs = listOf(run))
+            historyScreen(runs = listOf(run), onDeleteRun = {})
         }
         // Verify the history screen renders with the run
         composeTestRule.onNodeWithText("Run History").assertIsDisplayed()
@@ -187,7 +187,7 @@ class HistoryScreenTest {
             )
 
         composeTestRule.setContent {
-            historyScreen(runs = runs)
+            historyScreen(runs = runs, onDeleteRun = {})
         }
 
         composeTestRule.onNodeWithText("Run History").assertIsDisplayed()
@@ -205,7 +205,7 @@ class HistoryScreenTest {
                 durationMillis = 1 * 60 * 1000L,
             )
         composeTestRule.setContent {
-            historyScreen(runs = listOf(run))
+            historyScreen(runs = listOf(run), onDeleteRun = {})
         }
         composeTestRule.onNodeWithText("Run History").assertIsDisplayed()
         composeTestRule.onNodeWithText("0.10 km", substring = true).assertIsDisplayed()

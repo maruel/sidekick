@@ -111,3 +111,6 @@ app/src/main/java/com/fghbuild/sidekick/
 - **Manifest**: Reference key via `@string/google_maps_key` in AndroidManifest.xml metadata tag
 - **RouteMap Composable**: Uses `GoogleMap` with `Polyline` to display routes from `List<RoutePoint>`
 - **Camera Control**: Map centers on route using average lat/lng, zoom level 15f
+
+### Code Style Guidelines
+- **Default Arguments**: Do not use default arguments in functions and constructors, except for data classes where they are idiomatic Kotlin usage and for Compose Modifier parameters where `modifier: Modifier = Modifier` is the standard pattern. All function parameters should be explicitly provided at call sites, with the exception of Compose Modifier parameters.

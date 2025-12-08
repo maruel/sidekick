@@ -140,7 +140,7 @@ class RunManager(
 
     suspend fun initializeRunSession(
         runId: Long,
-        activity: String = "running",
+        activity: String,
     ) {
         currentRunId = runId
         currentActivity = activity

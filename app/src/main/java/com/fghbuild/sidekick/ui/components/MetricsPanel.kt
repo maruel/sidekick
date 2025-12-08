@@ -25,7 +25,7 @@ fun metricsPanel(
     runData: RunData,
     heartRateData: HeartRateData,
     isRunning: Boolean,
-    onHeartRateLongPress: () -> Unit = {},
+    onHeartRateLongPress: () -> Unit,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -83,12 +83,18 @@ fun metricsPanel(
             label = stringResource(R.string.metrics_distance),
             value = if (isRunning) stringResource(R.string.format_distance, runData.distanceMeters / 1000.0) else "--",
             emoji = "🛣️",
+            averageValue = null,
+            minValue = null,
+            maxValue = null,
             modifier = Modifier.weight(1f),
         )
         metricCard(
             label = stringResource(R.string.metrics_duration),
             value = if (isRunning) PaceUtils.formatDuration(runData.durationMillis) else "--",
             emoji = "⏱️",
+            averageValue = null,
+            minValue = null,
+            maxValue = null,
             modifier = Modifier.weight(1f),
         )
     }
@@ -98,12 +104,12 @@ fun metricsPanel(
 fun mainMetricsPanel(
     runData: RunData,
     heartRateData: HeartRateData,
-    connectedDevice: HrmDevice? = null,
-    userAge: Int = 30,
-    isRunning: Boolean = false,
-    onHeartRateLongPress: () -> Unit = {},
-    currentLocation: StateFlow<Location?>? = null,
-    gpsAccuracyMeters: StateFlow<Float>? = null,
+    connectedDevice: HrmDevice?,
+    userAge: Int,
+    isRunning: Boolean,
+    onHeartRateLongPress: () -> Unit,
+    currentLocation: StateFlow<Location?>?,
+    gpsAccuracyMeters: StateFlow<Float>?,
 ) {
     // Route map always visible
     val locationFromFlow =

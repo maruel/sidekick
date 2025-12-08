@@ -17,7 +17,16 @@ class DevicePairingDialogTest {
     @Test
     fun devicePairingDialog_displaysTitle() {
         composeTestRule.setContent {
-            devicePairingDialog()
+            devicePairingDialog(
+                discoveredDevices = emptyList(),
+                connectedDevice = null,
+                isScanning = false,
+                onStartScanning = {},
+                onStopScanning = {},
+                onSelectDevice = {},
+                onDisconnect = {},
+                onDismiss = {},
+            )
         }
         composeTestRule.onNodeWithText("Heart Rate Monitor").assertIsDisplayed()
     }
@@ -27,8 +36,14 @@ class DevicePairingDialogTest {
         var startScanCalled = false
         composeTestRule.setContent {
             devicePairingDialog(
+                discoveredDevices = emptyList(),
                 connectedDevice = null,
+                isScanning = false,
                 onStartScanning = { startScanCalled = true },
+                onStopScanning = {},
+                onSelectDevice = {},
+                onDisconnect = {},
+                onDismiss = {},
             )
         }
         assertTrue(startScanCalled)
@@ -37,7 +52,16 @@ class DevicePairingDialogTest {
     @Test
     fun devicePairingDialog_noStartScanButton() {
         composeTestRule.setContent {
-            devicePairingDialog(connectedDevice = null)
+            devicePairingDialog(
+                discoveredDevices = emptyList(),
+                connectedDevice = null,
+                isScanning = false,
+                onStartScanning = {},
+                onStopScanning = {},
+                onSelectDevice = {},
+                onDisconnect = {},
+                onDismiss = {},
+            )
         }
         composeTestRule.onNodeWithText("Start Scanning").assertIsNotDisplayed()
     }
@@ -46,8 +70,14 @@ class DevicePairingDialogTest {
     fun devicePairingDialog_noStopScanButton() {
         composeTestRule.setContent {
             devicePairingDialog(
+                discoveredDevices = emptyList(),
                 connectedDevice = null,
                 isScanning = true,
+                onStartScanning = {},
+                onStopScanning = {},
+                onSelectDevice = {},
+                onDisconnect = {},
+                onDismiss = {},
             )
         }
         composeTestRule.onNodeWithText("Stop Scanning").assertIsNotDisplayed()
@@ -58,8 +88,13 @@ class DevicePairingDialogTest {
         var stopScanCalled = false
         composeTestRule.setContent {
             devicePairingDialog(
+                discoveredDevices = emptyList(),
                 connectedDevice = null,
+                isScanning = false,
+                onStartScanning = {},
                 onStopScanning = { stopScanCalled = true },
+                onSelectDevice = {},
+                onDisconnect = {},
                 onDismiss = {},
             )
         }

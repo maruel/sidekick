@@ -18,7 +18,9 @@ class OnboardingScreenTest {
     @Test
     fun onboardingScreen_displaysWelcomeMessage() {
         composeTestRule.setContent {
-            onboardingScreen()
+            onboardingScreen(
+                onBirthYearSubmit = {},
+            )
         }
         composeTestRule.onNodeWithText("Welcome to Sidekick").assertIsDisplayed()
     }
@@ -26,7 +28,9 @@ class OnboardingScreenTest {
     @Test
     fun onboardingScreen_displaysBirthYearField() {
         composeTestRule.setContent {
-            onboardingScreen()
+            onboardingScreen(
+                onBirthYearSubmit = {},
+            )
         }
         composeTestRule.onNodeWithText("Birth Year").assertIsDisplayed()
     }
@@ -34,7 +38,9 @@ class OnboardingScreenTest {
     @Test
     fun onboardingScreen_displaysGetStartedButton() {
         composeTestRule.setContent {
-            onboardingScreen()
+            onboardingScreen(
+                onBirthYearSubmit = {},
+            )
         }
         composeTestRule.onNodeWithText("Get Started").assertIsDisplayed()
     }

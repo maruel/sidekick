@@ -43,7 +43,7 @@ class RunNotificationManager(private val context: Context) {
         distanceKm: Double,
         paceMinPerKm: Double,
         durationSeconds: Long,
-        currentBpm: Int = 0,
+        currentBpm: Int,
     ): Notification {
         val pace = PaceUtils.formatPace(paceMinPerKm)
         val duration = formatDuration(durationSeconds)

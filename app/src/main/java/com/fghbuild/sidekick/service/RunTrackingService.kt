@@ -57,7 +57,7 @@ class RunTrackingService : Service() {
         distanceKm: Double,
         paceMinPerKm: Double,
         durationSeconds: Long,
-        currentBpm: Int = 0,
+        currentBpm: Int,
     ) {
         if (isInForeground) {
             val currentTime = System.currentTimeMillis()
@@ -78,7 +78,7 @@ class RunTrackingService : Service() {
     private fun startForegroundTracking() {
         if (!isInForeground) {
             isInForeground = true
-            val notification = notificationManager.updateNotification(0.0, 0.0, 0L)
+            val notification = notificationManager.updateNotification(0.0, 0.0, 0L, 0)
             startForeground(notificationManager.getNotificationId(), notification)
         }
     }

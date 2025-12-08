@@ -24,6 +24,7 @@ class RunTrackingServiceTest {
                 distanceKm = 3.42,
                 paceMinPerKm = 6.25,
                 durationSeconds = 1286,
+                currentBpm = 0,
             )
 
         assertNotNull(notification)
@@ -39,6 +40,7 @@ class RunTrackingServiceTest {
                 distanceKm = 2.5,
                 paceMinPerKm = 5.0,
                 durationSeconds = 900,
+                currentBpm = 0,
             )
 
         assertNotNull(notification)
@@ -55,6 +57,7 @@ class RunTrackingServiceTest {
                 distanceKm = 5.25,
                 paceMinPerKm = 6.5,
                 durationSeconds = 2046,
+                currentBpm = 0,
             )
 
         assertNotNull(notification)
@@ -80,6 +83,7 @@ class RunTrackingServiceTest {
                 distanceKm = 1.0,
                 paceMinPerKm = 5.0,
                 durationSeconds = 600,
+                currentBpm = 0,
             )
 
         assertNotNull(notification)
@@ -97,18 +101,21 @@ class RunTrackingServiceTest {
                 distanceKm = 1.0,
                 paceMinPerKm = 5.0,
                 durationSeconds = 600,
+                currentBpm = 0,
             )
         val notification2 =
             notificationManager.updateNotification(
                 distanceKm = 2.5,
                 paceMinPerKm = 5.5,
                 durationSeconds = 1500,
+                currentBpm = 0,
             )
         val notification3 =
             notificationManager.updateNotification(
                 distanceKm = 5.0,
                 paceMinPerKm = 6.0,
                 durationSeconds = 3000,
+                currentBpm = 0,
             )
 
         assertNotNull(notification1)
@@ -125,6 +132,7 @@ class RunTrackingServiceTest {
                 distanceKm = 0.0,
                 paceMinPerKm = 0.0,
                 durationSeconds = 0,
+                currentBpm = 0,
             )
 
         assertNotNull(notification)
@@ -140,6 +148,7 @@ class RunTrackingServiceTest {
                 distanceKm = 100.5,
                 paceMinPerKm = 15.75,
                 durationSeconds = 100000,
+                currentBpm = 0,
             )
 
         assertNotNull(notification)

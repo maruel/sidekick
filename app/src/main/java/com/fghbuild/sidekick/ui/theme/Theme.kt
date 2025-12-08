@@ -1,7 +1,6 @@
 package com.fghbuild.sidekick.ui.theme
 
 import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
@@ -27,8 +26,8 @@ private val LightColorScheme =
 
 @Composable
 fun sidekickTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    darkTheme: Boolean,
+    dynamicColor: Boolean,
     content: @Composable () -> Unit,
 ) {
     val colorScheme =

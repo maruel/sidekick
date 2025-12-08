@@ -33,8 +33,8 @@ import java.util.Locale
 @Composable
 fun historyScreen(
     modifier: Modifier = Modifier,
-    runs: List<RunEntity> = emptyList(),
-    onDeleteRun: (Long) -> Unit = {},
+    runs: List<RunEntity>,
+    onDeleteRun: (Long) -> Unit,
 ) {
     Column(
         modifier =

@@ -18,7 +18,7 @@ import com.fghbuild.sidekick.R
 
 @Composable
 fun gpsAccuracyIndicator(
-    accuracyMeters: Float = 0f,
+    accuracyMeters: Float,
     modifier: Modifier = Modifier,
 ) {
     Row(

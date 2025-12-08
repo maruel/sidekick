@@ -217,45 +217,107 @@ class MultipleRunsAndHistoryTest {
     @Test
     fun historySorting_newestRunsFirst() {
         runBlocking {
-            val now = System.currentTimeMillis()
+            val baseTime = System.currentTimeMillis()
 
-            // Create 3 runs in non-chronological order
-            for (index in listOf(1, 0, 2)) {
-                val runManager =
-                    RunManager(
-                        database.gpsMeasurementDao(),
-                        database.gpsCalibrationDao(),
-                    )
-                runManager.startRun()
+            // Create 3 runs in different chronological order to test sorting
+            // Run 1: earliest (index=0) -> startTime = baseTime + 0
+            val runManager1 =
+                RunManager(
+                    database.gpsMeasurementDao(),
+                    database.gpsCalibrationDao(),
+                )
+            runManager1.startRun()
 
-                val route = TestDataFactory.createTestRoute(distanceKm = 5.0)
-                val step = route.size / 20
-                for (i in 0 until route.size step step) {
-                    val routePoint = route[i]
-                    val location =
-                        Location("test").apply {
-                            latitude = routePoint.latitude
-                            longitude = routePoint.longitude
-                            time = routePoint.timestamp
-                        }
-                    runManager.updateLocation(location)
-                }
-
-                val runData = runManager.runData.first()
-                runManager.updateRoutePoints(route)
-                val hrData = TestDataFactory.createHeartRateData(count = 50)
-
-                val startTime = now - (3 - index) * 7200000L
-                repository.saveRun(runData, hrData, startTime, startTime + 3600000)
+            val route1 = TestDataFactory.createTestRoute(distanceKm = 5.0)
+            val step1 = route1.size / 20
+            for (i in 0 until route1.size step step1) {
+                val routePoint = route1[i]
+                val location =
+                    Location("test").apply {
+                        latitude = routePoint.latitude
+                        longitude = routePoint.longitude
+                        time = routePoint.timestamp
+                    }
+                runManager1.updateLocation(location)
             }
+
+            val runData1 = runManager1.runData.first()
+            runManager1.updateRoutePoints(route1)
+            val hrData1 = TestDataFactory.createHeartRateData(count = 50)
+
+            repository.saveRun(runData1, hrData1, baseTime, baseTime + 3600000)
+
+            // Run 2: middle (index=1) -> startTime = baseTime + 1 hour
+            val runManager2 =
+                RunManager(
+                    database.gpsMeasurementDao(),
+                    database.gpsCalibrationDao(),
+                )
+            runManager2.startRun()
+
+            val route2 = TestDataFactory.createTestRoute(distanceKm = 5.0)
+            val step2 = route2.size / 20
+            for (i in 0 until route2.size step step2) {
+                val routePoint = route2[i]
+                val location =
+                    Location("test").apply {
+                        latitude = routePoint.latitude
+                        longitude = routePoint.longitude
+                        time = routePoint.timestamp
+                    }
+                runManager2.updateLocation(location)
+            }
+
+            val runData2 = runManager2.runData.first()
+            runManager2.updateRoutePoints(route2)
+            val hrData2 = TestDataFactory.createHeartRateData(count = 50)
+
+            repository.saveRun(runData2, hrData2, baseTime + 3600000, baseTime + 7200000)
+
+            // Run 3: latest (index=2) -> startTime = baseTime + 2 hours
+            val runManager3 =
+                RunManager(
+                    database.gpsMeasurementDao(),
+                    database.gpsCalibrationDao(),
+                )
+            runManager3.startRun()
+
+            val route3 = TestDataFactory.createTestRoute(distanceKm = 5.0)
+            val step3 = route3.size / 20
+            for (i in 0 until route3.size step step3) {
+                val routePoint = route3[i]
+                val location =
+                    Location("test").apply {
+                        latitude = routePoint.latitude
+                        longitude = routePoint.longitude
+                        time = routePoint.timestamp
+                    }
+                runManager3.updateLocation(location)
+            }
+
+            val runData3 = runManager3.runData.first()
+            runManager3.updateRoutePoints(route3)
+            val hrData3 = TestDataFactory.createHeartRateData(count = 50)
+
+            repository.saveRun(runData3, hrData3, baseTime + 7200000, baseTime + 10800000)
 
             val allRuns = repository.getAllRuns().first()
             assertEquals(3, allRuns.size)
 
-            // Verify newest is first
+            // Verify newest is first (highest startTime should be first)
             for (i in 1 until allRuns.size) {
-                assertTrue(allRuns[i - 1].startTime >= allRuns[i].startTime)
+                assertTrue(
+                    allRuns[i - 1].startTime >= allRuns[i].startTime,
+                    "Run at index ${i-1} should have startTime >= run at index $i. " +
+                        "Found: ${allRuns[i-1].startTime} vs ${allRuns[i].startTime}"
+                )
             }
+
+            // Specifically verify that the first run has the highest startTime (newest)
+            assertEquals(
+                baseTime + 7200000, // latest run start time
+                allRuns[0].startTime
+            )
 
             composeTestRule.setContent {
                 historyScreen(runs = allRuns, onDeleteRun = {})

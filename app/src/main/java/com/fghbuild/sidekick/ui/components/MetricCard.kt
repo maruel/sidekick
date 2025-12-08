@@ -27,10 +27,10 @@ fun metricCard(
     label: String,
     value: String,
     modifier: Modifier = Modifier,
-    emoji: String = "📊",
-    averageValue: String? = null,
-    minValue: String? = null,
-    maxValue: String? = null,
+    emoji: String,
+    averageValue: String?,
+    minValue: String?,
+    maxValue: String?,
     onLongPress: () -> Unit = {},
 ) {
     Column(

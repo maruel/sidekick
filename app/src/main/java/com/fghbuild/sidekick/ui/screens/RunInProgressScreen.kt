@@ -35,15 +35,15 @@ import kotlinx.coroutines.flow.StateFlow
 @Composable
 fun runInProgressScreen(
     modifier: Modifier = Modifier,
-    runData: RunData = RunData(),
-    heartRateData: HeartRateData = HeartRateData(),
-    onPause: () -> Unit = {},
-    onResume: () -> Unit = {},
-    onStop: () -> Unit = {},
-    connectedDevice: HrmDevice? = null,
-    userAge: Int = 30,
-    gpsAccuracyMeters: StateFlow<Float>? = null,
-    currentLocation: StateFlow<Location?>? = null,
+    runData: RunData,
+    heartRateData: HeartRateData,
+    onPause: () -> Unit,
+    onResume: () -> Unit,
+    onStop: () -> Unit,
+    connectedDevice: HrmDevice?,
+    userAge: Int,
+    gpsAccuracyMeters: StateFlow<Float>?,
+    currentLocation: StateFlow<Location?>?,
 ) {
     screenContainer(modifier = modifier.fillMaxSize()) {
         // Pause/Resume and Stop buttons at top
@@ -88,6 +88,7 @@ fun runInProgressScreen(
             connectedDevice = connectedDevice,
             userAge = userAge,
             isRunning = true,
+            onHeartRateLongPress = {},
             currentLocation = currentLocation,
             gpsAccuracyMeters = gpsAccuracyMeters,
         )

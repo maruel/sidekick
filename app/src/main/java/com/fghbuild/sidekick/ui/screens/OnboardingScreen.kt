@@ -30,7 +30,7 @@ import java.util.Calendar
 @Composable
 fun onboardingScreen(
     modifier: Modifier = Modifier,
-    onBirthYearSubmit: (Int) -> Unit = {},
+    onBirthYearSubmit: (Int) -> Unit,
 ) {
     // Memoize current year calculation to avoid repeated Calendar.getInstance() calls
     val currentYear = remember { Calendar.getInstance().get(Calendar.YEAR) }

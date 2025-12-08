@@ -10,6 +10,7 @@ import android.os.IBinder
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -74,7 +75,10 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            sidekickTheme {
+            sidekickTheme(
+                darkTheme = isSystemInDarkTheme(),
+                dynamicColor = true,
+            ) {
                 sidekickApp()
             }
         }
@@ -196,7 +200,7 @@ fun sidekickApp() {
 
     // Start GPS measurement collection at app startup (pre-warmup)
     LaunchedEffect(Unit) {
-        locationTracker.startTracking(runId = null, activity = null)
+        locationTracker.startTracking(runId = null)
     }
 
     LaunchedEffect(runData.isRunning) {
@@ -319,7 +323,6 @@ fun sidekickApp() {
                             val userAge = devicePreferences.getCurrentAge()
                             homeScreen(
                                 modifier = Modifier.padding(innerPadding),
-                                isRunning = false,
                                 onStartRun = {
                                     runStartTime = System.currentTimeMillis()
                                     locationTracker.resetRoute()
@@ -336,11 +339,9 @@ fun sidekickApp() {
                                                 ),
                                             )
                                         locationTracker.startTracking(runId)
-                                        runManager.initializeRunSession(runId)
+                                        runManager.initializeRunSession(runId, "running")
                                     }
                                 },
-                                currentLocation = locationTracker.currentLocation,
-                                onStopRun = {},
                                 runData = runData,
                                 heartRateData = heartRateData,
                                 connectedDevice = connectedDevice,
@@ -355,6 +356,7 @@ fun sidekickApp() {
                                 },
                                 onDisconnect = { bleManager.disconnect() },
                                 gpsAccuracyMeters = locationTracker.currentAccuracyMeters,
+                                currentLocation = locationTracker.currentLocation,
                             )
                         }
 

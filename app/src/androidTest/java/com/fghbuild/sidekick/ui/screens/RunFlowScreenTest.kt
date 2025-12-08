@@ -49,11 +49,22 @@ class RunFlowScreenTest {
 
             composeTestRule.setContent {
                 homeScreen(
-                    isRunning = false,
                     onStartRun = {
                         transitionedToRun = true
                         runManager.startRun()
                     },
+                    runData = com.fghbuild.sidekick.data.RunData(),
+                    heartRateData = com.fghbuild.sidekick.data.HeartRateData(),
+                    connectedDevice = null,
+                    userAge = 30,
+                    discoveredDevices = emptyList(),
+                    isScanning = false,
+                    onStartScanning = {},
+                    onStopScanning = {},
+                    onSelectDevice = {},
+                    onDisconnect = {},
+                    gpsAccuracyMeters = kotlinx.coroutines.flow.MutableStateFlow(5.0f),
+                    currentLocation = kotlinx.coroutines.flow.MutableStateFlow(null),
                 )
             }
 
@@ -86,7 +97,17 @@ class RunFlowScreenTest {
             assertTrue(runData.paceMinPerKm >= 0)
 
             composeTestRule.setContent {
-                runInProgressScreen(runData = runData)
+                runInProgressScreen(
+                    runData = runData,
+                    heartRateData = com.fghbuild.sidekick.data.HeartRateData(),
+                    onPause = {},
+                    onResume = {},
+                    onStop = {},
+                    connectedDevice = null,
+                    userAge = 30,
+                    gpsAccuracyMeters = null,
+                    currentLocation = null,
+                )
             }
 
             composeTestRule.onNodeWithContentDescription("Pause").assertIsDisplayed()
@@ -105,6 +126,13 @@ class RunFlowScreenTest {
                 runInProgressScreen(
                     runData = runData,
                     heartRateData = heartRateData,
+                    onPause = {},
+                    onResume = {},
+                    onStop = {},
+                    connectedDevice = null,
+                    userAge = 30,
+                    gpsAccuracyMeters = null,
+                    currentLocation = null,
                 )
             }
 
@@ -166,11 +194,22 @@ class RunFlowScreenTest {
             var onStartRunCalled = false
             composeTestRule.setContent {
                 homeScreen(
-                    isRunning = false,
                     onStartRun = {
                         onStartRunCalled = true
                         runManager.startRun()
                     },
+                    runData = com.fghbuild.sidekick.data.RunData(),
+                    heartRateData = com.fghbuild.sidekick.data.HeartRateData(),
+                    connectedDevice = null,
+                    userAge = 30,
+                    discoveredDevices = emptyList(),
+                    isScanning = false,
+                    onStartScanning = {},
+                    onStopScanning = {},
+                    onSelectDevice = {},
+                    onDisconnect = {},
+                    gpsAccuracyMeters = kotlinx.coroutines.flow.MutableStateFlow(5.0f),
+                    currentLocation = kotlinx.coroutines.flow.MutableStateFlow(null),
                 )
             }
 
@@ -252,7 +291,17 @@ class RunFlowScreenTest {
             val runData = runManager.runData.first()
 
             composeTestRule.setContent {
-                runInProgressScreen(runData = runData)
+                runInProgressScreen(
+                    runData = runData,
+                    heartRateData = com.fghbuild.sidekick.data.HeartRateData(),
+                    onPause = {},
+                    onResume = {},
+                    onStop = {},
+                    connectedDevice = null,
+                    userAge = 30,
+                    gpsAccuracyMeters = null,
+                    currentLocation = null,
+                )
             }
 
             composeTestRule.onNodeWithContentDescription("Pause").assertIsDisplayed()
@@ -288,6 +337,13 @@ class RunFlowScreenTest {
                 runInProgressScreen(
                     runData = runData,
                     heartRateData = heartRateData,
+                    onPause = {},
+                    onResume = {},
+                    onStop = {},
+                    connectedDevice = null,
+                    userAge = 30,
+                    gpsAccuracyMeters = null,
+                    currentLocation = null,
                 )
             }
 

@@ -96,12 +96,9 @@ class LocationTracker(
         }
     }
 
-    fun startTracking(
-        runId: Long? = null,
-        activity: String? = null,
-    ) {
+    fun startTracking(runId: Long?) {
         // Update run context even if already tracking (allows switching from pre-warmup to run)
-        currentRunContext = RunContext(runId = runId, activity = activity)
+        currentRunContext = RunContext(runId = runId, activity = null)
 
         if (isTracking) return
 

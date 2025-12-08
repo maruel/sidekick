@@ -27,7 +27,7 @@ import com.fghbuild.sidekick.util.HeartRateZone
 @Composable
 fun heartRateChart(
     heartRateHistory: List<HeartRateWithTime>,
-    age: Int = 0,
+    age: Int,
     modifier: Modifier = Modifier,
 ) {
     val currentTime = System.currentTimeMillis()
