@@ -308,15 +308,15 @@ class MultipleRunsAndHistoryTest {
             for (i in 1 until allRuns.size) {
                 assertTrue(
                     allRuns[i - 1].startTime >= allRuns[i].startTime,
-                    "Run at index ${i-1} should have startTime >= run at index $i. " +
-                        "Found: ${allRuns[i-1].startTime} vs ${allRuns[i].startTime}"
+                    "Run at index ${i - 1} should have startTime >= run at index $i. " +
+                        "Found: ${allRuns[i - 1].startTime} vs ${allRuns[i].startTime}",
                 )
             }
 
             // Specifically verify that the first run has the highest startTime (newest)
             assertEquals(
-                baseTime + 7200000, // latest run start time
-                allRuns[0].startTime
+                baseTime + 7200000,
+                allRuns[0].startTime,
             )
 
             composeTestRule.setContent {
