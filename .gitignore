@@ -9,7 +9,10 @@
 /.idea/workspace.xml
 /.kotlin/
 /app/build/
+/app_info.txt
 /build/
 /detekt-results.txt
+/initial_logs.txt
+/initial_screenshot.png
 /local.properties
 *.iml

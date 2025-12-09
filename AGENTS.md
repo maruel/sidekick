@@ -75,6 +75,23 @@ When modifying a file's purpose or adding significant functionality, update its 
 | `./gradlew jacocoTestReport` | Generate code coverage report |
 | `shellcheck script.sh` | Validate bash script |
 
+## Debugging Commands
+
+ADB-based debugging tools for the Docker+QEMU environment:
+
+| Command | Description |
+|---------|-------------|
+
+| `./scripts/build_and_debug.sh` | Build, install, and launch app |
+| `./scripts/debug_session.sh` | Capture logs, screenshots, memory (30+ seconds) |
+| `./scripts/logcat_filter.sh` | Real-time colored log monitoring |
+| `./scripts/screenshot_sequence.sh` | Capture multiple screenshots for visual testing |
+| `./scripts/memory_profiler.sh` | Profile memory usage and detect leaks |
+| `adb logcat com.fghbuild.sidekick:D *:S` | Raw logcat filter by package/level |
+| `adb exec-out screencap -p > screen.png` | Quick screenshot capture |
+
+**Reference:** `DEBUGGING.md`
+
 ## Requirements
 
 - Run `./gradlew build` before committing to verify compilation
