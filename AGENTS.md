@@ -85,14 +85,15 @@ app/src/main/java/com/fghbuild/sidekick/
 
 ## Code Patterns
 
+### Code Style Guidelines
+- For each source files under app/src/main/java/com/fghbuild/sidekick/ add a short description at the top of each source files to describe the purpose.
+- **Default Arguments**: Do not use default arguments in functions and constructors, except for data classes where they are idiomatic Kotlin usage and for Compose Modifier parameters where `modifier: Modifier = Modifier` is the standard pattern. All function parameters should be explicitly provided at call sites, with the exception of Compose Modifier parameters.
+- **Never hardcode `Locale.US`** - Always use `Locale.getDefault()` to respect user's device locale
+- Pass context to access LocalConfiguration for Compose when needed
+
 ### State Management
 - Use `StateFlow` for observable state
 - Collect flows in Compose with `collectAsState()`
-
-### Utilities
-- `GeoUtils` - Distance calculations (Haversine)
-- `PaceUtils` - Pace calculation and formatting
-- `HeartRateUtils` - HR statistics
 
 ### Testing
 - Unit tests in `src/test/` use JUnit 6 (Jupiter) with annotations from `org.junit.jupiter.api`
@@ -100,17 +101,3 @@ app/src/main/java/com/fghbuild/sidekick/
 - Compose UI tests use `@get:Rule val composeTestRule = createComposeRule()`
 - Unit test fixtures: `@BeforeEach`, `@AfterEach`, `@DisplayName` from `org.junit.jupiter.api`
 - Integration test fixtures: `@Before`, `@After`, `@Test` from `org.junit` (JUnit 4)
-
-### Localization
-- **Never hardcode `Locale.US`** - Always use `Locale.getDefault()` to respect user's device locale
-- Pass context to access LocalConfiguration for Compose when needed
-
-### Google Maps Integration
-- **API Key Management**: Store API key in `.env` (not in git)
-- **Build Configuration**: Key is injected via `resValue()` in `build.gradle.kts` at build time
-- **Manifest**: Reference key via `@string/google_maps_key` in AndroidManifest.xml metadata tag
-- **RouteMap Composable**: Uses `GoogleMap` with `Polyline` to display routes from `List<RoutePoint>`
-- **Camera Control**: Map centers on route using average lat/lng, zoom level 15f
-
-### Code Style Guidelines
-- **Default Arguments**: Do not use default arguments in functions and constructors, except for data classes where they are idiomatic Kotlin usage and for Compose Modifier parameters where `modifier: Modifier = Modifier` is the standard pattern. All function parameters should be explicitly provided at call sites, with the exception of Compose Modifier parameters.
