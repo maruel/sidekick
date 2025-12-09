@@ -2,8 +2,12 @@
 # Memory usage profiler - monitor and graph memory consumption
 set -e
 
-APP_PACKAGE=${1:-"com.fghbuild.sidekick"} DURATION=${2:-60} INTERVAL=${3:-2}
-OUTPUT_DIR="memory_profile_$(date +%Y%m%d_%H%M%S)" CSV_FILE="$OUTPUT_DIR/memory_data.csv" LOG_FILE="$OUTPUT_DIR/memory_log.txt"
+APP_PACKAGE=${1:-"com.fghbuild.sidekick"}
+DURATION=${2:-60}
+INTERVAL=${3:-2}
+OUTPUT_DIR="memory_profile_$(date +%Y%m%d_%H%M%S)"
+CSV_FILE="$OUTPUT_DIR/memory_data.csv"
+LOG_FILE="$OUTPUT_DIR/memory_log.txt"
 
 log_info() { echo "[INFO] $1"; }
 log_success() { echo "[OK] $1"; }

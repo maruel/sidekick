@@ -77,18 +77,27 @@ When modifying a file's purpose or adding significant functionality, update its 
 
 ## Debugging Commands
 
-ADB-based debugging tools for the Docker+QEMU environment:
+Modular ADB-based debugging workflow for the Docker+QEMU environment:
 
 | Command | Description |
 |---------|-------------|
-
-| `./scripts/build_and_debug.sh` | Build, install, and launch app |
-| `./scripts/debug_session.sh` | Capture logs, screenshots, memory (30+ seconds) |
+| `./scripts/1_build.sh [variant]` | Build APK, install, grant permissions |
+| `./scripts/2_launch.sh` | Launch app, complete onboarding |
+| `./scripts/3_add_fake_data.sh [count]` | Generate fake run history (count: default 10) |
+| `./scripts/4_debug.sh [duration]` | Capture logs, screenshots, memory (default 30s) |
 | `./scripts/logcat_filter.sh` | Real-time colored log monitoring |
 | `./scripts/screenshot_sequence.sh` | Capture multiple screenshots for visual testing |
 | `./scripts/memory_profiler.sh` | Profile memory usage and detect leaks |
 | `adb logcat com.fghbuild.sidekick:D *:S` | Raw logcat filter by package/level |
 | `adb exec-out screencap -p > screen.png` | Quick screenshot capture |
+
+**Typical workflow:**
+```bash
+./scripts/1_build.sh debug
+./scripts/2_launch.sh
+./scripts/3_add_fake_data.sh 15
+./scripts/4_debug.sh 30
+```
 
 **Reference:** `DEBUGGING.md`
 

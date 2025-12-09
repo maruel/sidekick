@@ -31,6 +31,4 @@ echo "Press Ctrl+C to exit"
 echo "========================================="
 echo ""
 
-adb logcat -v threadtime "$APP_PACKAGE:$LOG_LEVEL" "*:S" | while read -r line; do
-    echo "$line"
-done
+adb logcat -v threadtime "$APP_PACKAGE:$LOG_LEVEL" "*:S"

@@ -2,7 +2,9 @@
 # Capture sequential screenshots for visual testing
 set -e
 
-NUM_FRAMES=${1:-10} INTERVAL_MS=${2:-500} OUTPUT_DIR=${3:-"screenshots_$(date +%Y%m%d_%H%M%S)"}
+NUM_FRAMES=${1:-10}
+INTERVAL_MS=${2:-500}
+OUTPUT_DIR=${3:-"screenshots_$(date +%Y%m%d_%H%M%S)"}
 INTERVAL_SEC=$(echo "scale=2; $INTERVAL_MS / 1000" | bc)
 
 log_info() { echo "[INFO] $1"; }

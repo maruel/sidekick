@@ -5,17 +5,25 @@ Quick reference for Android debugging. All scripts are in `./scripts/`.
 ## Quick Start
 
 ```bash
-
-./scripts/build_and_debug.sh               # Build and run app
-./scripts/logcat_filter.sh com.fghbuild.sidekick D  # Monitor logs
+./scripts/1_build.sh debug
+./scripts/2_launch.sh
 ```
 
 ## Common Workflows
 
-**Code change verification:**
+**Full build-to-debug workflow:**
 ```bash
-./scripts/build_and_debug.sh
-# Cleans, compiles, installs, launches, captures initial state
+./scripts/1_build.sh debug      # Build APK, install, grant permissions
+./scripts/2_launch.sh           # Launch app, complete onboarding
+./scripts/3_add_fake_data.sh 15 # Add 15 fake runs for testing
+./scripts/4_debug.sh 60         # Capture 60 seconds of logs, screenshots, memory
+```
+
+**Code change verification (no data):**
+```bash
+./scripts/1_build.sh debug
+./scripts/2_launch.sh
+# Verify UI and basic functionality
 ```
 
 **App crashing - check logs:**
@@ -35,13 +43,6 @@ Quick reference for Android debugging. All scripts are in `./scripts/`.
 ```bash
 ./scripts/screenshot_sequence.sh 10 500  # 10 frames at 500ms intervals
 # Creates screenshots_TIMESTAMP/ with PNG sequence
-```
-
-**Full debug session:**
-```bash
-./scripts/debug_session.sh 60 com.fghbuild.sidekick
-# Captures logs, screenshots, memory, system state
-# Results in debug_sessions/TIMESTAMP/ with report
 ```
 
 ## Quick Commands
