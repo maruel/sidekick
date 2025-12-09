@@ -33,6 +33,7 @@ fun metricCard(
     maxValue: String?,
     onLongPress: () -> Unit = {},
     onClick: () -> Unit = {},
+    displayAverageAsMain: Boolean = false,
 ) {
     Column(
         modifier =
@@ -49,6 +50,7 @@ fun metricCard(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
+        val mainDisplayValue = if (displayAverageAsMain) averageValue ?: value else value
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -59,7 +61,7 @@ fun metricCard(
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = value,
+                text = mainDisplayValue,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,
@@ -77,11 +79,13 @@ fun metricCard(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
-            Text(
-                text = stringResource(R.string.metric_avg) + (averageValue ?: "--"),
-                fontSize = 10.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            if (!displayAverageAsMain) {
+                Text(
+                    text = stringResource(R.string.metric_avg) + (averageValue ?: "--"),
+                    fontSize = 10.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
 
             Text(
                 text = stringResource(R.string.metric_max) + (maxValue ?: "--"),

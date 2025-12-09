@@ -103,6 +103,94 @@ fun metricsPanel(
 }
 
 @Composable
+fun historyMetricsPanel(
+    runData: RunData,
+    heartRateData: HeartRateData,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        metricCard(
+            label = stringResource(R.string.metrics_heart_rate),
+            value = "--",
+            emoji = "❤️",
+            averageValue = if (heartRateData.averageBpm > 0) "${heartRateData.averageBpm} ${stringResource(R.string.unit_bpm)}" else null,
+            minValue = if (runData.heartRateHistory.isNotEmpty()) "${runData.heartRateHistory.map { it.bpm }.minOrNull() ?: 0}" else null,
+            maxValue = if (runData.heartRateHistory.isNotEmpty()) "${runData.heartRateHistory.map { it.bpm }.maxOrNull() ?: 0}" else null,
+            modifier = Modifier.weight(1f),
+            displayAverageAsMain = true,
+        )
+        metricCard(
+            label = stringResource(R.string.metrics_pace),
+            value =
+                if (runData.paceHistory.isNotEmpty()) {
+                    PaceUtils.formatPace(
+                        runData.paceHistory.map { it.pace }.average(),
+                    )
+                } else {
+                    "--"
+                },
+            emoji = "⚡",
+            averageValue =
+                if (runData.paceHistory.isNotEmpty()) {
+                    PaceUtils.formatPace(
+                        runData.paceHistory.map { it.pace }.average(),
+                    )
+                } else {
+                    null
+                },
+            minValue =
+                if (runData.paceHistory.isNotEmpty()) {
+                    PaceUtils.formatPace(
+                        runData.paceHistory.map { it.pace }.minOrNull() ?: 0.0,
+                    )
+                } else {
+                    null
+                },
+            maxValue =
+                if (runData.paceHistory.isNotEmpty()) {
+                    PaceUtils.formatPace(
+                        runData.paceHistory.map { it.pace }.maxOrNull() ?: 0.0,
+                    )
+                } else {
+                    null
+                },
+            modifier = Modifier.weight(1f),
+            displayAverageAsMain = true,
+        )
+    }
+
+    Spacer(modifier = Modifier.height(4.dp))
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        metricCard(
+            label = stringResource(R.string.metrics_distance),
+            value = stringResource(R.string.format_distance, runData.distanceMeters / 1000.0),
+            emoji = "🛣️",
+            averageValue = null,
+            minValue = null,
+            maxValue = null,
+            modifier = Modifier.weight(1f),
+            displayAverageAsMain = true,
+        )
+        metricCard(
+            label = stringResource(R.string.metrics_duration),
+            value = PaceUtils.formatDuration(runData.durationMillis),
+            emoji = "⏱️",
+            averageValue = null,
+            minValue = null,
+            maxValue = null,
+            modifier = Modifier.weight(1f),
+            displayAverageAsMain = true,
+        )
+    }
+}
+
+@Composable
 fun mainMetricsPanel(
     runData: RunData,
     heartRateData: HeartRateData,

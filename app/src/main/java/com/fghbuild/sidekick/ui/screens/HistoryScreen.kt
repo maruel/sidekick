@@ -1,5 +1,6 @@
 package com.fghbuild.sidekick.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
@@ -35,6 +37,7 @@ fun historyScreen(
     modifier: Modifier = Modifier,
     runs: List<RunEntity>,
     onDeleteRun: (Long) -> Unit,
+    onRunSelected: (Long) -> Unit = {},
 ) {
     Column(
         modifier =
@@ -58,17 +61,20 @@ fun historyScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         } else {
+            val scrollState = rememberLazyListState()
             LazyColumn(
                 modifier =
                     Modifier
                         .fillMaxWidth()
                         .weight(1f),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
+                state = scrollState,
             ) {
                 items(runs) { run ->
                     runHistoryCard(
                         run = run,
                         onDelete = { onDeleteRun(run.id) },
+                        onSelect = { onRunSelected(run.id) },
                     )
                 }
             }
@@ -80,9 +86,13 @@ fun historyScreen(
 private fun runHistoryCard(
     run: RunEntity,
     onDelete: () -> Unit,
+    onSelect: () -> Unit = {},
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable { onSelect() },
     ) {
         Column(
             modifier =

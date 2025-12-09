@@ -33,6 +33,10 @@
     <string name="run_pause">Pause</string>
     <string name="run_stop">Stop</string>
 
+    <!-- Run Detail Screen -->
+    <string name="back">Back</string>
+    <string name="content_description_back">Back</string>
+
     <!-- Onboarding Screen -->
     <string name="onboarding_welcome">Welcome to Sidekick</string>
     <string name="onboarding_subtitle">Let\'s get to know you</string>

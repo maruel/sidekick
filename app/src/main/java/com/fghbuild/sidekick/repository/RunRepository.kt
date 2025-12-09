@@ -7,6 +7,7 @@ import com.fghbuild.sidekick.database.RoutePointDao
 import com.fghbuild.sidekick.database.RoutePointEntity
 import com.fghbuild.sidekick.database.RunDao
 import com.fghbuild.sidekick.database.RunEntity
+import com.fghbuild.sidekick.util.GeoUtils
 import kotlinx.coroutines.flow.Flow
 
 class RunRepository(
@@ -83,5 +84,87 @@ class RunRepository(
                     timestamp = entity.timestamp,
                 )
             }
+    }
+
+    suspend fun getCompleteRunData(runId: Long): RunData? {
+        val runEntity = runDao.getRunById(runId) ?: return null
+
+        val routePoints = getRoutePointsForRun(runId)
+        if (routePoints.isEmpty()) {
+            return RunData(
+                distanceMeters = runEntity.distanceMeters,
+                paceMinPerKm = runEntity.averagePaceMinPerKm,
+                durationMillis = runEntity.durationMillis,
+                routePoints = emptyList(),
+                filteredRoutePoints = emptyList(),
+                paceHistory = emptyList(),
+                heartRateHistory = emptyList(),
+                isRunning = false,
+                isPaused = false,
+            )
+        }
+
+        // Reconstruct pace history from route points
+        val paceHistory = mutableListOf<com.fghbuild.sidekick.data.PaceWithTime>()
+        for (i in 1 until routePoints.size) {
+            val prevPoint = routePoints[i - 1]
+            val currentPoint = routePoints[i]
+            val distanceDelta =
+                GeoUtils.calculateDistanceMeters(
+                    prevPoint.latitude,
+                    prevPoint.longitude,
+                    currentPoint.latitude,
+                    currentPoint.longitude,
+                )
+            val timeDeltaMinutes =
+                (currentPoint.timestamp - prevPoint.timestamp) / 1000.0 / 60.0
+            if (timeDeltaMinutes > 0 && distanceDelta > 0) {
+                val pace = timeDeltaMinutes / (distanceDelta / 1000.0)
+                paceHistory.add(
+                    com.fghbuild.sidekick.data.PaceWithTime(
+                        pace = pace,
+                        timestamp = currentPoint.timestamp,
+                    ),
+                )
+            }
+        }
+
+        // Reconstruct heart rate history from the stored min/avg/max
+        // Note: We don't have individual HR samples stored, so we create placeholders
+        val heartRateHistory =
+            if (runEntity.averageHeartRate > 0) {
+                val startTime = routePoints.first().timestamp
+                val endTime = routePoints.last().timestamp
+                val duration = endTime - startTime
+                listOf(
+                    com.fghbuild.sidekick.data.HeartRateWithTime(
+                        bpm = runEntity.minHeartRate,
+                        timestamp = startTime,
+                    ),
+                    com.fghbuild.sidekick.data.HeartRateWithTime(
+                        bpm = runEntity.averageHeartRate,
+                        timestamp = startTime + duration / 2,
+                    ),
+                    com.fghbuild.sidekick.data.HeartRateWithTime(
+                        bpm = runEntity.maxHeartRate,
+                        timestamp = endTime,
+                    ),
+                )
+            } else {
+                emptyList()
+            }
+
+        return RunData(
+            distanceMeters = runEntity.distanceMeters,
+            paceMinPerKm = runEntity.averagePaceMinPerKm,
+            durationMillis = runEntity.durationMillis,
+            routePoints = routePoints,
+            // Use route points as filtered since we don't have them separately stored
+            filteredRoutePoints = routePoints,
+            paceHistory = paceHistory,
+            heartRateHistory = heartRateHistory,
+            isRunning = false,
+            isPaused = false,
+        )
     }
 }

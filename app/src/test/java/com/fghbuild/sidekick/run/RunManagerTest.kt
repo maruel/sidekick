@@ -293,4 +293,82 @@ class RunManagerTest {
 
         assertTrue(runManager.runData.value.paceHistory.isEmpty())
     }
+
+    @Test
+    @DisplayName("autoPause: stops recording pace when manually paused")
+    fun autoPause_stopsRecordingPace_whenManuallyPaused() {
+        runManager.startRun()
+        val baseTime = System.currentTimeMillis()
+
+        // First location
+        val location1 = mockk<Location>()
+        every { location1.latitude } returns 40.7128
+        every { location1.longitude } returns -74.0060
+        every { location1.time } returns baseTime
+        every { location1.accuracy } returns 10.0f
+        every { location1.bearing } returns 0.0f
+        every { location1.speed } returns 0.0f
+        runManager.updateLocation(location1)
+
+        // Second location with movement to record pace
+        val location2 = mockk<Location>()
+        every { location2.latitude } returns 40.7138
+        every { location2.longitude } returns -74.0060
+        every { location2.time } returns baseTime + 60000L
+        every { location2.accuracy } returns 10.0f
+        every { location2.bearing } returns 0.0f
+        every { location2.speed } returns 0.0f
+        runManager.updateLocation(location2)
+        val paceHistorySizeAtRun = runManager.runData.value.paceHistory.size
+        assertTrue(paceHistorySizeAtRun > 0)
+
+        // Continue with stationary location (should not record more pace after pause)
+        runManager.pauseRun()
+        val location3 = mockk<Location>()
+        every { location3.latitude } returns 40.7138
+        every { location3.longitude } returns -74.0060
+        every { location3.time } returns baseTime + 120000L
+        every { location3.accuracy } returns 10.0f
+        every { location3.bearing } returns 0.0f
+        every { location3.speed } returns 0.0f
+        // This should be ignored because run is paused
+        runManager.updateLocation(location3)
+
+        val paceHistorySizeAfterPause = runManager.runData.value.paceHistory.size
+        assertEquals(paceHistorySizeAtRun, paceHistorySizeAfterPause)
+    }
+
+    @Test
+    @DisplayName("updateLocation: allows GPS recording after auto-pause for full route map")
+    fun updateLocation_allowsGpsRecording_afterManualPauseForFullRoute() {
+        runManager.startRun()
+        val baseTime = System.currentTimeMillis()
+
+        // First location
+        val location1 = mockk<Location>()
+        every { location1.latitude } returns 40.7128
+        every { location1.longitude } returns -74.0060
+        every { location1.time } returns baseTime
+        every { location1.accuracy } returns 10.0f
+        every { location1.bearing } returns 0.0f
+        every { location1.speed } returns 0.0f
+        runManager.updateLocation(location1)
+        val routePointsBefore = runManager.runData.value.routePoints.size
+
+        // Manual pause
+        runManager.pauseRun()
+
+        // Try to update location while paused - should be ignored
+        val location2 = mockk<Location>()
+        every { location2.latitude } returns 40.7138
+        every { location2.longitude } returns -74.0060
+        every { location2.time } returns baseTime + 6000L
+        every { location2.accuracy } returns 10.0f
+        every { location2.bearing } returns 0.0f
+        every { location2.speed } returns 0.0f
+        runManager.updateLocation(location2)
+
+        val routePointsAfter = runManager.runData.value.routePoints.size
+        assertEquals(routePointsBefore, routePointsAfter)
+    }
 }

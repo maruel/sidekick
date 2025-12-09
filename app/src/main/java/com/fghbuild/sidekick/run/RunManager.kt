@@ -32,6 +32,9 @@ class RunManager(
 
     val defaultHeartRateData: StateFlow<HeartRateData> = MutableStateFlow(HeartRateData()).asStateFlow()
 
+    private val _isAutoPaused = MutableStateFlow(false)
+    val isAutoPaused: StateFlow<Boolean> = _isAutoPaused.asStateFlow()
+
     private var startTimeMillis: Long = 0
     private var lastLocation: Location? = null
     private var pausedTimeMillis: Long = 0
@@ -43,6 +46,10 @@ class RunManager(
     private var kalmanFilterState: GpsFilteringUtils.KalmanState? = null
     private var previousRawRoutePoint: RoutePoint? = null
     private var tickJob: Job? = null
+    private var lastMovementTime: Long = 0
+    private var isAutoPausedInternal = false
+    private val noMovementThresholdMs = 5000L
+    private val minMovementDistanceMeters = 1.0
 
     fun startRun() {
         startTimeMillis = System.currentTimeMillis()
@@ -53,6 +60,9 @@ class RunManager(
         kalmanFilterState = null
         kalmanFilterState = null
         previousRawRoutePoint = null
+        lastMovementTime = System.currentTimeMillis()
+        isAutoPausedInternal = false
+        _isAutoPaused.value = false
         _runData.value = RunData(isRunning = true)
         startTickTimer()
     }
@@ -61,6 +71,8 @@ class RunManager(
         pausedTimeMillis = System.currentTimeMillis()
         _runData.value = _runData.value.copy(isRunning = false, isPaused = true)
         stopTickTimer()
+        isAutoPausedInternal = false
+        _isAutoPaused.value = false
     }
 
     fun resumeRun() {
@@ -68,6 +80,28 @@ class RunManager(
             startTimeMillis += System.currentTimeMillis() - pausedTimeMillis
             _runData.value = _runData.value.copy(isRunning = true, isPaused = false)
             startTickTimer()
+            isAutoPausedInternal = false
+            _isAutoPaused.value = false
+        }
+    }
+
+    private fun autoPauseRun() {
+        if (!isAutoPausedInternal && _runData.value.isRunning) {
+            pausedTimeMillis = System.currentTimeMillis()
+            _runData.value = _runData.value.copy(isRunning = false, isPaused = true)
+            stopTickTimer()
+            isAutoPausedInternal = true
+            _isAutoPaused.value = true
+        }
+    }
+
+    private fun autoResumeRun() {
+        if (isAutoPausedInternal) {
+            startTimeMillis += System.currentTimeMillis() - pausedTimeMillis
+            _runData.value = _runData.value.copy(isRunning = true, isPaused = false)
+            startTickTimer()
+            isAutoPausedInternal = false
+            _isAutoPaused.value = false
         }
     }
 
@@ -78,7 +112,9 @@ class RunManager(
 
     fun updateLocation(location: Location) {
         val currentData = _runData.value
-        if (!currentData.isRunning) {
+
+        // Allow processing if running or auto-paused (to continue GPS recording)
+        if (!currentData.isRunning && !isAutoPausedInternal) {
             return
         }
 
@@ -104,6 +140,9 @@ class RunManager(
             return
         }
 
+        // 3. Check for movement to manage auto-pause/resume
+        checkAndManageMovement(newRawRoutePoint)
+
         // Get or create calibration
         val calibration =
             currentCalibration ?: GpsCalibrationEntity(
@@ -112,8 +151,8 @@ class RunManager(
                 p95AccuracyMeters = 20.0,
                 avgBearingAccuracyDegrees = 10.0,
                 samplesCollected = 0,
-                kalmanProcessNoise = 0.001,
-                kalmanMeasurementNoise = 100.0,
+                kalmanProcessNoise = 0.02,
+                kalmanMeasurementNoise = 40.0,
                 lastUpdated = System.currentTimeMillis(),
             )
 
@@ -172,9 +211,9 @@ class RunManager(
         lastLocation = location // Keep lastLocation as raw Android Location for consistency
         lastLocationTimeMillis = newRawRoutePoint.timestamp
 
-        // Track pace history (only record meaningful pace values)
+        // Track pace history (only record meaningful pace values and skip during auto-pause)
         val paceHistory =
-            if (distanceMeters > 0 && paceMinPerKm > 0.0) {
+            if (distanceMeters > 0 && paceMinPerKm > 0.0 && !isAutoPausedInternal) {
                 currentData.paceHistory + PaceWithTime(pace = paceMinPerKm, timestamp = newRawRoutePoint.timestamp)
             } else {
                 currentData.paceHistory
@@ -190,6 +229,39 @@ class RunManager(
                 filteredRoutePoints = currentData.filteredRoutePoints + newFilteredPoint,
                 paceHistory = paceHistory,
             )
+    }
+
+    private fun checkAndManageMovement(newRoutePoint: RoutePoint) {
+        val hasMovement = hasSignificantMovement(newRoutePoint)
+        val currentTime = if (newRoutePoint.timestamp > 0) newRoutePoint.timestamp else System.currentTimeMillis()
+
+        if (hasMovement) {
+            lastMovementTime = currentTime
+            // Auto-resume if currently auto-paused
+            if (isAutoPausedInternal) {
+                autoResumeRun()
+            }
+        } else {
+            // Check if no movement for threshold duration
+            val timeSinceLastMovement = currentTime - lastMovementTime
+            if (timeSinceLastMovement >= noMovementThresholdMs && _runData.value.isRunning && !isAutoPausedInternal) {
+                autoPauseRun()
+            }
+        }
+    }
+
+    private fun hasSignificantMovement(newRoutePoint: RoutePoint): Boolean {
+        val lastFiltered = _runData.value.filteredRoutePoints.lastOrNull() ?: return true
+
+        val distance =
+            GeoUtils.calculateDistanceMeters(
+                lastFiltered.latitude,
+                lastFiltered.longitude,
+                newRoutePoint.latitude,
+                newRoutePoint.longitude,
+            )
+
+        return distance >= minMovementDistanceMeters
     }
 
     fun updateRoutePoints(points: List<RoutePoint>) {

@@ -7,6 +7,7 @@ import com.fghbuild.sidekick.data.HeartRateData
 import com.fghbuild.sidekick.data.RunData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
@@ -19,9 +20,14 @@ class RunStateManager(
     private var lastKilometerAnnouncement = 0.0
     private var lastHeartRateAnnouncement = 0L
     private val scope = CoroutineScope(Dispatchers.Main)
+    private var lastAutoPauseState = false
 
     val runData: StateFlow<RunData> = runManager.runData
     val lastCommand: StateFlow<VoiceCommand> = voiceListener.lastCommand
+    val isAutoPaused: StateFlow<Boolean> = runManager.isAutoPaused
+
+    private val _autoPauseEvent = MutableStateFlow<AutoPauseEvent?>(null)
+    val autoPauseEvent: StateFlow<AutoPauseEvent?> = _autoPauseEvent
 
     init {
         // Start observing heart rate data to update run manager
@@ -29,6 +35,27 @@ class RunStateManager(
             heartRateData.collect { hrData ->
                 if (hrData.currentBpm > 0) {
                     runManager.updateHeartRate(hrData.currentBpm)
+                }
+            }
+        }
+
+        // Observe auto-pause state to emit feedback events
+        scope.launch {
+            runManager.isAutoPaused.collect { isAutoPaused ->
+                if (isAutoPaused != lastAutoPauseState) {
+                    lastAutoPauseState = isAutoPaused
+                    val event =
+                        if (isAutoPaused) {
+                            AutoPauseEvent.PAUSED
+                        } else {
+                            AutoPauseEvent.RESUMED
+                        }
+                    _autoPauseEvent.value = event
+                    // Clear the event after a short delay to allow UI to reset
+                    scope.launch {
+                        kotlinx.coroutines.delay(100)
+                        _autoPauseEvent.value = null
+                    }
                 }
             }
         }
@@ -83,4 +110,9 @@ class RunStateManager(
         voiceListener.destroy()
         announcements.shutdown()
     }
+}
+
+enum class AutoPauseEvent {
+    PAUSED,
+    RESUMED,
 }

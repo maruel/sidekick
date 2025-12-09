@@ -47,9 +47,11 @@ import com.fghbuild.sidekick.repository.RunRepository
 import com.fghbuild.sidekick.run.RunManager
 import com.fghbuild.sidekick.run.RunStateManager
 import com.fghbuild.sidekick.service.RunTrackingService
+import com.fghbuild.sidekick.ui.screens.RunDetailViewModel
 import com.fghbuild.sidekick.ui.screens.historyScreen
 import com.fghbuild.sidekick.ui.screens.homeScreen
 import com.fghbuild.sidekick.ui.screens.onboardingScreen
+import com.fghbuild.sidekick.ui.screens.runDetailScreen
 import com.fghbuild.sidekick.ui.screens.runInProgressScreen
 import com.fghbuild.sidekick.ui.theme.sidekickTheme
 import kotlinx.coroutines.flow.filterNotNull
@@ -91,6 +93,7 @@ fun sidekickApp() {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.RUN) }
+    var selectedRunId by rememberSaveable { mutableStateOf<Long?>(null) }
     var trackingService by remember { mutableStateOf<RunTrackingService?>(null) }
 
     val database = remember { SidekickDatabase.getInstance(context) }
@@ -369,16 +372,50 @@ fun sidekickApp() {
                             )
                         }
 
-                    AppDestinations.HISTORY ->
-                        historyScreen(
-                            modifier = Modifier.padding(innerPadding),
-                            runs = allRuns,
-                            onDeleteRun = { runId ->
-                                scope.launch {
-                                    runRepository.deleteRun(runId)
+                    AppDestinations.HISTORY -> {
+                        if (selectedRunId != null) {
+                            val runId = selectedRunId!!
+                            val runDetailViewModel =
+                                remember(runId) {
+                                    RunDetailViewModel(runId, runRepository)
                                 }
-                            },
-                        )
+                            val runData by runDetailViewModel.runData.collectAsState()
+                            val heartRateData by runDetailViewModel.heartRateData.collectAsState()
+
+                            val run = allRuns.find { it.id == runId }
+                            if (run != null && runData != null) {
+                                val userAge = devicePreferences.getCurrentAge()
+                                runDetailScreen(
+                                    modifier = Modifier.padding(innerPadding),
+                                    runData = runData!!,
+                                    heartRateData = heartRateData,
+                                    onBack = { selectedRunId = null },
+                                    onDelete = {
+                                        scope.launch {
+                                            runRepository.deleteRun(runId)
+                                            selectedRunId = null
+                                        }
+                                    },
+                                    userAge = userAge,
+                                    gpsAccuracyMeters = locationTracker.currentAccuracyMeters,
+                                    currentLocation = locationTracker.currentLocation,
+                                    runStartTime = run.startTime,
+                                    isLiveRun = false,
+                                )
+                            }
+                        } else {
+                            historyScreen(
+                                modifier = Modifier.padding(innerPadding),
+                                runs = allRuns,
+                                onDeleteRun = { runId ->
+                                    scope.launch {
+                                        runRepository.deleteRun(runId)
+                                    }
+                                },
+                                onRunSelected = { runId -> selectedRunId = runId },
+                            )
+                        }
+                    }
                 }
             }
         }

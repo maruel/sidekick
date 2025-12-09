@@ -2,6 +2,7 @@ package com.fghbuild.sidekick.ui.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,10 +32,24 @@ fun heartRateChart(
     heartRateHistory: List<HeartRateWithTime>,
     age: Int,
     modifier: Modifier = Modifier,
+    showAllData: Boolean = false,
+    isLiveRun: Boolean = false,
 ) {
     val currentTime = System.currentTimeMillis()
     val fiveMinutesInMillis = 5 * 60 * 1000L // 5 minutes in milliseconds
-    val last5Minutes = heartRateHistory.filter { currentTime - it.timestamp <= fiveMinutesInMillis }
+    val showFullData = remember { mutableStateOf(false) }
+
+    // Determine the run duration to enable toggle only if > 5 minutes
+    val oldestTimestamp = heartRateHistory.minByOrNull { it.timestamp }?.timestamp ?: currentTime
+    val runDuration = currentTime - oldestTimestamp
+    val canToggle = isLiveRun && runDuration > fiveMinutesInMillis
+
+    val displayData =
+        when {
+            showAllData -> heartRateHistory
+            isLiveRun && showFullData.value -> heartRateHistory
+            else -> heartRateHistory.filter { currentTime - it.timestamp <= fiveMinutesInMillis }
+        }
 
     Column(
         modifier =
@@ -51,10 +68,17 @@ fun heartRateChart(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .clip(MaterialTheme.shapes.small),
+                    .clip(MaterialTheme.shapes.small)
+                    .then(
+                        if (canToggle) {
+                            Modifier.clickable { showFullData.value = !showFullData.value }
+                        } else {
+                            Modifier
+                        },
+                    ),
         ) {
             heartRateGraphCanvas(
-                measurements = last5Minutes,
+                measurements = displayData,
                 age = age,
                 zones = HeartRateUtils.getHeartRateZones(age),
                 modifier =
