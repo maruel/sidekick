@@ -92,6 +92,19 @@ fun paceChart(
     }
 }
 
+private fun calculateXPositionForPace(
+    timestamp: Long,
+    minTimestamp: Long,
+    timeRange: Long,
+    width: Float,
+): Double {
+    return if (timeRange > 0) {
+        (width * (timestamp - minTimestamp).toDouble()) / timeRange.toDouble()
+    } else {
+        width * 0.5
+    }
+}
+
 @Composable
 private fun paceGraphCanvas(
     paceHistory: List<PaceWithTime>,
@@ -118,15 +131,7 @@ private fun paceGraphCanvas(
             val zoneMaxY = height * ((zoneMinPace - displayMin) / (displayMax - displayMin))
             val zoneMinY = height * ((zoneMaxPace - displayMin) / (displayMax - displayMin))
 
-            val zoneColor =
-                when (zone.zone) {
-                    1 -> Color(0xFFF44336) // Red - Recovery (slowest, at bottom)
-                    2 -> Color(0xFFFF9800) // Orange - Easy
-                    3 -> Color(0xFFFFC107) // Yellow - Moderate
-                    4 -> Color(0xFF8BC34A) // Light Green - Tempo
-                    5 -> Color(0xFF4CAF50) // Green - Fast (fastest, at top)
-                    else -> Color.Gray
-                }
+            val zoneColor = PaceUtils.getZoneColor(zone.zone)
 
             drawRect(
                 color = zoneColor.copy(alpha = 0.25f),
@@ -173,25 +178,14 @@ private fun paceGraphCanvas(
                 val nextPoint = paceHistory[i + 1]
 
                 // Calculate x positions based on timestamps
-                val x1 =
-                    if (timeRange > 0) {
-                        (width * (currentPoint.timestamp - minTimestamp).toDouble()) /
-                            timeRange.toDouble()
-                    } else {
-                        width * 0.5
-                    }
+                val x1 = calculateXPositionForPace(currentPoint.timestamp, minTimestamp, timeRange, width)
 
                 val y1 =
                     (height * ((currentPoint.pace - displayMin) / (displayMax - displayMin)))
                         .toFloat()
                         .coerceIn(0f, height)
 
-                val x2 =
-                    if (timeRange > 0) {
-                        (width * (nextPoint.timestamp - minTimestamp).toDouble()) / timeRange.toDouble()
-                    } else {
-                        width * 0.5
-                    }
+                val x2 = calculateXPositionForPace(nextPoint.timestamp, minTimestamp, timeRange, width)
 
                 val y2 =
                     (height * ((nextPoint.pace - displayMin) / (displayMax - displayMin)))
@@ -200,14 +194,7 @@ private fun paceGraphCanvas(
 
                 val pointColor =
                     PaceUtils.getZoneForPace(currentPoint.pace)?.let { zone ->
-                        when (zone.zone) {
-                            1 -> Color(0xFFF44336)
-                            2 -> Color(0xFFFF9800)
-                            3 -> Color(0xFFFFC107)
-                            4 -> Color(0xFF8BC34A)
-                            5 -> Color(0xFF4CAF50)
-                            else -> primaryColor
-                        }
+                        PaceUtils.getZoneColor(zone.zone)
                     }
                         ?: primaryColor
 
@@ -221,12 +208,7 @@ private fun paceGraphCanvas(
 
             // Draw points for each measurement
             for (point in paceHistory) {
-                val x =
-                    if (timeRange > 0) {
-                        (width * (point.timestamp - minTimestamp).toDouble()) / timeRange.toDouble()
-                    } else {
-                        width * 0.5
-                    }
+                val x = calculateXPositionForPace(point.timestamp, minTimestamp, timeRange, width)
 
                 val y =
                     (height * ((point.pace - displayMin) / (displayMax - displayMin)))
@@ -235,14 +217,7 @@ private fun paceGraphCanvas(
 
                 val pointColor =
                     PaceUtils.getZoneForPace(point.pace)?.let { zone ->
-                        when (zone.zone) {
-                            1 -> Color(0xFFF44336)
-                            2 -> Color(0xFFFF9800)
-                            3 -> Color(0xFFFFC107)
-                            4 -> Color(0xFF8BC34A)
-                            5 -> Color(0xFF4CAF50)
-                            else -> primaryColor
-                        }
+                        PaceUtils.getZoneColor(zone.zone)
                     }
                         ?: primaryColor
 

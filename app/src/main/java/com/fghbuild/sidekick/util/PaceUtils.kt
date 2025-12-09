@@ -3,6 +3,7 @@
 // and formats pace and duration for display.
 package com.fghbuild.sidekick.util
 
+import androidx.compose.ui.graphics.Color
 import com.fghbuild.sidekick.data.PaceWithTime
 
 data class PaceZone(
@@ -24,30 +25,54 @@ object PaceUtils {
         return durationMinutes / distanceKm
     }
 
+    // Generic selector functions to reduce duplication
+    fun <T> averageOrDefault(
+        items: List<T>,
+        selector: (T) -> Double,
+        default: Double = 0.0,
+    ): Double {
+        return if (items.isEmpty()) default else items.map { selector(it) }.average()
+    }
+
+    fun <T> maxOrDefault(
+        items: List<T>,
+        selector: (T) -> Double,
+        default: Double = 0.0,
+    ): Double {
+        return items.mapNotNull { selector(it) }.maxOrNull() ?: default
+    }
+
+    fun <T> minOrDefault(
+        items: List<T>,
+        selector: (T) -> Double,
+        default: Double = 0.0,
+    ): Double {
+        return items.mapNotNull { selector(it) }.minOrNull() ?: default
+    }
+
+    // Keep legacy functions for backward compatibility
     fun calculateAveragePace(paceHistory: List<Double>): Double {
-        if (paceHistory.isEmpty()) return 0.0
-        return paceHistory.average()
+        return averageOrDefault(paceHistory, { it })
     }
 
     fun calculateMaxPace(paceHistory: List<Double>): Double {
-        return paceHistory.maxOrNull() ?: 0.0
+        return maxOrDefault(paceHistory, { it })
     }
 
     fun calculateMinPace(paceHistory: List<Double>): Double {
-        return paceHistory.minOrNull() ?: 0.0
+        return minOrDefault(paceHistory, { it })
     }
 
     fun calculateAveragePaceWithTime(paceHistory: List<PaceWithTime>): Double {
-        if (paceHistory.isEmpty()) return 0.0
-        return paceHistory.map { it.pace }.average()
+        return averageOrDefault(paceHistory, { it.pace })
     }
 
     fun calculateMaxPaceWithTime(paceHistory: List<PaceWithTime>): Double {
-        return paceHistory.map { it.pace }.maxOrNull() ?: 0.0
+        return maxOrDefault(paceHistory, { it.pace })
     }
 
     fun calculateMinPaceWithTime(paceHistory: List<PaceWithTime>): Double {
-        return paceHistory.map { it.pace }.minOrNull() ?: 0.0
+        return minOrDefault(paceHistory, { it.pace })
     }
 
     fun getPaceZones(): List<PaceZone> {
@@ -92,6 +117,17 @@ object PaceUtils {
 
     fun getZoneForPace(pace: Double): PaceZone? {
         return getPaceZones().find { pace in it.maxPace..it.minPace }
+    }
+
+    fun getZoneColor(zone: Int): Color {
+        return when (zone) {
+            1 -> Color(0xFFF44336) // Red - Recovery (slowest)
+            2 -> Color(0xFFFF9800) // Orange - Easy
+            3 -> Color(0xFFFFC107) // Yellow - Moderate
+            4 -> Color(0xFF8BC34A) // Light Green - Tempo
+            5 -> Color(0xFF4CAF50) // Green - Fast (fastest)
+            else -> Color.Gray
+        }
     }
 
     const val GRAPH_DISPLAY_MIN: Double = 10.5 // Slowest pace to display (10.5 min/km)

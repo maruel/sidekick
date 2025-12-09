@@ -145,17 +145,7 @@ class RunManager(
         checkAndManageMovement(newRawRoutePoint)
 
         // Get or create calibration
-        val calibration =
-            currentCalibration ?: GpsCalibrationEntity(
-                activity = currentActivity,
-                avgAccuracyMeters = 10.0,
-                p95AccuracyMeters = 20.0,
-                avgBearingAccuracyDegrees = 10.0,
-                samplesCollected = 0,
-                kalmanProcessNoise = 0.02,
-                kalmanMeasurementNoise = 40.0,
-                lastUpdated = System.currentTimeMillis(),
-            )
+        val calibration = currentCalibration ?: createDefaultCalibration(currentActivity)
 
         var newFilteredPoint: RoutePoint = newRawRoutePoint
         if (kalmanFilterState == null) {
@@ -214,11 +204,13 @@ class RunManager(
 
         // Track pace history (only record meaningful pace values and skip during auto-pause)
         val paceHistory =
-            if (distanceMeters > 0 && paceMinPerKm > 0.0 && !isAutoPausedInternal) {
-                currentData.paceHistory + PaceWithTime(pace = paceMinPerKm, timestamp = newRawRoutePoint.timestamp)
-            } else {
-                currentData.paceHistory
-            }
+            updatePaceHistory(
+                currentData.paceHistory,
+                paceMinPerKm,
+                distanceMeters,
+                newRawRoutePoint.timestamp,
+                !isAutoPausedInternal,
+            )
 
         _runData.value =
             currentData.copy(
@@ -265,6 +257,36 @@ class RunManager(
         return distance >= minMovementDistanceMeters
     }
 
+    private fun createDefaultCalibration(
+        activity: String,
+        kalmanProcessNoise: Double = 0.02,
+    ): GpsCalibrationEntity {
+        return GpsCalibrationEntity(
+            activity = activity,
+            avgAccuracyMeters = 10.0,
+            p95AccuracyMeters = 20.0,
+            avgBearingAccuracyDegrees = 10.0,
+            samplesCollected = 0,
+            kalmanProcessNoise = kalmanProcessNoise,
+            kalmanMeasurementNoise = 40.0,
+            lastUpdated = System.currentTimeMillis(),
+        )
+    }
+
+    private fun updatePaceHistory(
+        currentHistory: List<PaceWithTime>,
+        pace: Double,
+        distance: Double,
+        timestamp: Long,
+        shouldRecord: Boolean = true,
+    ): List<PaceWithTime> {
+        return if (distance > 0 && pace > 0.0 && shouldRecord) {
+            currentHistory + PaceWithTime(pace = pace, timestamp = timestamp)
+        } else {
+            currentHistory
+        }
+    }
+
     fun updateRoutePoints(points: List<RoutePoint>) {
         val currentData = _runData.value
 
@@ -275,16 +297,7 @@ class RunManager(
 
         // Apply full filtering for display purposes, including stationary removal
         val calibration =
-            currentCalibration ?: GpsCalibrationEntity(
-                activity = currentActivity,
-                avgAccuracyMeters = 10.0,
-                p95AccuracyMeters = 20.0,
-                avgBearingAccuracyDegrees = 10.0,
-                samplesCollected = 0,
-                kalmanProcessNoise = 0.001,
-                kalmanMeasurementNoise = 100.0,
-                lastUpdated = System.currentTimeMillis(),
-            )
+            currentCalibration ?: createDefaultCalibration(currentActivity, kalmanProcessNoise = 0.001)
 
         val fullyFilteredPoints = GpsFilteringUtils.filterRoutePointsFully(points, calibration)
 
@@ -304,13 +317,14 @@ class RunManager(
         val paceMinPerKm = PaceUtils.calculatePaceMinPerKm(currentData.durationMillis, distanceMeters)
 
         // Update pace history with recalculated pace
+        val locationTime = fullyFilteredPoints.lastOrNull()?.timestamp ?: System.currentTimeMillis()
         val paceHistory =
-            if (distanceMeters > 0 && paceMinPerKm > 0.0) {
-                val locationTime = fullyFilteredPoints.lastOrNull()?.timestamp ?: System.currentTimeMillis()
-                currentData.paceHistory + PaceWithTime(pace = paceMinPerKm, timestamp = locationTime)
-            } else {
-                currentData.paceHistory
-            }
+            updatePaceHistory(
+                currentData.paceHistory,
+                paceMinPerKm,
+                distanceMeters,
+                locationTime,
+            )
 
         _runData.value =
             currentData.copy(

@@ -98,6 +98,19 @@ fun heartRateChart(
     }
 }
 
+private fun calculateXPosition(
+    timestamp: Long,
+    minTimestamp: Long,
+    timeRange: Long,
+    width: Float,
+): Float {
+    return if (timeRange > 0) {
+        (width * (timestamp - minTimestamp).toDouble()) / timeRange.toDouble()
+    } else {
+        0f
+    }.toFloat()
+}
+
 @Composable
 private fun heartRateGraphCanvas(
     measurements: List<HeartRateWithTime>,
@@ -126,15 +139,7 @@ private fun heartRateGraphCanvas(
             val zoneTopY = height * (1 - (zoneTopBpm - displayMin) / (displayMax - displayMin))
             val zoneBottomY = height * (1 - (zoneBottomBpm - displayMin) / (displayMax - displayMin))
 
-            val zoneColor =
-                when (zone.zone) {
-                    1 -> Color(0xFF4CAF50) // Green - Rest
-                    2 -> Color(0xFF8BC34A) // Light Green - Light
-                    3 -> Color(0xFFFFC107) // Yellow - Moderate
-                    4 -> Color(0xFFFF9800) // Orange - Tempo
-                    5 -> Color(0xFFF44336) // Red - Max
-                    else -> Color.Gray
-                }
+            val zoneColor = HeartRateUtils.getZoneColor(zone.zone)
 
             drawRect(
                 color = zoneColor.copy(alpha = 0.25f),
@@ -181,13 +186,7 @@ private fun heartRateGraphCanvas(
                 val nextPoint = measurements[i + 1]
 
                 // Calculate x positions based on timestamps
-                val x1 =
-                    if (timeRange > 0) {
-                        (width * (currentPoint.timestamp - minTimestamp).toDouble()) /
-                            timeRange.toDouble()
-                    } else {
-                        0f
-                    }
+                val x1 = calculateXPosition(currentPoint.timestamp, minTimestamp, timeRange, width)
 
                 val y1 =
                     (
@@ -200,12 +199,7 @@ private fun heartRateGraphCanvas(
                     )
                         .coerceIn(0f, height)
 
-                val x2 =
-                    if (timeRange > 0) {
-                        (width * (nextPoint.timestamp - minTimestamp).toDouble()) / timeRange.toDouble()
-                    } else {
-                        0f
-                    }
+                val x2 = calculateXPosition(nextPoint.timestamp, minTimestamp, timeRange, width)
 
                 val y2 =
                     (height * (1 - (nextPoint.bpm.toFloat() - displayMin) / (displayMax - displayMin)))
@@ -213,14 +207,7 @@ private fun heartRateGraphCanvas(
 
                 val pointColor =
                     HeartRateUtils.getZoneForBpm(currentPoint.bpm, age)?.let { zone ->
-                        when (zone.zone) {
-                            1 -> Color(0xFF4CAF50)
-                            2 -> Color(0xFF8BC34A)
-                            3 -> Color(0xFFFFC107)
-                            4 -> Color(0xFFFF9800)
-                            5 -> Color(0xFFF44336)
-                            else -> Color.Blue
-                        }
+                        HeartRateUtils.getZoneColor(zone.zone)
                     }
                         ?: Color.Blue
 
@@ -234,12 +221,7 @@ private fun heartRateGraphCanvas(
 
             // Draw points for each measurement
             for (point in measurements) {
-                val x =
-                    if (timeRange > 0) {
-                        (width * (point.timestamp - minTimestamp).toDouble()) / timeRange.toDouble()
-                    } else {
-                        0f
-                    }
+                val x = calculateXPosition(point.timestamp, minTimestamp, timeRange, width)
 
                 val y =
                     (height * (1 - (point.bpm.toFloat() - displayMin) / (displayMax - displayMin)))
@@ -247,14 +229,7 @@ private fun heartRateGraphCanvas(
 
                 val pointColor =
                     HeartRateUtils.getZoneForBpm(point.bpm, age)?.let { zone ->
-                        when (zone.zone) {
-                            1 -> Color(0xFF4CAF50)
-                            2 -> Color(0xFF8BC34A)
-                            3 -> Color(0xFFFFC107)
-                            4 -> Color(0xFFFF9800)
-                            5 -> Color(0xFFF44336)
-                            else -> Color.Blue
-                        }
+                        HeartRateUtils.getZoneColor(zone.zone)
                     }
                         ?: Color.Blue
 

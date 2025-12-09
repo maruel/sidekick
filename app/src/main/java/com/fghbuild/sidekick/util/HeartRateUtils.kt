@@ -3,6 +3,8 @@
 // based on percentage of max heart rate.
 package com.fghbuild.sidekick.util
 
+import androidx.compose.ui.graphics.Color
+
 data class HeartRateZone(
     val zone: Int,
     val name: String,
@@ -84,5 +86,16 @@ object HeartRateUtils {
         val zone1Bottom = (maxHR * 0.50).toInt()
         // Start 20% of maxHR below zone 1 bottom
         return (zone1Bottom - (maxHR * 0.20f)).toInt().coerceAtLeast(0)
+    }
+
+    fun getZoneColor(zone: Int): Color {
+        return when (zone) {
+            1 -> Color(0xFF4CAF50) // Green - Rest
+            2 -> Color(0xFF8BC34A) // Light Green - Light
+            3 -> Color(0xFFFFC107) // Yellow - Moderate
+            4 -> Color(0xFFFF9800) // Orange - Tempo
+            5 -> Color(0xFFF44336) // Red - Max
+            else -> Color.Gray
+        }
     }
 }

@@ -4,8 +4,6 @@ package com.fghbuild.sidekick.audio
 import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.media.AudioAttributes
-import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.speech.RecognitionListener
 import android.speech.SpeechRecognizer
@@ -34,14 +32,13 @@ interface IVoiceCommandListener {
 class VoiceCommandListener(private val context: Context) : RecognitionListener, IVoiceCommandListener {
     private val speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
     private val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+    private val audioFocusManager = AudioFocusManager(audioManager)
 
     private val _lastCommand = MutableStateFlow(VoiceCommand.NONE)
     override val lastCommand: StateFlow<VoiceCommand> = _lastCommand.asStateFlow()
 
     private val _isListening = MutableStateFlow(false)
     override val isListening: StateFlow<Boolean> = _isListening.asStateFlow()
-
-    private var audioFocusRequest: AudioFocusRequest? = null
 
     override fun startListening() {
         if (_isListening.value) return
@@ -56,7 +53,7 @@ class VoiceCommandListener(private val context: Context) : RecognitionListener, 
                 return
             }
 
-            requestAudioFocus()
+            audioFocusManager.requestFocus()
 
             _isListening.value = true
             val intent =
@@ -83,28 +80,7 @@ class VoiceCommandListener(private val context: Context) : RecognitionListener, 
     override fun stopListening() {
         speechRecognizer.stopListening()
         _isListening.value = false
-        abandonAudioFocus()
-    }
-
-    private fun requestAudioFocus() {
-        val audioAttributes =
-            AudioAttributes
-                .Builder()
-                .setUsage(AudioAttributes.USAGE_MEDIA)
-                .build()
-
-        audioFocusRequest =
-            AudioFocusRequest
-                .Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
-                .setAudioAttributes(audioAttributes)
-                .build()
-
-        audioFocusRequest?.let { audioManager.requestAudioFocus(it) }
-    }
-
-    private fun abandonAudioFocus() {
-        audioFocusRequest?.let { audioManager.abandonAudioFocusRequest(it) }
-        audioFocusRequest = null
+        audioFocusManager.abandonFocus()
     }
 
     override fun onReadyForSpeech(params: android.os.Bundle?) {
@@ -129,12 +105,12 @@ class VoiceCommandListener(private val context: Context) : RecognitionListener, 
 
     override fun onError(error: Int) {
         _isListening.value = false
-        abandonAudioFocus()
+        audioFocusManager.abandonFocus()
     }
 
     override fun onResults(results: android.os.Bundle?) {
         _isListening.value = false
-        abandonAudioFocus()
+        audioFocusManager.abandonFocus()
 
         results?.let {
             val matches =
