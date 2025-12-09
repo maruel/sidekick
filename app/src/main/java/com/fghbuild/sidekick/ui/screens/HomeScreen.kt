@@ -1,3 +1,6 @@
+// Home screen showing current run metrics and idle mode controls.
+// Displays GPS accuracy, main metrics panel, heart rate data, and device pairing/connection button.
+
 package com.fghbuild.sidekick.ui.screens
 
 import android.location.Location

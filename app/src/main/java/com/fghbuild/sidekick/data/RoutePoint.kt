@@ -1,3 +1,4 @@
+// Represents a GPS location point with latitude, longitude, timestamp, and optional accuracy, bearing, and speed.
 package com.fghbuild.sidekick.data
 
 data class RoutePoint(

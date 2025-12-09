@@ -1,3 +1,4 @@
+// Data Access Object for Run entities. Provides database operations for creating, retrieving, and deleting runs.
 package com.fghbuild.sidekick.database
 
 import androidx.room.Dao

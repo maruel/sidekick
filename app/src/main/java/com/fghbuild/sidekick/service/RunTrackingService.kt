@@ -1,3 +1,4 @@
+// Foreground service for background run tracking with throttled notification updates.
 package com.fghbuild.sidekick.service
 
 import android.app.Notification

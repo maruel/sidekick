@@ -1,3 +1,4 @@
+// Run state and metrics management with Kalman filtering, distance/pace calculation, and auto-pause detection.
 package com.fghbuild.sidekick.run
 
 import android.location.Location
@@ -10,8 +11,8 @@ import com.fghbuild.sidekick.database.GpsCalibrationDao
 import com.fghbuild.sidekick.database.GpsCalibrationEntity
 import com.fghbuild.sidekick.database.GpsMeasurementDao
 import com.fghbuild.sidekick.util.GeoUtils
-import com.fghbuild.sidekick.util.GpsCalibrationUtils
 import com.fghbuild.sidekick.util.GpsFilteringUtils
+import com.fghbuild.sidekick.util.KalmanNoiseDerivationUtils
 import com.fghbuild.sidekick.util.PaceUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -394,10 +395,10 @@ class RunManager(
 
     private suspend fun updateCalibration(measurements: List<com.fghbuild.sidekick.database.GpsMeasurementEntity>) {
         val (avgAccuracy, p95Accuracy, avgBearingAccuracy) =
-            GpsCalibrationUtils.calculateMeasurementStats(measurements)
+            KalmanNoiseDerivationUtils.calculateMeasurementStats(measurements)
 
         val kalmanNoise =
-            GpsCalibrationUtils.deriveKalmanMeasurementNoise(
+            KalmanNoiseDerivationUtils.deriveKalmanMeasurementNoise(
                 measurements.map { it.accuracy },
             )
 
@@ -410,21 +411,21 @@ class RunManager(
                 GpsCalibrationEntity(
                     activity = currentActivity,
                     avgAccuracyMeters =
-                        GpsCalibrationUtils.weightedAverage(
+                        KalmanNoiseDerivationUtils.weightedAverage(
                             existing.avgAccuracyMeters,
                             existing.samplesCollected,
                             avgAccuracy,
                             measurements.size,
                         ),
                     p95AccuracyMeters =
-                        GpsCalibrationUtils.weightedAverage(
+                        KalmanNoiseDerivationUtils.weightedAverage(
                             existing.p95AccuracyMeters,
                             existing.samplesCollected,
                             p95Accuracy,
                             measurements.size,
                         ),
                     avgBearingAccuracyDegrees =
-                        GpsCalibrationUtils.weightedAverage(
+                        KalmanNoiseDerivationUtils.weightedAverage(
                             existing.avgBearingAccuracyDegrees,
                             existing.samplesCollected,
                             avgBearingAccuracy,

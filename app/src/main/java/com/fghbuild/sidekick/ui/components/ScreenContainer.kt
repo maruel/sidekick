@@ -1,3 +1,4 @@
+// Provides a scrollable vertical layout container for screen content with standard padding
 package com.fghbuild.sidekick.ui.components
 
 import androidx.compose.foundation.layout.Arrangement

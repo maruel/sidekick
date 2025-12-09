@@ -1,3 +1,6 @@
+// Calculates running pace metrics and defines training zones.
+// Converts duration and distance to pace (min/km), determines pace zones,
+// and formats pace and duration for display.
 package com.fghbuild.sidekick.util
 
 import com.fghbuild.sidekick.data.PaceWithTime

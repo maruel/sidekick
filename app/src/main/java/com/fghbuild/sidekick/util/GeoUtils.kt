@@ -1,3 +1,5 @@
+// Calculates geographic distances using the Haversine formula.
+// Converts latitude/longitude coordinates to great-circle distances in meters.
 package com.fghbuild.sidekick.util
 
 import kotlin.math.atan2

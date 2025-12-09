@@ -1,9 +1,12 @@
+// Derives Kalman filter noise parameters from GPS accuracy measurements.
+// Computes measurement noise and process noise values based on real GPS accuracy data
+// to calibrate the Kalman filter for optimal noise reduction.
 package com.fghbuild.sidekick.util
 
 import com.fghbuild.sidekick.database.GpsMeasurementEntity
 import kotlin.math.sqrt
 
-object GpsCalibrationUtils {
+object KalmanNoiseDerivationUtils {
     /**
      * Derive Kalman measurement noise from GPS accuracy measurements.
      * Uses variance of accuracy measurements with conservative scaling.

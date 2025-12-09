@@ -27,23 +27,39 @@ Instructions for coding agents working on this project.
 
 ```
 app/src/main/java/com/fghbuild/sidekick/
-├── audio/           # Voice commands, TTS
-├── ble/             # Bluetooth HRM device management
-├── data/            # Data models
-├── database/        # Room entities, DAOs
-├── location/        # GPS tracking
-├── notifications/   # Run notifications
-├── preferences/     # Device preferences
-├── repository/      # Data repository
-├── run/             # Run state management
+├── audio/           # Voice commands, TTS (AnnouncementManager, VoiceCommandListener)
+├── ble/             # Bluetooth HRM device management (BleManager)
+├── data/            # Data models (Run, RunStatistics)
+├── database/        # Room entities, DAOs (RunEntity, RunDao)
+├── location/        # GPS tracking (LocationTracker)
+├── notifications/   # Run notifications (RunNotificationManager)
+├── preferences/     # Device preferences (DevicePreferences)
+├── repository/      # Data repository (RunRepository)
+├── run/             # Run state management (RunStateManager, RunManager)
 ├── ui/
-│   ├── components/  # Charts, map, UI components
+│   ├── components/  # Charts, map, UI components (HeartRateChart, PaceChart, RouteMap)
 │   ├── screens/     # Run, History, Device Pairing screens
-│   └── theme/       # Material 3 theme
-└── util/            # Calculation utilities (Geo, Pace, HeartRate)
+│   └── theme/       # Material 3 theme (Theme)
+├── util/            # Calculation utilities (Geo, Pace, HeartRate)
+├── RunTrackingService  # Foreground service for background tracking
+└── MainActivity        # App entry point
 ```
 
-## Build Commands
+Each file includes a short description comment at the top explaining its purpose.
+
+## Codebase Discovery
+
+Use the `extract_descriptions.sh` script to efficiently understand the entire codebase structure:
+
+```bash
+./extract_descriptions.sh
+```
+
+This displays source file descriptions in a token-efficient format (`path: description`). Each source file has a short description comment at the top (single-line `//` format). Use this when starting a new thread to quickly understand the codebase organization and locate relevant files.
+
+When modifying a file's purpose or adding significant functionality, update its description comment at the top of the file to keep the codebase map accurate.
+
+## Common Commands
 
 | Command | Description |
 |---------|-------------|
@@ -57,6 +73,7 @@ app/src/main/java/com/fghbuild/sidekick/
 | `./gradlew ktlintCheck` | Check code formatting |
 | `./gradlew ktlintFormat` | Auto-fix formatting |
 | `./gradlew jacocoTestReport` | Generate code coverage report |
+| `shellcheck script.sh` | Validate bash script |
 
 ## Requirements
 
@@ -86,10 +103,14 @@ app/src/main/java/com/fghbuild/sidekick/
 ## Code Patterns
 
 ### Code Style Guidelines
-- For each source files under app/src/main/java/com/fghbuild/sidekick/ add a short description at the top of each source files to describe the purpose.
+- Each source file under app/src/main/java/com/fghbuild/sidekick/ must have a short description comment at the top (`// purpose description`) explaining its purpose. Update this comment if the file's functionality changes significantly.
 - **Default Arguments**: Do not use default arguments in functions and constructors, except for data classes where they are idiomatic Kotlin usage and for Compose Modifier parameters where `modifier: Modifier = Modifier` is the standard pattern. All function parameters should be explicitly provided at call sites, with the exception of Compose Modifier parameters.
 - **Never hardcode `Locale.US`** - Always use `Locale.getDefault()` to respect user's device locale
 - Pass context to access LocalConfiguration for Compose when needed
+
+### Token Efficiency
+- Be token-efficient by default: remove decorative elements, minimize whitespace, use compact formatting
+- Group related information to avoid repeating prefixes or common paths
 
 ### State Management
 - Use `StateFlow` for observable state

@@ -1,3 +1,4 @@
+// Displays route on Google Map with polyline, user location marker, and GPS accuracy circle
 package com.fghbuild.sidekick.ui.components
 
 import android.graphics.Bitmap

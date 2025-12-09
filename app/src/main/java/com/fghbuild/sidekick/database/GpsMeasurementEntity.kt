@@ -1,3 +1,4 @@
+// Room entity for raw GPS measurements (accuracy, speed, bearing). Can be associated with a run or stored as pre-warmup data.
 package com.fghbuild.sidekick.database
 
 import androidx.room.Entity

@@ -1,3 +1,4 @@
+// Represents current and historical heart rate metrics including BPM and measurements list.
 package com.fghbuild.sidekick.data
 
 data class HeartRateData(

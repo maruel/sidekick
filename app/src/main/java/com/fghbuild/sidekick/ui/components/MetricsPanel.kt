@@ -1,3 +1,4 @@
+// Container for run metrics displayed as cards (heart rate, pace, distance, duration) with variants for live and historical runs
 package com.fghbuild.sidekick.ui.components
 
 import android.location.Location

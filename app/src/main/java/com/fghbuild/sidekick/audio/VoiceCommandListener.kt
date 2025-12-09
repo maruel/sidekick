@@ -1,3 +1,4 @@
+// Speech recognition listener for voice commands (pause, resume) with audio focus management.
 package com.fghbuild.sidekick.audio
 
 import android.Manifest

@@ -1,3 +1,4 @@
+// Room entity representing a single running session with metadata (time, distance, heart rate stats).
 package com.fghbuild.sidekick.database
 
 import androidx.room.Entity

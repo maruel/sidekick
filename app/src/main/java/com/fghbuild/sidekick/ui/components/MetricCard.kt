@@ -1,3 +1,4 @@
+// Displays a metric value with emoji, label, and optional min/avg/max statistics
 package com.fghbuild.sidekick.ui.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi

@@ -1,3 +1,4 @@
+// Text-to-speech announcements for run metrics (distance, pace, heart rate) with audio focus management.
 package com.fghbuild.sidekick.audio
 
 import android.content.Context

@@ -10,7 +10,7 @@ if ! which adb >/dev/null; then
 	ADB=$HOME/Android/Sdk/platform-tools/adb
 fi
 
-DEVICE_COUNT=$($ADB devices | grep -v "List of devices attached" | grep -v "daemon" | grep -v "^$" | wc -l)
+DEVICE_COUNT=$($ADB devices | grep -v "List of devices attached" | grep -v "daemon" | grep -cv "^$")
 if [ "$DEVICE_COUNT" -ne 1 ]; then
 	echo "WARNING: Expected 1 device, but found $DEVICE_COUNT"
 	$ADB devices

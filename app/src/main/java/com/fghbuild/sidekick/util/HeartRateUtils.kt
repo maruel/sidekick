@@ -1,3 +1,6 @@
+// Calculates heart rate statistics and defines personalized training zones.
+// Computes max HR using age-based formula and categorizes BPM into 5 zones
+// based on percentage of max heart rate.
 package com.fghbuild.sidekick.util
 
 data class HeartRateZone(

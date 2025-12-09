@@ -1,3 +1,6 @@
+// Onboarding screen for initial app setup.
+// Prompts user to enter birth year for personalized heart rate zone calculations.
+
 package com.fghbuild.sidekick.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement

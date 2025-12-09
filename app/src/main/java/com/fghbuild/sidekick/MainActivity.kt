@@ -1,3 +1,4 @@
+// Main entry point composing app UI, managing service binding, and orchestrating run/location/BLE lifecycle.
 package com.fghbuild.sidekick
 
 import android.Manifest
@@ -48,10 +49,10 @@ import com.fghbuild.sidekick.run.RunManager
 import com.fghbuild.sidekick.run.RunStateManager
 import com.fghbuild.sidekick.service.RunTrackingService
 import com.fghbuild.sidekick.ui.screens.RunDetailViewModel
+import com.fghbuild.sidekick.ui.screens.historyRunDetailScreen
 import com.fghbuild.sidekick.ui.screens.historyScreen
 import com.fghbuild.sidekick.ui.screens.homeScreen
 import com.fghbuild.sidekick.ui.screens.onboardingScreen
-import com.fghbuild.sidekick.ui.screens.runDetailScreen
 import com.fghbuild.sidekick.ui.screens.runInProgressScreen
 import com.fghbuild.sidekick.ui.theme.sidekickTheme
 import kotlinx.coroutines.flow.filterNotNull
@@ -385,7 +386,7 @@ fun sidekickApp() {
                             val run = allRuns.find { it.id == runId }
                             if (run != null && runData != null) {
                                 val userAge = devicePreferences.getCurrentAge()
-                                runDetailScreen(
+                                historyRunDetailScreen(
                                     modifier = Modifier.padding(innerPadding),
                                     runData = runData!!,
                                     heartRateData = heartRateData,
@@ -400,7 +401,6 @@ fun sidekickApp() {
                                     gpsAccuracyMeters = locationTracker.currentAccuracyMeters,
                                     currentLocation = locationTracker.currentLocation,
                                     runStartTime = run.startTime,
-                                    isLiveRun = false,
                                 )
                             }
                         } else {

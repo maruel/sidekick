@@ -1,3 +1,6 @@
+// Dialog for pairing and managing Bluetooth heart rate monitor devices.
+// Displays discovered devices, connected device status, and scanning controls.
+
 package com.fghbuild.sidekick.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement

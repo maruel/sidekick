@@ -1,3 +1,4 @@
+// Run state transitions and periodic announcements (distance, pace, heart rate) with voice command integration.
 package com.fghbuild.sidekick.run
 
 import com.fghbuild.sidekick.audio.AnnouncementManager

@@ -1,3 +1,4 @@
+// Foreground notification management for run tracking service with live metrics display.
 package com.fghbuild.sidekick.notifications
 
 import android.app.Notification

@@ -1,3 +1,4 @@
+// SharedPreferences wrapper for device-specific settings (HRM device, birth year, onboarding state).
 package com.fghbuild.sidekick.preferences
 
 import android.content.Context

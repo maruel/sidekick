@@ -1,3 +1,4 @@
+// Represents a single heart rate measurement with its timestamp.
 package com.fghbuild.sidekick.data
 
 data class HeartRateWithTime(

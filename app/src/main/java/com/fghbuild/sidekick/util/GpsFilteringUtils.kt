@@ -1,3 +1,6 @@
+// Applies Kalman filtering to GPS route points for noise reduction.
+// Smooths GPS coordinates using estimated process and measurement noise parameters.
+// Also removes stationary points where the device hasn't meaningfully moved.
 package com.fghbuild.sidekick.util
 
 import com.fghbuild.sidekick.data.RoutePoint

@@ -1,3 +1,4 @@
+// Represents all metrics collected during an active run including distance, pace, duration, route points, and heart rate/pace history.
 package com.fghbuild.sidekick.data
 
 data class RunData(

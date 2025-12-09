@@ -1,3 +1,4 @@
+// Room entity representing a GPS coordinate point along a run's route (latitude, longitude, timestamp).
 package com.fghbuild.sidekick.database
 
 import androidx.room.Entity

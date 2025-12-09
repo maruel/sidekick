@@ -1,3 +1,4 @@
+// Repository for run persistence and retrieval from database with route point and heart rate reconstruction.
 package com.fghbuild.sidekick.repository
 
 import com.fghbuild.sidekick.data.HeartRateData

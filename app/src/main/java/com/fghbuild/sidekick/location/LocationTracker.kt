@@ -1,3 +1,4 @@
+// GPS location updates via FusedLocationProviderClient with queued measurement storage for calibration.
 package com.fghbuild.sidekick.location
 
 import android.Manifest

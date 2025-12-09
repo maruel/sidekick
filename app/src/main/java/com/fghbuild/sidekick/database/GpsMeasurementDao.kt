@@ -1,3 +1,4 @@
+// Data Access Object for GpsMeasurement entities. Provides database operations for raw GPS data including pre-warmup and run-associated measurements.
 package com.fghbuild.sidekick.database
 
 import androidx.room.Dao

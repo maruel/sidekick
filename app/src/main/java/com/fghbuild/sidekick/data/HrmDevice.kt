@@ -1,3 +1,4 @@
+// Represents a Bluetooth Heart Rate Monitor device with address, name, and signal strength.
 package com.fghbuild.sidekick.data
 
 data class HrmDevice(

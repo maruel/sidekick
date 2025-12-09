@@ -1,3 +1,6 @@
+// Details view for a historical run from the run history.
+// Shows route map, heart rate and pace charts, and comprehensive run statistics with delete functionality.
+
 package com.fghbuild.sidekick.ui.screens
 
 import android.location.Location
@@ -26,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import com.fghbuild.sidekick.R
 import com.fghbuild.sidekick.data.HeartRateData
 import com.fghbuild.sidekick.data.RunData
-import com.fghbuild.sidekick.ui.components.gpsAccuracyIndicator
 import com.fghbuild.sidekick.ui.components.heartRateChart
 import com.fghbuild.sidekick.ui.components.historyMetricsPanel
 import com.fghbuild.sidekick.ui.components.paceChart
@@ -38,7 +40,7 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun runDetailScreen(
+fun historyRunDetailScreen(
     modifier: Modifier = Modifier,
     runData: RunData,
     heartRateData: HeartRateData,
@@ -48,7 +50,6 @@ fun runDetailScreen(
     gpsAccuracyMeters: StateFlow<Float>?,
     currentLocation: StateFlow<Location?>?,
     runStartTime: Long,
-    isLiveRun: Boolean,
 ) {
     BackHandler { onBack() }
 
@@ -117,8 +118,8 @@ fun runDetailScreen(
             paceChart(
                 paceHistory = runData.paceHistory,
                 modifier = Modifier.fillMaxWidth(),
-                showAllData = !isLiveRun,
-                isLiveRun = isLiveRun,
+                showAllData = true,
+                isLiveRun = false,
             )
         }
 
@@ -129,20 +130,12 @@ fun runDetailScreen(
                 heartRateHistory = runData.heartRateHistory,
                 age = userAge,
                 modifier = Modifier.fillMaxWidth(),
-                showAllData = !isLiveRun,
-                isLiveRun = isLiveRun,
+                showAllData = true,
+                isLiveRun = false,
             )
         }
 
         Spacer(modifier = Modifier.weight(1f))
-
-        // GPS Accuracy indicator at bottom - only for live runs
-        if (isLiveRun) {
-            gpsAccuracyMeters?.let { accuracyFlow ->
-                val accuracy by accuracyFlow.collectAsState()
-                gpsAccuracyIndicator(accuracyMeters = accuracy)
-            }
-        }
     }
 }
 

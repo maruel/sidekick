@@ -1,3 +1,4 @@
+// Data Access Object for RoutePoint entities. Provides database operations for storing and retrieving GPS route points.
 package com.fghbuild.sidekick.database
 
 import androidx.room.Dao

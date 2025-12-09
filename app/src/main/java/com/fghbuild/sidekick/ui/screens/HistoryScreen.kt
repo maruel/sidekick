@@ -1,3 +1,6 @@
+// Displays historical run data in a scrollable list.
+// Shows run distance, duration, pace, and heart rate statistics with delete functionality.
+
 package com.fghbuild.sidekick.ui.screens
 
 import androidx.compose.foundation.clickable

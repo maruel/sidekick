@@ -1,3 +1,4 @@
+// Renders pace data as a time-series chart with color-coded pace zones
 package com.fghbuild.sidekick.ui.components
 
 import androidx.compose.foundation.Canvas

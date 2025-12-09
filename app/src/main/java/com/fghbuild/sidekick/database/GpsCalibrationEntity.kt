@@ -1,3 +1,4 @@
+// Room entity storing GPS accuracy calibration data per activity (running, skiing). Used for GPS filtering and noise reduction.
 package com.fghbuild.sidekick.database
 
 import androidx.room.Entity

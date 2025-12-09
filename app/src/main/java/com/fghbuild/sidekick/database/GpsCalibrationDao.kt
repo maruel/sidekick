@@ -1,3 +1,4 @@
+// Data Access Object for GpsCalibration entities. Provides database operations for GPS accuracy calibration parameters.
 package com.fghbuild.sidekick.database
 
 import androidx.room.Dao

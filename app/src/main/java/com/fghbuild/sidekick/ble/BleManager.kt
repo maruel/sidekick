@@ -1,3 +1,4 @@
+// Bluetooth LE device scanning, connection, and heart rate data parsing for HRM devices.
 package com.fghbuild.sidekick.ble
 
 import android.Manifest

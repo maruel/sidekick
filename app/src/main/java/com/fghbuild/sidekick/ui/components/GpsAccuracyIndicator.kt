@@ -1,3 +1,4 @@
+// Displays GPS accuracy in meters with a location icon
 package com.fghbuild.sidekick.ui.components
 
 import androidx.compose.foundation.layout.Row

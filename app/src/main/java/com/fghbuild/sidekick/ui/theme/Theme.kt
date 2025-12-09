@@ -1,3 +1,4 @@
+// Material 3 theme configuration with dynamic color support for light and dark modes.
 package com.fghbuild.sidekick.ui.theme
 
 import android.os.Build

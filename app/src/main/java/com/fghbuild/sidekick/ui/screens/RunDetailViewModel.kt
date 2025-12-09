@@ -1,3 +1,5 @@
+// ViewModel for RunDetailScreen that loads complete run data and heart rate statistics from repository.
+
 package com.fghbuild.sidekick.ui.screens
 
 import androidx.lifecycle.ViewModel

@@ -39,7 +39,7 @@ diagnose() {
     command -v avdmanager >/dev/null 2>&1 && echo "✓ avdmanager found" || echo "✗ avdmanager NOT found"
     echo ""
     echo "Emulator process status:"
-    if [ ! -z "$EMULATOR_PID" ] && kill -0 $EMULATOR_PID 2>/dev/null; then
+    if [ -n "$EMULATOR_PID" ] && kill -0 "$EMULATOR_PID" 2>/dev/null; then
         echo "✓ Emulator process is running (PID: $EMULATOR_PID)"
         echo "Last 20 lines of emulator log:"
         tail -20 "$LOG_FILE" 2>/dev/null || echo "Log file not available yet"

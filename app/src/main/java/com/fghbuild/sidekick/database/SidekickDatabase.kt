@@ -1,3 +1,4 @@
+// Room database singleton for Sidekick. Manages all database entities and provides DAOs for data access.
 package com.fghbuild.sidekick.database
 
 import android.content.Context

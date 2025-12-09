@@ -1,3 +1,6 @@
+// Active run screen showing real-time metrics, controls, and pace chart.
+// Displays pause/resume/stop buttons, heart rate and pace data, and device pairing during active run.
+
 package com.fghbuild.sidekick.ui.screens
 
 import android.location.Location
