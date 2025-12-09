@@ -112,10 +112,15 @@ fun runDetailScreen(
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        paceChart(
-            paceHistory = runData.paceHistory,
-            modifier = Modifier.fillMaxWidth(),
-        )
+        // Show pace chart if there are pace measurements
+        if (runData.paceHistory.isNotEmpty()) {
+            paceChart(
+                paceHistory = runData.paceHistory,
+                modifier = Modifier.fillMaxWidth(),
+                showAllData = !isLiveRun,
+                isLiveRun = isLiveRun,
+            )
+        }
 
         // Show heart rate chart if there are heart rate measurements
         if (runData.heartRateHistory.isNotEmpty()) {
