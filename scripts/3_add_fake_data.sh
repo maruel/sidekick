@@ -30,9 +30,10 @@ generate_runs() {
     adb shell am force-stop "$APP_PACKAGE"
     sleep 1
     local sql_commands=""
-    for i in $(seq 1 $count); do
+    for i in $(seq 1 "$count"); do
         local days_ago=$((30 - (i % 30)))
-        local now_seconds=$(date +%s)
+        local now_seconds
+        now_seconds=$(date +%s)
         local start_time=$((now_seconds * 1000 - days_ago * 86400000))
         local duration_mins=$((15 + RANDOM % 45))
         local duration_millis=$((duration_mins * 60 * 1000))
@@ -55,9 +56,10 @@ generate_runs() {
 }
 
 verify_runs() {
-    log_info "Verifying runs..."
-    local count=$(adb shell "run-as $APP_PACKAGE sqlite3 databases/sidekick_database \"SELECT COUNT(*) FROM runs;\"" 2>/dev/null || echo "0")
-    log_success "Total runs in database: $count"
+     log_info "Verifying runs..."
+     local count
+     count=$(adb shell "run-as $APP_PACKAGE sqlite3 databases/sidekick_database \"SELECT COUNT(*) FROM runs;\"" 2>/dev/null || echo "0")
+     log_success "Total runs in database: $count"
 }
 
 trap "log_error 'Failed'; exit 1" ERR

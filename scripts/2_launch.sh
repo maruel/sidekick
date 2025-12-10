@@ -19,7 +19,8 @@ check_device() {
 is_onboarding_shown() {
     # Check if onboarding has already been completed by checking shared preferences
     # If user_birth_year was saved, onboarding is done
-    local prefs_content=$(adb shell "run-as $APP_PACKAGE cat shared_prefs/sidekick_prefs.xml 2>/dev/null" 2>/dev/null)
+    local prefs_content
+    prefs_content=$(adb shell "run-as $APP_PACKAGE cat shared_prefs/sidekick_prefs.xml 2>/dev/null" 2>/dev/null)
     if echo "$prefs_content" | grep -q "user_birth_year"; then
         return 1  # Onboarding already done
     fi
